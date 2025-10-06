@@ -1,22 +1,33 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
 import './Home.css';
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import { logoutUser } from "../services/authService";
+
+
 
 const Home: React.FC = () => {
+  const user = useCurrentUser();
+ 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Blank</IonTitle>
+          <IonTitle>Home</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+
+      <IonContent fullscreen className="ion-padding">
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Testing</IonTitle>
+            <IonTitle size="large">Welcome</IonTitle>
           </IonToolbar>
         </IonHeader>
+
         <ExploreContainer />
+
+        <h1>Hello {user?.email}</h1>
+        <IonButton onClick={logoutUser}>Logout</IonButton>
       </IonContent>
     </IonPage>
   );
