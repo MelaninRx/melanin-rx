@@ -1,0 +1,177 @@
+IonContent, IonContent * {
+  background: linear-gradient(to bottom right, #885e8c, #dbbddf);
+  font-family: 'Source serif pro', serif;
+}
+
+.container {
+  display: flex;
+  height: 100vh; 
+}
+
+.sidebar {
+  width: 80px;
+  background-color: #885e8c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding-top: 10px;
+}
+
+.divider {
+  width: 80%;             /* 分割线长度可调 */
+  height: 2px;            /* 线条高度 */
+  background-color: #141414; /* 线条颜色 */
+  margin: 10px auto;      /* 上下间距，居中显示 */
+}
+
+.sidebar-top {
+  width: 60px;
+  height: 60px;
+  margin: 10px 0;
+  background-color: #f2f0f3;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.sidebar-middle {
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.user-pic {
+  width: 50px;                  /* 头像宽度 */
+  height: 50px;                 /* 头像高度 */
+  border-radius: 4px;
+  background-color: #ccc;       /* 占位灰色，可换图片 */
+  border: 2px solid #999;       /* 可选边框 */
+  cursor: pointer;              /* 鼠标悬停显示可点击 */
+}
+
+.icon {
+  width: 40px;  
+  height: 40px;
+  margin: 10px 0;
+  background-color: #f2f0f3;
+  cursor: pointer;
+}
+
+.history-top{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #161616; /* 顶部分割线 */
+}
+
+.history-title {
+  margin: 0;
+  font-size: 20px;
+}
+
+.new-chat-btn {
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid #292929;
+  border-radius: 4px;
+  background-color: #968e7dd3;
+}
+
+.new-chat-btn:hover {
+  background-color: #eee;
+}
+
+.history-search {
+  margin: 12px;
+  width: 90%;
+  display: flex;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.history-panel {
+  width: 250px;
+  border-left: 1px solid #7f6059;
+  border-right: 1px solid #7f6059;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.history-subtitle {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+.history-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.history-item {
+  width: 100%;                  /* 占满父容器宽度 */
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  transition: all 0.2s;
+}
+
+
+.history-item:hover {
+  background-color: #e0dfe2;
+}
+
+
+.chat-panel {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.chat-top {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1;
+  padding-top: 15%;
+  align-items: center;
+  margin-bottom: 10px; /* 和下半部分间距 */
+}
+
+.chat-greeting {
+  font-size: 40px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.chat-subtitle {
+  font-size: 25px;
+  color: #555;
+  margin: 4px 0 0 0;
+}
