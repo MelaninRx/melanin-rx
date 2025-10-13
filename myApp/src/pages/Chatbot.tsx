@@ -1,6 +1,7 @@
 import React from 'react';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
 import './Chatbot.css';
+import 'typeface-source-serif-pro';
 
 const ChatbotPage: React.FC = () => {
   return (
@@ -56,8 +57,20 @@ const ChatbotPage: React.FC = () => {
                 <p className="chat-greeting">Hello</p>
                 <p className="chat-subtitle">How can we help you today?</p>
             </div>
-            <h3>Chatbot Panel</h3>
-            <p>Placeholder for chat interface and input box.</p>
+
+            <div className="chat-input-area">
+              <input
+              type="text"
+              className="chat-input"
+              placeholder="What's on your mind？"
+              />
+              <button className="send-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </div>
           </div>
         </div>
       </IonContent>
