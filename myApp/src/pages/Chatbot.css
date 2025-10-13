@@ -86,17 +86,18 @@ body, html, #root, ion-app, ion-page, ion-content {
   align-items: center;
   padding: 10px;
   box-shadow: 0 1px 0 rgba(255,255,255,0.1);
+  margin-bottom: 1px;
   /* border-bottom: 1px solid #161616; /* 顶部分割线 */ 
 }
 
 .history-title {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .new-chat-btn {
   padding: 6px 14px;
-  font-size: 14px;
+  font-size: 15px;
   cursor: pointer;
   border: none;
   border-radius: 24px;               /* 更圆润 */
