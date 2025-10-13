@@ -1,15 +1,14 @@
 body, html, #root, ion-app, ion-page, ion-content {
-  background: linear-gradient(to bottom right, #885e8c, #dbbddf);
+  background: linear-gradient(to bottom, #885e8c, #dbbddf);
   font-family: 'Source Serif Pro', 'Courier New', monospace; /* 保留字体设置 */
   min-height: 100vh;
   margin: 0;
   padding: 0;
 }
 
-.history-panel, .chat-panel {
-  /* 背景：从中心向外的放射渐变，更柔和 */
-  background: radial-gradient(circle at top left, #e0c4eb 0%, #f3e6f8 50%, #dbbddf 100%);
-  /* 可加平滑过渡 */
+.history-panel,
+.chat-panel {
+  background: linear-gradient(to bottom, #f0e7f27b, #fbe4fdde);
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -113,7 +112,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .history-search {
-  margin: 12px;
+  margin: 12px 12px 2px 12px;
   width: 90%;
   display: flex;
 }
@@ -135,34 +134,48 @@ body, html, #root, ion-app, ion-page, ion-content {
   overflow-y: auto;
 }
 
-.history-subtitle {
-  margin-top: 15px;
-  font-size: 14px;
-  color: #555;
+.history-panel {
+  width: 250px;
+  border-left: 1px solid #d3baba;
+  border-right: 1px solid #d3baba;
+  padding: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .history-items {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 0;
 }
 
 .history-item {
-  width: 100%;                  /* 占满父容器宽度 */
-  padding: 10px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px 20px;
   border: 1px solid #ccc;
-  border-radius: 10px;
-  cursor: pointer;
+  border-bottom: none;
   background-color: #f9f9f9;
-  transition: all 0.2s;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0;
 }
 
+.history-item:first-child {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
+.history-item:last-child {
+  border-bottom: 1px solid #ccc;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
 
 .history-item:hover {
   background-color: #e0dfe2;
 }
-
 
 .chat-panel {
   flex: 1;
@@ -177,7 +190,7 @@ body, html, #root, ion-app, ion-page, ion-content {
   flex: 1;
   padding-top: 15%;
   align-items: center;
-  margin-bottom: 10px; /* 和下半部分间距 */
+  margin-bottom: 10px;
 }
 
 .chat-greeting {
@@ -194,23 +207,21 @@ body, html, #root, ion-app, ion-page, ion-content {
 
 .chat-panel {
   flex: 1;
-  position: relative;    /* 绝对定位参照 */
-  padding: 10px 10px;    /* 上下 20px，左右 40px（你可以改成 24px 24px 更窄） */
+  position: relative;
+  padding: 10px 10px;
   overflow-y: auto;
   box-sizing: border-box;
 }
 
-/* 大长方形输入框：水平居中、位于中下方、宽度大且不超出 panel */
-/* 1. 外层大盒子保持原样 */
 .chat-input-area {
   position: absolute;
-  bottom: 50%;         /* 控制位置 */
+  bottom: 50%;
   left: 50%;
   transform: translateX(-50%);
   width: min(86%, 1100px);
-  height: 60px;        /* 高度可调 */
-  padding: 0 14px;     /* 内边距保持左右空隙 */
-  border-radius: 20px; /* 圆角更柔和 */
+  height: 60px;
+  padding: 0 14px;
+  border-radius: 20px;
   border: 1px solid rgba(0,0,0,0.1);
   background-color: #f6f3f6;
   display: flex;
@@ -220,18 +231,16 @@ body, html, #root, ion-app, ion-page, ion-content {
   box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
-/* 2. input 占满整个盒子，高度填满，去掉边框和背景 */
 .chat-input {
   flex: 1;
   border: none;
   outline: none;
   background: transparent;
   font-size: 18px;
-  height: 100%;       /* 填满 chat-input-area */
-  padding: 0;         /* 去掉默认 padding */
+  height: 100%;
+  padding: 0;
 }
 
-/* 3. send 按钮小圆点，保持 */
 .send-btn {
   width: 44px;
   height: 44px;
