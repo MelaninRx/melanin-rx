@@ -1,5 +1,29 @@
+:root {
+  /* Brand palette */
+  --color-primary: #73587e;     /* Muted deep mauve (anchor tone) */
+  --color-secondary: #d8cbe1;   /* Gentle lavender-gray */
+  --color-accent: #a98bb3;      /* Elegant mid-tone accent purple */
+  --color-light: #f7f5f8;       /* Clean soft white background */
+  --color-mid: #e2d9e8;         /* Neutral divider/panel tone */
+
+  /* Text palette */
+  --text-primary: #2a1d31;      /* Deep, legible plum */
+  --text-secondary: #55405e;    /* Softer purple-gray */
+  --text-light: #ffffff;        /* White text */
+  --text-muted: #7d6c87;        /* Muted support text */
+
+  /* Gradients */
+  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
+  --gradient-panel: linear-gradient(180deg, #faf8fc, #ece5f2);
+  --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
+  --gradient-user-bubble: linear-gradient(135deg, #9272a2, #c2a9ce);
+  --gradient-bot-bubble: linear-gradient(135deg, #ede6f2, #ffffff);
+}
+
+
 body, html, #root, ion-app, ion-page, ion-content {
-  background: linear-gradient(to bottom, #885e8c, #dbbddf);
+  background: var(--gradient-bg);
+  color: var(--text-primary); 
   font-family: 'Source Serif Pro', 'Courier New', monospace; /* 保留字体设置 */
   min-height: 100vh;
   margin: 0;
@@ -8,9 +32,14 @@ body, html, #root, ion-app, ion-page, ion-content {
 
 .history-panel,
 .chat-panel {
-  background: linear-gradient(to bottom, #f0e7f27b, #fbe4fdde);
-  background-size: cover;
+  background: var(--gradient-panel);
   background-repeat: no-repeat;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .container {
@@ -20,7 +49,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 
 .sidebar {
   width: 80px;
-  background-color: #ead1ec;
+  background: var(--color-secondary);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,7 +60,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 .divider {
   width: 80%;             /* 分割线长度可调 */
   height: 2px;            /* 线条高度 */
-  background-color: #212020; /* 线条颜色 */
+  background: linear-gradient(to right, var(--color-accent), var(--color-secondary)); /* 线条颜色 */
   margin: 10px auto;      /* 上下间距，居中显示 */
 }
 
@@ -39,7 +68,7 @@ body, html, #root, ion-app, ion-page, ion-content {
   width: 60px;
   height: 60px;
   margin: 10px 0;
-  background-color: #f2f0f3;
+  background: var(--color-light);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -67,8 +96,7 @@ body, html, #root, ion-app, ion-page, ion-content {
   width: 50px;                  /* 头像宽度 */
   height: 50px;                 /* 头像高度 */
   border-radius: 4px;
-  background-color: #ccc;       /* 占位灰色，可换图片 */
-  border: 2px solid #999;       /* 可选边框 */
+  border: 1px solid rgba(115, 88, 126, 0.08); /* faint tint of your primary */
   cursor: pointer;              /* 鼠标悬停显示可点击 */
 }
 
@@ -76,7 +104,7 @@ body, html, #root, ion-app, ion-page, ion-content {
   width: 40px;  
   height: 40px;
   margin: 10px 0;
-  background-color: #f2f0f3;
+  background: linear-gradient(135deg, #e9d3f1, #d8b9e7);
   cursor: pointer;
 }
 
@@ -86,13 +114,14 @@ body, html, #root, ion-app, ion-page, ion-content {
   align-items: center;
   padding: 10px;
   box-shadow: 0 1px 0 rgba(255,255,255,0.1);
-  margin-bottom: 1px;
+  margin-bottom: 0.5px;
   /* border-bottom: 1px solid #161616; /* 顶部分割线 */ 
 }
 
 .history-title {
   margin: 0;
   font-size: 18px;
+  color: var(--text-primary);
 }
 
 .new-chat-btn {
@@ -101,15 +130,15 @@ body, html, #root, ion-app, ion-page, ion-content {
   cursor: pointer;
   border: none;
   border-radius: 24px;               /* 更圆润 */
-  background: rgba(134, 123, 103, 0.2); /* 半透明，融合背景 */
-  color: #030303;
+  background: var(--gradient-button);
+  color: var(--text-light);
   font-weight: 600;
   backdrop-filter: blur(8px);        /* 轻微玻璃感 */
   transition: all 0.3s ease;
 }
 
 .new-chat-btn:hover {
-  background: rgba(255,255,255,0.35);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
 }
 
 .history-search {
@@ -119,26 +148,30 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .search-input {
+  outline: none;
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid rgba(136, 94, 140, 0.2);
+  border-radius: 10px;
   font-size: 14px;
   box-sizing: border-box;
+  transition: all 0.25s ease;
 }
 
 .history-panel {
   width: 250px;
-  border-left: 1px solid #d3baba;
-  border-right: 1px solid #d3baba;
+  border-left: 0.3px solid ;
+  border-right: 0.3px solid #d3baba;
   padding: 10px;
   overflow-y: auto;
 }
 
 .history-panel {
   width: 250px;
-  border-left: 1px solid #d3baba;
-  border-right: 1px solid #d3baba;
+  border-left: 0.3px solid #d3baba;
+  border-right: 0.3px solid #d3baba;
   padding: 0;
   overflow-y: auto;
   display: flex;
@@ -155,10 +188,10 @@ body, html, #root, ion-app, ion-page, ion-content {
   width: 100%;
   box-sizing: border-box;
   padding: 16px 20px;
-  border: 1px solid #ccc;
+  background-color: var(--color-light);
+  color: var(--text-primary);
+  border: 0.5px solid var(--color-mid);
   border-bottom: none;
-  background-color: #f9f9f9;
-  cursor: pointer;
   transition: all 0.2s ease;
   margin: 0;
 }
@@ -169,13 +202,13 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .history-item:last-child {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 0.5px solid #ccc;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
 }
 
 .history-item:hover {
-  background-color: #e0dfe2;
+  background-color: var(--color-secondary);
 }
 
 .chat-panel {
@@ -195,6 +228,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .chat-greeting {
+  color: var(--text-primary);
   font-size: 40px;
   font-weight: bold;
   margin: 0;
@@ -202,7 +236,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 
 .chat-subtitle {
   font-size: 25px;
-  color: #555;
+  color: var(--text-secondary);
   margin: 4px 0 0 0;
 }
 
@@ -212,34 +246,41 @@ body, html, #root, ion-app, ion-page, ion-content {
   padding: 10px 10px;
   overflow-y: auto;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .chat-input-area {
   position: absolute;
-  bottom: 50%;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: min(86%, 1100px);
   height: 60px;
   padding: 0 14px;
   border-radius: 20px;
-  border: 1px solid rgba(0,0,0,0.1);
-  background-color: #f6f3f6;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  background: var(--color-light);
   display: flex;
   align-items: center;
   gap: 12px;
   box-sizing: border-box;
   box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  z-index: 10;
 }
 
 .chat-input {
-  flex: 1;
-  border: none;
   outline: none;
   background: transparent;
-  font-size: 18px;
+  color: var(--text-primary);
+  border: none;
+  flex: 1;
+  font-size: 16px;
   height: 100%;
   padding: 0;
+  pointer-events: auto;
+   z-index: 11;
 }
 
 .send-btn {
@@ -247,10 +288,50 @@ body, html, #root, ion-app, ion-page, ion-content {
   height: 44px;
   border-radius: 50%;
   border: none;
-  background: #8f5f8e;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--text-light);
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+}
+
+/* Chat messages container */
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(100vh - 160px); /* leaves room for greeting & input */
+  padding-bottom: 100px;
+}
+
+/* Base bubble style */
+.chat-bubble {
+  padding: 10px 16px;
+  border-radius: 18px;
+  max-width: 75%;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+/* User messages – align right */
+.chat-bubble.user {
+  background: var(--gradient-user-bubble);
+  color: var(--text-light);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+/* Bot messages – align left */
+.chat-bubble.bot {
+  background: var(--gradient-bot-bubble);
+  color: var(--text-primary);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+* {
+  color: var(--text-primary);
 }
