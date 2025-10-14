@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&display=swap');
+
+IonContent, IonContent * {
+  background: linear-gradient(to bottom right, #885e8c, #dbbddf);
+}
+
+h1, p {
+  font-family: 'CrimsonPro', serif;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 50px;
+  font-weight: 900;
+}
+
+p {
+  text-align: center;
+  font-size: 1.2em;
+  margin-top: 20px;
+}
