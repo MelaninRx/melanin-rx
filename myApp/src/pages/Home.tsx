@@ -29,6 +29,7 @@ const Home: React.FC = () => {
         <h1>Hello {user?.email}</h1>
         <IonButton onClick={logoutUser}>Logout</IonButton>
         <IonButton routerLink="/map">Map</IonButton>
+        <IonButton routerLink="/chatbot">Chatbot</IonButton>
       </IonContent>
     </IonPage>
   );
