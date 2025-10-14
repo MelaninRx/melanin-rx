@@ -204,12 +204,7 @@ const ReviewForm = ({
 };
 
   return (
-  <IonModal
-  isOpen={isOpen}
-  onDidDismiss={onClose}
-  style={{ "--height": "90%", "--border-radius": "16px", overflow: "visible" }}
->
-  <IonPage>
+  <IonModal isOpen={isOpen} onDidDismiss={onClose}>
     <IonHeader>
       <IonToolbar>
         <IonTitle>Write a Review</IonTitle>
@@ -222,32 +217,28 @@ const ReviewForm = ({
         value={name}
         onIonChange={(e) => setName(e.detail.value!)}
       />
+
       <IonTextarea
         placeholder="Share your experience..."
         value={comment}
         onIonChange={(e) => setComment(e.detail.value!)}
       />
 
-      <div
-        slot="fixed"
-        style={{
-          bottom: "0",
-          width: "100%",
-          background: "white",
-          padding: "16px",
-          borderTop: "1px solid #ddd",
-          boxShadow: "0 -2px 6px rgba(0,0,0,0.08)",
-        }}
+      
+      <IonButton
+        expand="block"
+        style={{ marginTop: "350px" }}
+        onClick={handleSubmit}
       >
-        <IonButton expand="block" onClick={handleSubmit}>
-          Submit
-        </IonButton>
-      </div>
+        Submit
+      </IonButton>
     </IonContent>
-  </IonPage>
-</IonModal>
-
+  </IonModal>
 );
+
+
+
+
 
 
 
