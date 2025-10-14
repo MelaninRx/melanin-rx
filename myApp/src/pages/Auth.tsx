@@ -12,7 +12,7 @@ const AuthPage: React.FC = () => {
   const handleLogin = async () => {
     try {
       await loginUser(email, password);
-      history.push("/home"); // 👈 redirect straight to the Home page
+      history.push("/home"); // redirect straight to the Home page
     } catch (err: any) {
       setError(err.message);
     }
