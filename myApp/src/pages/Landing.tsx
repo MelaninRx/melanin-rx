@@ -3,18 +3,17 @@ import {
   IonPage,
   IonHeader,
   IonToolbar,
-  IonTitle,
   IonButtons,
   IonButton,
   IonContent,
   IonGrid,
   IonRow,
   IonCol,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonImg
+  IonImg,
+  IonAccordionGroup,
+  IonAccordion,
+  IonItem,
+  IonLabel,
 } from '@ionic/react';
 import './Landing.css';
 import 'typeface-source-serif-pro';
@@ -119,49 +118,58 @@ const Landing: React.FC = () => {
           </section>
 
 
-        {/* Section 3: Testimonials */}
+        {/* Section 3: FAQ */}
         <section className="faq-section">
-          <h2>What Our Users Say</h2>
-          <IonGrid>
-            <IonRow>
-              <IonCol size="12" sizeMd="4">
-                <IonCard className="testimonial-card">
-                  <IonCardHeader>
-                    <IonCardTitle>John Doe</IonCardTitle>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    "This app changed the way I work. Fast and intuitive!"
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-              <IonCol size="12" sizeMd="4">
-                <IonCard className="testimonial-card">
-                  <IonCardHeader>
-                    <IonCardTitle>Jane Smith</IonCardTitle>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    "Amazing design and smooth experience. Highly recommend!"
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-              <IonCol size="12" sizeMd="4">
-                <IonCard className="testimonial-card">
-                  <IonCardHeader>
-                    <IonCardTitle>Bob Lee</IonCardTitle>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    "Reliable and feature-rich. Best app I have used."
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </section>
+          <h1 className="faq-title">Frequently Asked Questions</h1>
 
-        {/* 页脚 */}
-        <footer className="landing-footer">
-          <p>© {new Date().getFullYear()} MyApp. All rights reserved.</p>
-        </footer>
+          <div className="faq-row">
+          {/* Left: Message Box */}
+            <div className="faq-message-box">
+              <h1>Any Questions?</h1>
+              <textarea placeholder="Your message..." />
+              <IonButton className="faq-submit-btn">Send</IonButton>
+              </div>
+
+            {/* Right: FAQ Toggle List */}
+            <div className="faq-toggle-list">
+              <IonAccordionGroup>
+                <IonAccordion value="q1">
+                  <IonItem slot="header" lines="none">
+                    <div className="faq-question-wrapper">
+                      <h2 className="faq-question">Question 1</h2>
+                      </div>
+                    </IonItem>
+                  <div className="accordion-content" slot="content">
+                    <p>ANSWER</p>
+                    </div>
+                  </IonAccordion>
+
+                <IonAccordion value="q2">
+                  <IonItem slot="header" lines="none">
+                    <div className="faq-question-wrapper">
+                      <h2 className="faq-question">Question 2</h2>
+                      </div>
+                    </IonItem>
+                  <div className="accordion-content" slot="content">
+                    <p>ANSWER</p>
+                    </div>
+                  </IonAccordion>
+
+                <IonAccordion value="q3">
+                  <IonItem slot="header" lines="none">
+                    <div className="faq-question-wrapper">
+                      <h2 className="faq-question">Question 3</h2>
+                      </div>
+                    </IonItem>
+                  <div className="accordion-content" slot="content">
+                    <p>ANSWER</p>
+                    </div>
+                  </IonAccordion>
+                </IonAccordionGroup>
+              </div>
+            </div>
+          </section>
+
       </IonContent>
     </IonPage>
   );

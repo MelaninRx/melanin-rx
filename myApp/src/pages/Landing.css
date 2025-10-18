@@ -318,23 +318,97 @@ body, html, #root, ion-app, ion-page, ion-content {
 /* FAQ Section */
 /* ============================= */
 .faq-section {
-  background: #f3f4f6;
-  padding: 20px;
+  background: linear-gradient(to top left, #642d5653, #885e8c29);
+  padding: 80px 20px;
+  text-align: center;
+  min-height: 100vh;
 }
 
-.testimonial-card {
-  border-radius: 14px;
-  padding: 10px;
-  margin-bottom: 20px;
+.faq-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 60px;
+  color: #1f1f1f;
 }
 
-/* ============================= */
-/* 页脚 Footer */
-/* ============================= */
-.landing-footer {
-  margin-top: 60px;
-  padding: 20px;
-  color: #666;
-  font-size: 0.9rem;
-  border-top: 1px solid #ddd;
+.faq-row {
+  display: flex;
+  gap: 100px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap; /* 小屏幕自动换行 */
 }
+
+/* Left: Message Box */
+.faq-message-box {
+  flex: 1;
+  min-width: 300px;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-message-box textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+.faq-submit-btn {
+  --background: #642d5d;
+  --color: #ffffff;
+  --border-radius: 8px;
+  font-weight: 600;
+  padding: 12px 24px;
+}
+
+/* Right: FAQ Toggle List */
+.faq-toggle-list {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: none;
+}
+
+.faq-toggle-list ion-accordion {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.faq-toggle-list ion-item {
+  --background: transparent;
+  background: transparent !important;
+  --ion-item-background-focused: transparent;
+  --ion-item-background-activated: transparent;
+  border-radius: 0 !important;
+  border-left: none !important;
+  border-right: none !important;
+  padding-bottom: 12px;
+  padding-top: 12px;
+}
+
+.faq-toggle-list ion-item + ion-item {
+  border-top: 5px solid #ccc;
+}
+
+.accordion-content {
+  background: transparent !important;
+  padding: 12px;
+}
+
+.faq-question {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f1f1f;
+  margin: 0;
+}
+
