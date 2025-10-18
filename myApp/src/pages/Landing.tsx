@@ -32,7 +32,7 @@ const Landing: React.FC = () => {
             <IonButton routerLink="/features">Features</IonButton>
             <IonButton routerLink="/about">About Us</IonButton>
             <IonButton routerLink="/login">Log in</IonButton>
-            <IonButton routerLink="/signup" fill="solid" className = "signup">
+            <IonButton routerLink="/signup" fill="solid" className = "signup-btn">
               Signup
             </IonButton>
           </IonButtons>
@@ -120,7 +120,7 @@ const Landing: React.FC = () => {
 
 
         {/* Section 3: Testimonials */}
-        <section className="testimonials-section">
+        <section className="faq-section">
           <h2>What Our Users Say</h2>
           <IonGrid>
             <IonRow>
