@@ -1,21 +1,254 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&display=swap');
-
-IonContent, IonContent * {
-  background: linear-gradient(to bottom right, #885e8c, #dbbddf);
+/* ============================= */
+/* 顶部 Banner / Header */
+/* ============================= */
+body, html, #root, ion-app, ion-page, ion-content {
+  font-family: 'Source Serif Pro', 'Courier New', monospace; /* 字体保持一致 */
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth; /* 滚动平滑 */
 }
 
-h1, p {
-  font-family: 'CrimsonPro', serif;
+
+.landing-header {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 10;
 }
 
-h1 {
+.landing-toolbar {
+  --background: #d2a3d22c; /* 半透明背景 */
+  --color: #090909; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 36px;
+  height: 36px;
+  margin-right: 8px;
+}
+
+.app-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--ion-color-dark);
+}
+
+.nav-links ion-button {
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+/* SignUp 按钮 */
+.signup-btn {
+  --background: #d3baba;   
+  --color: #ffffff;        
+  --background-hover: #c59f9f; 
+  --background-activated: #b88c8c; 
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* ============================= */
+/* 页面内容容器，启用滚动特效 */
+/* ============================= */
+.landing-content {
+  --background: #f8f9fa;
   text-align: center;
-  margin-top: 50px;
-  font-weight: 900;
+  padding: 0;
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory; /* 开启全屏滚动对齐 */
 }
 
-p {
-  text-align: center;
-  font-size: 1.2em;
-  margin-top: 20px;
+/* ============================= */
+/* 每个 Section 公共样式 */
+/* ============================= */
+.hero-section,
+.features-section,
+.advantages-section,
+.testimonials-section {
+  height: 100vh;             /* 占满屏幕 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  scroll-snap-align: start;  /* 对齐到顶部 */
+}
+
+/* ============================= */
+/* Hero Section */
+/* ============================= */
+.hero-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 80px 40px;
+  height: 100vh;
+  background: linear-gradient(to top, #885e8c7e, #b694b68b);
+  color: white;
+  scroll-snap-align: start;
+  gap: 40px; /* 左右间距 */
+}
+
+/* 左侧容器 */
+.hero-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  text-align:left;
+  max-width: 600px;
+  gap: 40px; /* 上下间距 */
+  padding-left: 40px;
+}
+
+/* 上半部分文字 */
+.hero-text h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #1f1f1f;
+  align-items: left; /* 向右对齐 */
+  text-align: left;     /* 多行文字向右 */
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  color: #1f1f1f;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* 下半部分按钮 */
+.hero-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  color: #692f5a59;
+}
+
+.cta-btn {
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 12px 28px;
+}
+
+.cta-btn-outline {
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 12px 28px;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+/* 右侧图片 */
+.hero-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-img {
+  max-width: 100%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+/* 响应式：屏幕小于 768px 时改为上下结构 */
+@media (max-width: 768px) {
+  .hero-section {
+    flex-direction: column;
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .hero-left, .hero-right {
+    width: 100%;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-img {
+    max-height: 300px;
+  }
+}
+
+
+/* ============================= */
+/* Features Section / 功能卡片 */
+/* ============================= */
+.features-section {
+  background: linear-gradient(to top, #885e8c7e, #b694b68b);
+  padding: 80px 40px;
+  height: 100vh;
+}
+
+.feature-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 20px;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card ion-card-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+/* ============================= */
+/* Advantages Section */
+/* ============================= */
+.advantages-section {
+  background: #e5e7eb;
+  padding: 20px;
+}
+
+.adv-card {
+  border-radius: 14px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+/* ============================= */
+/* Testimonials Section */
+/* ============================= */
+.testimonials-section {
+  background: #f3f4f6;
+  padding: 20px;
+}
+
+.testimonial-card {
+  border-radius: 14px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+/* ============================= */
+/* 页脚 Footer */
+/* ============================= */
+.landing-footer {
+  margin-top: 60px;
+  padding: 20px;
+  color: #666;
+  font-size: 0.9rem;
+  border-top: 1px solid #ddd;
 }
