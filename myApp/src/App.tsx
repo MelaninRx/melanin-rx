@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Auth from './pages/Auth';
 import Map from './pages/Map';
 import Chatbot from './pages/Chatbot';
+import TimelinePage from './pages/TimelinePage';
 import { useCurrentUser } from "./hooks/useCurrentUser";
 
 /* Core CSS required for Ionic components to work properly */
@@ -50,6 +51,7 @@ const App: React.FC = () => {
           <Route path="/map" component={Map} exact />
           <Route path="/chatbot" component={Chatbot} exact />
           <Route path="/landing" component={Map} exact />
+           <Route path="/timeline" component={TimelinePage} exact />
           <Route
             path="/home"
             render={() => (user ? <Home /> : <Redirect to="/auth" />)}
