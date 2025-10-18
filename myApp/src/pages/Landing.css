@@ -16,7 +16,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .landing-toolbar {
-  --background: #d2a3d22c;
+  --background: #885e8c24;
   --color: #090909; 
   display: flex;
   justify-content: space-between;
@@ -197,9 +197,6 @@ body, html, #root, ion-app, ion-page, ion-content {
 /* ============================= */
 /* Fact Section */
 /* ============================= */
-/* ============================= */
-/* Facts Section */
-/* ============================= */
 .facts-section {
   background: linear-gradient(to top, #885ebc40, #f1ebf3);
   width: 100vw;
@@ -253,15 +250,66 @@ body, html, #root, ion-app, ion-page, ion-content {
 /* ============================= */
 /* features Section */
 /* ============================= */
-.advantages-section {
-  background: #e5e7eb;
-  padding: 20px;
+.feature-section {
+  background: #f8f9fa; /* 可以自定义背景颜色或渐变 */
+  width: 100vw;
+  padding: 80px 20px;
+  box-sizing: border-box;
+  text-align: center;
 }
 
-.adv-card {
-  border-radius: 14px;
-  padding: 10px;
-  margin-bottom: 20px;
+.feature-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 60px;
+  color: #1f1f1f;
+}
+
+.feature-row {
+  display: flex;
+  justify-content: center;
+  gap: none; /* 卡片之间的间距 */
+}
+
+.feature-card {
+  flex: 0 1 300px;
+  background: none; 
+  border: none;
+  border-radius: 0; 
+  box-shadow: none;
+  overflow: hidden;
+  max-width: 400px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.feature-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.feature-text {
+  padding: 20px;
+  text-align: left;
+  flex-grow: 1;
+}
+
+.feature-text h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #1f1f1f;
+}
+
+.feature-text p {
+  font-size: 1.1rem;
+  color: #333;
+  line-height: 1.6;
 }
 
 /* ============================= */
