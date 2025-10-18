@@ -1,14 +1,14 @@
-/* ============================= */
-/* 顶部 Banner / Header */
-/* ============================= */
 body, html, #root, ion-app, ion-page, ion-content {
-  font-family: 'Source Serif Pro', 'Courier New', monospace; /* 字体保持一致 */
+  font-family: 'Source Serif Pro', 'Courier New', monospace;
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  scroll-behavior: smooth; /* 滚动平滑 */
+  scroll-behavior: smooth;
 }
 
+/* ============================= */
+/* Banner / Header */
+/* ============================= */
 
 .landing-header {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -16,7 +16,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .landing-toolbar {
-  --background: #d2a3d22c; /* 半透明背景 */
+  --background: #d2a3d22c;
   --color: #090909; 
   display: flex;
   justify-content: space-between;
@@ -46,9 +46,9 @@ body, html, #root, ion-app, ion-page, ion-content {
   margin-left: 4px;
 }
 
-/* SignUp 按钮 */
+/* SignUp botton */
 .signup-btn {
-  --background: #d3baba;   
+  --background: #642d5684;   
   --color: #ffffff;        
   --background-hover: #c59f9f; 
   --background-activated: #b88c8c; 
@@ -57,7 +57,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 /* ============================= */
-/* 页面内容容器，启用滚动特效 */
+/* rolling effect for each section */
 /* ============================= */
 .landing-content {
   --background: #f8f9fa;
@@ -65,23 +65,23 @@ body, html, #root, ion-app, ion-page, ion-content {
   padding: 0;
   height: 100%;
   overflow-y: auto;
-  scroll-snap-type: y mandatory; /* 开启全屏滚动对齐 */
+  scroll-snap-type: y mandatory;
 }
 
 /* ============================= */
-/* 每个 Section 公共样式 */
+/* section template */
 /* ============================= */
 .hero-section,
 .features-section,
 .advantages-section,
 .testimonials-section {
-  height: 100vh;             /* 占满屏幕 */
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 40px 20px;
-  scroll-snap-align: start;  /* 对齐到顶部 */
+  scroll-snap-align: start;
 }
 
 /* ============================= */
@@ -104,62 +104,83 @@ body, html, #root, ion-app, ion-page, ion-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  text-align:left;
+  justify-content: flex-start;
   align-items: flex-start;
   max-width: 600px;
-  gap: 0px;
   padding-left: 90px;
 }
 
 .hero-text {
-  padding-top: 40px;
-  margin-bottom: 20px;
+  margin-bottom: 16px; /* 与按钮更近 */
 }
 
 .hero-text h1 {
-  font-size: 2.8rem;
+  font-size: 3rem;
   font-weight: 700;
-  margin-bottom: 0px;
+  margin-bottom: 12px;
   color: #1f1f1f;
-  align-items: left; /* 向右对齐 */
-  text-align: left;     /* 多行文字向右 */
+  line-height: 1.2;
+  text-align: left;
 }
 
 .hero-text p {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   color: #1f1f1f;
   opacity: 0.9;
-  line-height: 1.5;
-  margin-top: 0px;
+  line-height: 1.6;
+  margin-top: 0;
+  text-align: left;
 }
 
 .hero-buttons {
   display: flex;
-  flex-direction: row;        /* 水平排列 */
-  justify-content: flex-start;
-  align-items: center;        /* 垂直方向和文字中轴对齐 */
-  gap: 40px;                  /* 按钮间距 */
-  margin-bottom: 20px;           /* 和文字间距 */
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  gap: 9px;
+  margin-top: 0px; /* 靠近文字底部 */
+}
+
+.hero-buttons ion-button:first-child {
+  margin-right: 120px;  /* ✅ 控制距离 */
+}
+
+.cta-btn-outline {
+  --border-radius: 8px;
+  --padding-top: 15px;
+  --padding-bottom: 15px;
+  --padding-start: 30px;
+  --padding-end: 30px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.cta-btn{
+  --border-radius: 8px;
+  --padding-top: 15px;
+  --padding-bottom: 15px;
+  --padding-start: 60px;
+  --padding-end: 60px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 .cta-btn {
-  --background:  #d3baba;
+  --background: #d3baba;
   --color: #090909;
-  --background-hover: #ff8c1a;
-  --background-activated: #e86f00;
-  border-radius: 10px;
-  padding: 20px 50px;
 }
 
 .cta-btn-outline {
   --background: #d3baba;
-  --border-color: #ffffff;
   --color: #090909;
-  border-radius: 10px;
+  border: 1px solid #00000020;
 }
 
-/* 右侧图片 */
 .hero-right {
   flex: 1;
   display: flex;
