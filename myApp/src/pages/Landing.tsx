@@ -40,7 +40,7 @@ const Landing: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen className="landing-content">
-        {/* Hero 区块 */}
+        {/* Hero section */}
         <section className="hero-section">
           <div className="hero-left">
             <div className="hero-text">
@@ -62,43 +62,24 @@ const Landing: React.FC = () => {
             </div>
           </section>
 
-        {/* 三个功能块 */}
-        <IonGrid fixed className="features-section">
-          <IonRow>
-            <IonCol size="12" sizeMd="4">
-              <IonCard className="feature-card">
-                <IonCardHeader>
-                  <IonCardTitle>🚀 Fast</IonCardTitle>
-                </IonCardHeader>
-                <IonCardContent>
-                  Enjoy lightning-fast performance powered by Ionic and React.
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
+        {/* 3 other sections */}
+        {/* Facts Section */}
+        <section className="facts-section">
+          <div className="facts-content">
+            <h2>According to the CDC:</h2>
+            <p>
+              “More than 80% of pregnancy-related deaths are preventable.” <br /> 
+              & <br />
+              “Black women are 3x more likely to die from pregnancy-related causes.”
+              </p>
+            <p>
+              Our mission is to <strong>empower</strong> Black women to take control of their health by providing <strong>trusted</strong> research, <strong>amplifying</strong> community voices, and helping users <strong>communicate</strong> effectively with healthcare providers.
+              </p>
 
-            <IonCol size="12" sizeMd="4">
-              <IonCard className="feature-card">
-                <IonCardHeader>
-                  <IonCardTitle>💡 Smart</IonCardTitle>
-                </IonCardHeader>
-                <IonCardContent>
-                  Intelligent design and automation make your work seamless.
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
+            <IonButton className="learn-more-btn">Learn more</IonButton>
+            </div>
+          </section>
 
-            <IonCol size="12" sizeMd="4">
-              <IonCard className="feature-card">
-                <IonCardHeader>
-                  <IonCardTitle>🎨 Beautiful</IonCardTitle>
-                </IonCardHeader>
-                <IonCardContent>
-                  A modern, elegant interface designed for productivity.
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
 
         {/* Section 2: Advantages */}
         <section className="advantages-section">

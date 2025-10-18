@@ -195,33 +195,63 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 /* ============================= */
-/* Features Section / 功能卡片 */
+/* Fact Section */
 /* ============================= */
-.features-section {
-  background: linear-gradient(to top, #885e8c7e, #b694b68b);
-  padding: 80px 40px;
-  height: 100vh;
+/* ============================= */
+/* Facts Section */
+/* ============================= */
+.facts-section {
+  background: linear-gradient(to top, #885ebc40, #f1ebf3);
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  box-sizing: border-box;
 }
 
-.feature-card {
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.facts-content {
+  max-width: 1000px;
+  text-align: center;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 40px 30px;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 40px 30px;
+}
+
+.facts-content h2 {
+  font-weight: 700;
+  font-size: 2rem;
   margin-bottom: 20px;
+  color: #1f1f1f;
 }
 
-.feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+.facts-content p {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  color: #1f1f1f;
+  margin-bottom: 24px;
 }
 
-.feature-card ion-card-title {
-  font-size: 1.3rem;
+.learn-more-btn {
+  --background: #d3baba;
+  --color: #090909;
   font-weight: 600;
+  --border-radius: 8px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 15px;
+  --padding-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
+
 
 /* ============================= */
-/* Advantages Section */
+/* features Section */
 /* ============================= */
 .advantages-section {
   background: #e5e7eb;
