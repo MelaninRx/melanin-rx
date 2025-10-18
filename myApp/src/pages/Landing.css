@@ -100,24 +100,27 @@ body, html, #root, ion-app, ion-page, ion-content {
   gap: 40px; /* 左右间距 */
 }
 
-/* 左侧容器 */
 .hero-left {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  height: 100%;
+  justify-content: space-between;
   text-align:left;
+  align-items: flex-start;
   max-width: 600px;
-  gap: 40px; /* 上下间距 */
-  padding-left: 40px;
+  gap: 0px;
+  padding-left: 90px;
 }
 
-/* 上半部分文字 */
+.hero-text {
+  padding-top: 40px;
+  margin-bottom: 20px;
+}
+
 .hero-text h1 {
   font-size: 2.8rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 0px;
   color: #1f1f1f;
   align-items: left; /* 向右对齐 */
   text-align: left;     /* 多行文字向右 */
@@ -128,28 +131,32 @@ body, html, #root, ion-app, ion-page, ion-content {
   color: #1f1f1f;
   opacity: 0.9;
   line-height: 1.5;
+  margin-top: 0px;
 }
 
-/* 下半部分按钮 */
 .hero-buttons {
   display: flex;
-  flex-direction: row;
-  gap: 16px;
-  color: #692f5a59;
+  flex-direction: row;        /* 水平排列 */
+  justify-content: flex-start;
+  align-items: center;        /* 垂直方向和文字中轴对齐 */
+  gap: 40px;                  /* 按钮间距 */
+  margin-bottom: 20px;           /* 和文字间距 */
 }
 
 .cta-btn {
-  font-weight: 600;
+  --background:  #d3baba;
+  --color: #090909;
+  --background-hover: #ff8c1a;
+  --background-activated: #e86f00;
   border-radius: 10px;
-  padding: 12px 28px;
+  padding: 20px 50px;
 }
 
 .cta-btn-outline {
-  font-weight: 600;
+  --background: #d3baba;
+  --border-color: #ffffff;
+  --color: #090909;
   border-radius: 10px;
-  padding: 12px 28px;
-  border-color: #ffffff;
-  color: #ffffff;
 }
 
 /* 右侧图片 */
@@ -165,28 +172,6 @@ body, html, #root, ion-app, ion-page, ion-content {
   max-height: 80%;
   object-fit: contain;
 }
-
-/* 响应式：屏幕小于 768px 时改为上下结构 */
-@media (max-width: 768px) {
-  .hero-section {
-    flex-direction: column;
-    text-align: center;
-    padding: 60px 20px;
-  }
-
-  .hero-left, .hero-right {
-    width: 100%;
-  }
-
-  .hero-buttons {
-    justify-content: center;
-  }
-
-  .hero-img {
-    max-height: 300px;
-  }
-}
-
 
 /* ============================= */
 /* Features Section / 功能卡片 */
