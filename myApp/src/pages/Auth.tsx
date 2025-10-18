@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { IonPage, IonContent, IonInput, IonButton, IonText } from "@ionic/react";
 import { loginUser, registerUser } from "../services/authService";
 import { useHistory } from "react-router-dom";
+import "./Auth.css";
 
 const AuthPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const history = useHistory(); // 👈 use this for navigation
+  const history = useHistory(); // use this for navigation
 
   const handleLogin = async () => {
     try {
@@ -28,8 +29,8 @@ const AuthPage: React.FC = () => {
   };
 
   return (
-    <IonPage>
-      <IonContent className="ion-padding">
+    <IonPage className="auth-page">
+      <IonContent className="ion-padding auth-content">
         <IonInput
           placeholder="Email"
           value={email}
@@ -41,10 +42,10 @@ const AuthPage: React.FC = () => {
           value={password}
           onIonChange={(e) => setPassword(e.detail.value!)}
         />
-        <IonButton expand="block" onClick={handleLogin}>
+        <IonButton expand="block" className="btn-primary" onClick={handleLogin}>
           Login
         </IonButton>
-        <IonButton expand="block" color="secondary" onClick={handleRegister}>
+        <IonButton expand="block" className="btn-secondary" onClick={handleRegister}>
           Register
         </IonButton>
         {error && <IonText color="danger">{error}</IonText>}
