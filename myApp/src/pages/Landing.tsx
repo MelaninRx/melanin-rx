@@ -62,7 +62,6 @@ const Landing: React.FC = () => {
             </div>
           </section>
 
-        {/* 3 other sections */}
         {/* Facts Section */}
         <section className="facts-section">
           <div className="facts-content">
@@ -76,39 +75,49 @@ const Landing: React.FC = () => {
               Our mission is to <strong>empower</strong> Black women to take control of their health by providing <strong>trusted</strong> research, <strong>amplifying</strong> community voices, and helping users <strong>communicate</strong> effectively with healthcare providers.
               </p>
 
-            <IonButton className="learn-more-btn">Learn more</IonButton>
+            <IonButton routerLink ="/learnmore" className="learn-more-btn">Learn more</IonButton>
             </div>
           </section>
 
 
-        {/* Section 2: Advantages */}
-        <section className="advantages-section">
-          <h2>Why Choose Us</h2>
+        {/* Section 2: feature */}
+        <section className="feature-section">
+          <h1 className="feature-title">Features</h1>
           <IonGrid>
-            <IonRow>
-              <IonCol size="12" sizeMd="6">
-                <IonCard className="adv-card">
-                  <IonCardHeader>
-                    <IonCardTitle>Reliable</IonCardTitle>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    We ensure uptime, security, and reliability for all users.
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-              <IonCol size="12" sizeMd="6">
-                <IonCard className="adv-card">
-                  <IonCardHeader>
-                    <IonCardTitle>Support</IonCardTitle>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    24/7 customer support to help you anytime.
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </section>
+            <IonRow className="feature-row">
+              <IonCol size="12" sizeMd="4">
+                <div className="feature-card">
+                  <IonImg src="/assets/feature1.png" alt="Feature 1" className="feature-img" />
+                  <div className="feature-text">
+                    <h3>Chatbot</h3>
+                    <p>Prepare for doctor visits and communicate your symptoms clearly.</p>
+                    </div>
+                  </div>
+                </IonCol>
+              
+              <IonCol size="12" sizeMd="4">
+                <div className="feature-card">
+                  <IonImg src="/assets/feature2.png" alt="Feature 2" className="feature-img" />
+                  <div className="feature-text">
+                    <h3>Community</h3>
+                    <p>Connect with other Black women for support and shared experiences.</p>
+                    </div>
+                  </div>
+                </IonCol>
+
+              <IonCol size="12" sizeMd="4">
+                <div className="feature-card">
+                  <IonImg src="/assets/feature3.png" alt="Feature 3" className="feature-img" />
+                  <div className="feature-text">
+                    <h3>Planner</h3>
+                    <p>Keep track of upcoming appointments, jot down notes and questions for your visits.</p>
+                    </div>
+                  </div>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </section>
+
 
         {/* Section 3: Testimonials */}
         <section className="testimonials-section">
