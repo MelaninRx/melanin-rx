@@ -16,13 +16,14 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .landing-toolbar {
-  --background: #fefefe24;
-  --color: #090909; 
+  --background: #ffffff;
+  --color: #090909;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 16px;
 }
+
 
 .logo-section {
   display: flex;
