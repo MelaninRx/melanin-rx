@@ -28,8 +28,15 @@ const Landing: React.FC = () => {
           </div>
 
           <IonButtons slot="end" className="nav-links">
-            <IonButton routerLink="/features">Features</IonButton>
-            <IonButton routerLink="/about">About Us</IonButton>
+            <IonButton onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
+              Features
+            </IonButton>
+            <IonButton onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}>
+              About Us
+            </IonButton>
+            <IonButton onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}>
+              FAQ
+            </IonButton>
             <IonButton routerLink="/login">Log in</IonButton>
             <IonButton routerLink="/signup" fill="solid" className = "signup-btn">
               Signup
@@ -62,7 +69,7 @@ const Landing: React.FC = () => {
           </section>
 
         {/* Facts Section */}
-        <section className="facts-section">
+        <section id="about" className="facts-section">
           <div className="facts-content">
             <h2>According to the CDC:</h2>
             <p>
@@ -80,7 +87,7 @@ const Landing: React.FC = () => {
 
 
         {/* Section 2: feature */}
-        <section className="feature-section">
+        <section id="features" className="feature-section">
           <h1 className="feature-title">Features</h1>
           <IonGrid>
             <IonRow className="feature-row">
@@ -119,7 +126,7 @@ const Landing: React.FC = () => {
 
 
         {/* Section 3: FAQ */}
-        <section className="faq-section">
+        <section id="faq" className="faq-section">
           <h1 className="faq-title">Frequently Asked Questions</h1>
 
           <div className="faq-row">
