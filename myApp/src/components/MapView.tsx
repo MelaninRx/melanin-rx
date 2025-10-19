@@ -6,12 +6,8 @@ import {
   IonToolbar,
   IonTitle,
   IonButton,
-  IonInput,
-  IonTextarea,
   IonSelect,
   IonSelectOption,
-  IonFooter,
-  IonPage,
 } from "@ionic/react";
 import {
   MapContainer,
@@ -20,19 +16,19 @@ import {
   useMap,
 } from "react-leaflet";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import {
-  db
-} from "../firebaseConfig";
 import {
   collection,
   query,
-  where,
   orderBy,
   onSnapshot,
-  addDoc,
-  serverTimestamp,
 } from "firebase/firestore";
+import { db } from "../firebaseConfig";
+
+import "leaflet/dist/leaflet.css";
+
+import ReviewForm from "./ReviewForm"
+import ReviewsList from "./ReviewsList"
+import AddProviderForm from "./AddProviderForm";
 
 // ---------- Custom Marker ----------
 const customIcon = new L.Icon({
@@ -92,164 +88,27 @@ const ResizeMap: React.FC = () => {
   return null;
 };
 
-const MapMover: React.FC<{ center: [number, number] }> = ({ center }) => {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center, 7); // zoomed out to show state
-  }, [center]);
-  return null;
-};
-
-
-// ---------- Reviews List ----------
-
-interface Review {
-  id: string;
-  providerId: string;
-  comment: string;
-  userName?: string;
-  createdAt?: any;
-}
-
-export const ReviewsList: React.FC<{ providerId: string }> = ({ providerId }) => {
-  const [reviews, setReviews] = useState<Review[]>([]);
-
-  useEffect(() => {
-    if (!providerId) return;
-
-    const q = query(
-      collection(db, "reviews"),
-      where("providerId", "==", providerId),
-      orderBy("createdAt", "desc")
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetched = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Review[];
-
-      setReviews(fetched);
-    });
-
-    return () => unsubscribe(); // ✅ cleanup
-  }, [providerId]);
-
-  console.log("Reviews:", reviews);
-
-
-  if (reviews.length === 0) {
-    return <p>No reviews yet. Be the first to write one!</p>;
-  }
-
-  return (
-  <ul style={{ listStyle: "none", padding: 0 }}>
-    {reviews.map((r) => (
-      <li
-        key={r.id}
-        style={{
-          marginBottom: "12px",
-          padding: "12px",
-          borderRadius: "10px",
-          background: "#f9f9fb",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-        }}
-      >
-        <p style={{ marginBottom: "6px", color: "#333" }}>
-          {r.comment}
-        </p>
-
-        {r.userName && (
-          <p style={{ fontSize: "13px", color: "#666", margin: 0 }}>
-            — {r.userName}
-          </p>
-        )}
-
-        {r.createdAt?.toDate && (
-          <small style={{ color: "#999" }}>
-            {r.createdAt.toDate().toLocaleDateString()}
-          </small>
-        )}
-      </li>
-    ))}
-  </ul>
-);
-
-};
-
-
-// ---------- Review Form ----------
-const ReviewForm = ({
-  providerId,
-  isOpen,
-  onClose,
-}: {
-  providerId: string;
-  isOpen: boolean;
-  onClose: () => void;
-}) => {
-  const [name, setName] = useState("");
-  const [rating, setRating] = useState<number>(5);
-  const [comment, setComment] = useState("");
-
-  const handleSubmit = async () => {
-  if (!comment.trim()) return;
-  await addDoc(collection(db, "reviews"), {
-    providerId,       // ✅ must match ReviewsList filter
-    comment,
-    createdAt: serverTimestamp(),
-  });
-  setComment("");
-  onClose();
-};
-
-  return (
-  <IonModal isOpen={isOpen} onDidDismiss={onClose}>
-    <IonHeader>
-      <IonToolbar>
-        <IonTitle>Write a Review</IonTitle>
-      </IonToolbar>
-    </IonHeader>
-
-    <IonContent className="ion-padding">
-      <IonInput
-        placeholder="Your name (optional)"
-        value={name}
-        onIonChange={(e) => setName(e.detail.value!)}
-      />
-
-      <IonTextarea
-        placeholder="Share your experience..."
-        value={comment}
-        onIonChange={(e) => setComment(e.detail.value!)}
-      />
-
-      
-      <IonButton
-        expand="block"
-        style={{ marginTop: "350px" }}
-        onClick={handleSubmit}
-      >
-        Submit
-      </IonButton>
-    </IonContent>
-  </IonModal>
-);
-
-
-
-
-
-
-
-
-};
-
 // ---------- Main MapView ----------
 const MapView: React.FC = () => {
   const [selected, setSelected] = useState<any | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [showAddProvider, setShowAddProvider] = useState(false);
+  const [providers, setProviders] = useState<any[]>([]);
+
+  useEffect(() => {
+  const q = query(collection(db, "providers"), orderBy("createdAt", "desc"));
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const fetched = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setProviders(fetched);
+  });
+  return () => unsubscribe();
+}, []);
+
+
 
   const [selectedState, setSelectedState] = useState("MA");
 
@@ -308,6 +167,14 @@ const MapView: React.FC = () => {
           <IonSelectOption value="FL">Florida</IonSelectOption>
         </IonSelect>
       {/* ---- Compact, rounded map ---- */}
+      <IonButton
+  expand="block"
+  color="primary"
+  style={{ width: "90%", marginBottom: "10px" }}
+  onClick={() => setShowAddProvider(true)}
+>
+  Add a Provider
+</IonButton>
       <div
         style={{
           width: "100%",
@@ -331,18 +198,19 @@ const MapView: React.FC = () => {
           />
           <ResizeMap />
 
-          {seedProviders
-            .filter((p) => p.state === selectedState)
-            .map((place) => (
-              <Marker
-                key={place.id}
-                position={[place.lat, place.lng]}
-                icon={customIcon}
-                eventHandlers={{
-                  click: () => handleMarkerClick(place),
-                }}
-              />
-            ))}
+          {[...seedProviders, ...providers]
+  .filter((p) => p.state === selectedState)
+  .map((place) => (
+    <Marker
+      key={place.id}
+      position={[place.lat, place.lng]}
+      icon={customIcon}
+      eventHandlers={{
+        click: () => handleMarkerClick(place),
+      }}
+    />
+  ))}
+
         </MapContainer>
       </div>
 
@@ -382,7 +250,7 @@ const MapView: React.FC = () => {
         flex: 1,
         overflowY: "auto",
         padding: "16px",
-        paddingBottom: "90px", // 👈 keeps space for the button, but scroll still works
+        paddingBottom: "90px", // keeps space for the button, but scroll still works
       }}
     >
       {selected && (
@@ -428,6 +296,12 @@ const MapView: React.FC = () => {
           onClose={() => setShowReviewForm(false)}
         />
       )}
+      {/* ---- Add Provider Form Modal ---- */}
+<AddProviderForm
+  isOpen={showAddProvider}
+  onClose={() => setShowAddProvider(false)}
+/>
+
     </div>
   );
 };
