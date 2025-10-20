@@ -1,12 +1,14 @@
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import {useCurrentUser} from './hooks/useCurrentUser';
 import Home from './pages/Home';
 import Auth from './pages/Auth';
 import Map from './pages/Map';
 import Chatbot from './pages/Chatbot';
+import Resources from './pages/Resources';
 import TimelinePage from './pages/TimelinePage';
-import { useCurrentUser } from "./hooks/useCurrentUser";
+import Landing from './pages/Landing';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -40,28 +42,45 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-
 const App: React.FC = () => {
   const user = useCurrentUser();
-    return (
+  return (
+
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
+          {/* Public routes */}
+          <Route path="/landing" component={Landing} exact />
           <Route path="/auth" component={Auth} exact />
-          <Route path="/map" component={Map} exact />
-          <Route path="/chatbot" component={Chatbot} exact />
-          <Route path="/landing" component={Map} exact />
-           <Route path="/timeline" component={TimelinePage} exact />
+
+          {/* Protected routes (require login) */}
           <Route
             path="/home"
             render={() => (user ? <Home /> : <Redirect to="/auth" />)}
             exact
           />
-          <Redirect exact from="/" to={user ? "/home" : "/auth"} />
+          <Route
+            path="/chatbot"
+            render={() => (user ? <Chatbot /> : <Redirect to="/auth" />)}
+            exact
+          />
+          <Route
+            path="/timeline"
+            render={() => (user ? <TimelinePage /> : <Redirect to="/auth" />)}
+            exact
+          />
+          <Route
+            path="/resources"
+            render={() => (user ? <Resources /> : <Redirect to="/auth" />)}
+            exact
+          />
+
+          {/* Default redirect */}
+          <Redirect exact from="/" to={user ? "/home" : "/landing"} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
   );
-}
+};
 
 export default App;

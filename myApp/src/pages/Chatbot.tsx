@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
-import './Chatbot.css';
-import 'typeface-source-serif-pro';
+import React, { useState } from "react";
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonContent,
+  IonImg,
+} from "@ionic/react";
+import "./Chatbot.css";
+import "typeface-source-serif-pro";
 
 const ChatbotPage: React.FC = () => {
   const [message, setMessage] = useState('');
@@ -45,10 +53,18 @@ const ChatbotPage: React.FC = () => {
 
   return (
     <IonPage>
+      {/* ✅ Explore-style header (clean + minimal) */}
+      <IonHeader className="explore-header chatbot-header">
+        <IonButtons slot="start">
+                    {/* Back to previous page (Home) */}
+                    <IonBackButton defaultHref="/home" />
+                  </IonButtons>
+      </IonHeader>
 
-      <IonContent scrollY={false} fullscreen={true}>
-        <div className="container">
-          {/* side panel*/}
+      <IonContent fullscreen>
+        {/* ✅ added minimal top padding so chat UI doesn’t hide behind header */}
+        <div className="container chatbot-wrapper">
+          {/* Sidebar */}
           <div className="sidebar">
             <div className="sidebar-top">
               <div className="logo" title = 'Logo'></div>
