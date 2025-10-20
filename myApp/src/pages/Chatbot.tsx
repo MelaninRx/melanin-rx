@@ -4,7 +4,7 @@ import {
   IonHeader,
   IonToolbar,
   IonButtons,
-  IonButton,
+  IonBackButton,
   IonContent,
   IonImg,
 } from "@ionic/react";
@@ -57,20 +57,10 @@ const Chatbot: React.FC = () => {
     <IonPage>
       {/* ✅ Explore-style header (clean + minimal) */}
       <IonHeader className="explore-header chatbot-header">
-        <IonToolbar className="explore-toolbar">
-          <div className="logo-section">
-            <IonImg src="/assets/logo.png" alt="App Logo" className="logo" />
-          </div>
-
-          <IonButtons slot="end" className="nav-links">
-            <IonButton routerLink="/home">Home</IonButton>
-            <IonButton routerLink="/explore">Explore</IonButton>
-            <IonButton routerLink="/login">Log in</IonButton>
-            <IonButton routerLink="/signup" fill="solid" className="signup-btn">
-              Signup
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
+        <IonButtons slot="start">
+                    {/* Back to previous page (Home) */}
+                    <IonBackButton defaultHref="/home" />
+                  </IonButtons>
       </IonHeader>
 
       <IonContent fullscreen>

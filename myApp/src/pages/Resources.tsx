@@ -4,7 +4,7 @@ import {
   IonHeader,
   IonToolbar,
   IonButtons,
-  IonButton,
+  IonBackButton,
   IonContent,
   IonImg,
 } from '@ionic/react';
@@ -14,22 +14,10 @@ const Resources: React.FC = () => {
   return (
     <IonPage>
       {/* Header to match your Landing style */}
-      <IonHeader className="resources-header">
-            <IonToolbar className="resources-toolbar">
-            <div className="logo-section">
-                <IonImg src="/assets/logo.png" alt="App Logo" className="logo" />
-            </div>
-      
-            <IonButtons slot="end" className="nav-links">
-                <IonButton routerLink="/home">Home</IonButton>
-                <IonButton routerLink="/explore">Explore</IonButton>
-                <IonButton routerLink="/login">Log in</IonButton>
-                <IonButton routerLink="/signup" fill="solid" className="signup-btn">
-                Signup
-                </IonButton>
-            </IonButtons>
-        </IonToolbar>
-    </IonHeader>
+      <IonButtons slot="start">
+                  {/* Back to previous page (Home) */}
+                  <IonBackButton defaultHref="/home" />
+                </IonButtons>
 
       <IonContent fullscreen className="resources-content">
         <div className="resources-header-section">
