@@ -335,28 +335,3 @@ body, html, #root, ion-app, ion-page, ion-content {
 * {
   color: var(--text-primary);
 }
-
-/* Reuse Explore header style but adjust spacing for Chatbot */
-.chatbot-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-
-.chatbot-wrapper {
-  margin-top: 0;
-  padding-top: 60px; /* aligns perfectly below the Explore-style header */
-  background: linear-gradient(to bottom, #f4effb, #e8ddf6);
-  min-height: 100vh;
-  box-sizing: border-box;
-}
-
-
-ion-content {
-  --padding-top: 0 !important;
-}
-
-
-
-
