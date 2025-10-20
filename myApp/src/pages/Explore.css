@@ -1,0 +1,83 @@
+.explore-header {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.explore-toolbar {
+  --background: #ffffff;
+  --color: #090909;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 36px;
+  height: 36px;
+  margin-right: 8px;
+}
+
+.explore-content {
+  --background: linear-gradient(to bottom, #f4effb, #e8ddf6);
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #3a2c4a;
+  font-family: "Source Serif Pro", serif;
+}
+
+.explore-title {
+  font-size: 2.4rem;
+  color: #4b2c77;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  padding: 0 1rem;
+}
+
+.explore-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(75, 44, 119, 0.15);
+  padding: 2rem 1rem;
+  text-align: center;
+  max-width: 320px;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.explore-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(75, 44, 119, 0.25);
+}
+
+.card-icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.learn-more-btn {
+  --color: #4b2c77;
+  font-weight: 600;
+  text-transform: none;
+  margin-top: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+  .explore-grid {
+    grid-template-columns: 1fr;
+  }
+}
