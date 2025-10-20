@@ -2,11 +2,11 @@ import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
-import Landing from './pages/Landing';
+import Auth from './pages/Auth';
+import Map from './pages/Map';
 import Chatbot from './pages/Chatbot';
-import Resources from './pages/Resources';
-import Explore from './pages/Explore';
-
+import TimelinePage from './pages/TimelinePage';
+import { useCurrentUser } from "./hooks/useCurrentUser";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -40,29 +40,28 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Landing />
-        </Route>
-        <Route exact path="/chat">
-          <Chatbot />
-        </Route>
-        <Route exact path="/explore">
-          <Explore />
-        </Route>
-        <Route exact path="/resources">
-          <Resources />
-        </Route>
 
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  const user = useCurrentUser();
+    return (
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route path="/auth" component={Auth} exact />
+          <Route path="/map" component={Map} exact />
+          <Route path="/chatbot" component={Chatbot} exact />
+          <Route path="/landing" component={Map} exact />
+           <Route path="/timeline" component={TimelinePage} exact />
+          <Route
+            path="/home"
+            render={() => (user ? <Home /> : <Redirect to="/auth" />)}
+            exact
+          />
+          <Redirect exact from="/" to={user ? "/home" : "/auth"} />
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  );
+}
 
 export default App;
