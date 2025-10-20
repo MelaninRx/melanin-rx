@@ -37,8 +37,8 @@ const Landing: React.FC = () => {
             <IonButton onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}>
               FAQ
             </IonButton>
-            <IonButton routerLink="/login">Log in</IonButton>
-            <IonButton routerLink="/signup" fill="solid" className = "signup-btn">
+            <IonButton routerLink="/auth">Log in</IonButton>
+            <IonButton routerLink="/auth" fill="solid" className = "signup-btn">
               Signup
             </IonButton>
           </IonButtons>
