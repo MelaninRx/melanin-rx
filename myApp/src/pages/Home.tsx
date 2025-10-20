@@ -44,8 +44,8 @@ const Home: React.FC = () => {
               <IonButton routerLink="/timeline" className="btn-primary">
                 View Timeline
               </IonButton>
-              <IonButton routerLink="/map" className="btn-secondary">
-                Find Care Nearby
+              <IonButton routerLink="/resources" className="btn-secondary">
+                Find Care
               </IonButton>
               <IonButton routerLink="/chatbot" className="btn-outline">
                 Ask the Chatbot
@@ -69,7 +69,7 @@ const Home: React.FC = () => {
             <p className="panel-body">
               Explore trusted providers and resources tailored to you.
             </p>
-            <IonButton routerLink="/map" className="link-inline">Open Map</IonButton>
+            <IonButton routerLink="/resources" className="link-inline">Open Resources</IonButton>
           </article>
 
           <article className="panel-card">
