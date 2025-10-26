@@ -37,10 +37,10 @@ jobs:
         working-directory: functions
         run: npm ci
 
-      - name: Build Cloud Functions (if using TypeScript)
-        if: exists('functions/tsconfig.json')
+      - name: Build Cloud Functions
         working-directory: functions
         run: npm run build
+
 
       # Deploy preview
       - uses: FirebaseExtended/action-hosting-deploy@v0
