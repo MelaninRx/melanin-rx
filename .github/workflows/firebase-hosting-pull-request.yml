@@ -16,67 +16,68 @@ jobs:
       # 1️⃣ Checkout repo
       - uses: actions/checkout@v4
 
-      # 2️⃣ Create .env for Vite web app (this allows local imports like import.meta.env)
+      # 2️⃣ Create .env for Vite web app
       - name: Create .env for Vite web app
         working-directory: myApp
         run: |
-          cat <<EOF > .env
-          VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-          VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-          VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-          VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
-          VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}
-          EOF
+          echo "Creating .env for Vite..."
+          {
+            echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}"
+            echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}"
+            echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}"
+            echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}"
+            echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}"
+            echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}"
+          } > .env
+          echo "Created .env file:"
+          cat .env | sed 's/=.*/=***/'
 
-      # 3️⃣ Debug check (optional, can remove later)
+      # 3️⃣ Debug Firebase environment vars (optional)
       - name: Debug Firebase environment vars
         working-directory: myApp
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
           VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
         run: |
-          echo "🔍 Firebase envs visible to CI:"
+          echo "Firebase environment variables visible to CI:"
           echo "VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY"
           echo "VITE_FIREBASE_PROJECT_ID=$VITE_FIREBASE_PROJECT_ID"
 
-      # 4️⃣ Install deps and build Vite app
-      - name: Install & build web app
+      # 4️⃣ Install dependencies and build Vite app
+      - name: Install and build web app
         working-directory: myApp
-        env:
-          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
-          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
         run: |
-          echo "🚧 Installing and building web app..."
-          npm install
+          echo "Installing dependencies and building web app..."
+          npm ci
+          echo "Checking .env before build:"
+          cat .env | sed 's/=.*/=***/'
           npm run build
-          echo "✅ Build complete"
+          echo "Build complete."
 
       # 5️⃣ Create .env for Cloud Functions
-      - name: Create Cloud Functions .env
+      - name: Create .env for Cloud Functions
         working-directory: myApp/functions
         run: |
-          cat <<EOF > .env
-          LANGFLOW_URL=${{ secrets.LANGFLOW_URL }}
-          LANGFLOW_API_KEY=${{ secrets.LANGFLOW_API_KEY }}
-          EOF
+          echo "Creating .env for Cloud Functions..."
+          {
+            echo "LANGFLOW_URL=${{ secrets.LANGFLOW_URL }}"
+            echo "LANGFLOW_API_KEY=${{ secrets.LANGFLOW_API_KEY }}"
+          } > .env
+          echo "Functions .env created:"
+          cat .env | sed 's/=.*/=***/'
 
       # 6️⃣ Install and build Cloud Functions
-      - name: Install & build Cloud Functions
+      - name: Install and build Cloud Functions
         working-directory: myApp/functions
         run: |
-          echo "🚧 Installing and building functions..."
-          npm install
+          echo "Installing and building Cloud Functions..."
+          npm ci
           if [ -f tsconfig.json ]; then
             npm run build
           else
-            echo "⚠️  No tsconfig.json found — skipping build step"
+            echo "No tsconfig.json found — skipping build step."
           fi
-          echo "✅ Functions ready"
+          echo "Functions ready."
 
       # 7️⃣ Deploy Firebase Hosting preview
       - uses: FirebaseExtended/action-hosting-deploy@v0
