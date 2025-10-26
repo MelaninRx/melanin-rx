@@ -29,7 +29,6 @@ jobs:
 
       # Build TypeScript functions (optional, safe even if JS)
       - name: Build Cloud Functions (if using TypeScript)
-        if: exists('functions/tsconfig.json')
         working-directory: functions
         run: |
           npm run build
