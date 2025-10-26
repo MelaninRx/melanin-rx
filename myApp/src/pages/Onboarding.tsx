@@ -5,7 +5,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import OnboardingForm from "../components/OnboardUser";
+import OnboardingForm from "../components/OnboardingForm";
 
 const OnboardingPage: React.FC = () => {
   return (
@@ -15,8 +15,15 @@ const OnboardingPage: React.FC = () => {
           <IonTitle>Welcome to MelaninRx 💜</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="ion-padding">
-        <OnboardingForm />
+      <IonContent className="ion-padding ion-color-light">
+        <div style={{ 
+          background: '#ffffff', 
+          color: '#000000', 
+          minHeight: '100%',
+          padding: '20px'
+        }}>
+          <OnboardingForm />
+        </div>
       </IonContent>
     </IonPage>
   );
