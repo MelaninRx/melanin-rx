@@ -14,8 +14,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: cd myApp && npm ci && npm run build
+      - run: |
+          cd myApp/functions
+          printf "LANGFLOW_URL=%s\n" "${{ secrets.LANGFLOW_URL }}" > .env
+          printf "LANGFLOW_API_KEY=%s\n" "${{ secrets.LANGFLOW_API_KEY }}" >> .env
+      - run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MELANINRX_4842C }}' > gcp-key.json
+      - name: Deploy Functions
+        run: |
+          cd myApp
+          npx --yes firebase-tools@latest deploy --only functions --project melaninrx-4842c
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp-key.json
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MELANINRX_4842C }}
           projectId: melaninrx-4842c
+          entryPoint: myApp
