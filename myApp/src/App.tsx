@@ -4,11 +4,11 @@ import { IonReactRouter } from '@ionic/react-router';
 import {useCurrentUser} from './hooks/useCurrentUser';
 import Home from './pages/Home';
 import Auth from './pages/Auth';
-import Map from './pages/Map';
 import Chatbot from './pages/Chatbot';
 import Resources from './pages/Resources';
 import TimelinePage from './pages/TimelinePage';
 import Landing from './pages/Landing';
+import Onboarding from './pages/Onboarding';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -52,6 +52,7 @@ const App: React.FC = () => {
           {/* Public routes */}
           <Route path="/landing" component={Landing} exact />
           <Route path="/auth" component={Auth} exact />
+          <Route exact path="/onboarding" component={Onboarding} />
 
           {/* Protected routes (require login) */}
           <Route
