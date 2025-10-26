@@ -16,10 +16,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      # Build the app
-      - name: Install dependencies and build app
-        working-directory: myApp
+      - run: cd myApp && npm ci && npm run build
+      - run: |
+          cd myApp/functions
+          printf "LANGFLOW_URL=%s\n" "${{ secrets.LANGFLOW_URL }}" > .env
+          printf "LANGFLOW_API_KEY=%s\n" "${{ secrets.LANGFLOW_API_KEY }}" >> .env
+      - run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MELANINRX_4842C }}' > gcp-key.json
+      - name: Install & build Cloud Functions
+        run: |
+          cd myApp/functions
+          npm ci
+          npm run build
+      - name: Deploy Functions
         run: |
           npm ci
           npm run build
