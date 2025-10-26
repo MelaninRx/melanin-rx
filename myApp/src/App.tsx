@@ -6,6 +6,7 @@ import Auth from './pages/Auth';
 import Map from './pages/Map';
 import Chatbot from './pages/Chatbot';
 import { useCurrentUser } from "./hooks/useCurrentUser";
+import OnboardingPage from './pages/Onboarding';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -40,6 +41,8 @@ import './theme/variables.css';
 setupIonicReact();
 
 
+
+
 const App: React.FC = () => {
   const user = useCurrentUser();
     return (
@@ -50,6 +53,7 @@ const App: React.FC = () => {
           <Route path="/map" component={Map} exact />
           <Route path="/chatbot" component={Chatbot} exact />
           <Route path="/landing" component={Map} exact />
+          <Route exact path="/onboarding" component={OnboardingPage} />
           <Route
             path="/home"
             render={() => (user ? <Home /> : <Redirect to="/auth" />)}

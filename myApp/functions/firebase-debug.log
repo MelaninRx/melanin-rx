@@ -1,0 +1,102 @@
+[debug] [2025-10-23T21:39:49.392Z] ----------------------------------------------------------------------
+[debug] [2025-10-23T21:39:49.395Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only functions
+[debug] [2025-10-23T21:39:49.395Z] CLI Version:   14.18.0
+[debug] [2025-10-23T21:39:49.396Z] Platform:      darwin
+[debug] [2025-10-23T21:39:49.396Z] Node Version:  v22.19.0
+[debug] [2025-10-23T21:39:49.397Z] Time:          Thu Oct 23 2025 17:39:49 GMT-0400 (Eastern Daylight Time)
+[debug] [2025-10-23T21:39:49.398Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-10-23T21:39:49.550Z] Object "" in "firebase.json" has unknown property: {"additionalProperty":"version"}
+[debug] [2025-10-23T21:39:49.555Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-23T21:39:49.557Z] > authorizing via signed-in user (1053ella@gmail.com)
+[debug] [2025-10-23T21:39:49.557Z] [iam] checking project melaninrx-4842c for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-10-23T21:39:49.558Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:49.559Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:49.559Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c:testIamPermissions [none]
+[debug] [2025-10-23T21:39:49.559Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c:testIamPermissions x-goog-quota-user=projects/melaninrx-4842c
+[debug] [2025-10-23T21:39:49.559Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-10-23T21:39:49.771Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c:testIamPermissions 200
+[debug] [2025-10-23T21:39:49.772Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-10-23T21:39:49.772Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:49.772Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:49.772Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/melaninrx-4842c/serviceAccounts/melaninrx-4842c@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-10-23T21:39:49.772Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/melaninrx-4842c/serviceAccounts/melaninrx-4842c@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-10-23T21:39:50.033Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/melaninrx-4842c/serviceAccounts/melaninrx-4842c@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-10-23T21:39:50.034Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/melaninrx-4842c/serviceAccounts/melaninrx-4842c@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'melaninrx-4842c'...
+[info] 
+[info] i  deploying functions 
+[debug] [2025-10-23T21:39:50.038Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.038Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.038Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c [none]
+[debug] [2025-10-23T21:39:50.164Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c 200
+[debug] [2025-10-23T21:39:50.164Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c {"projectNumber":"239901067581","projectId":"melaninrx-4842c","lifecycleState":"ACTIVE","name":"MelaninRx","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-09-29T20:01:28.568583Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2025-10-23T21:39:50.167Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.167Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.167Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c/adminSdkConfig [none]
+[debug] [2025-10-23T21:39:50.502Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c/adminSdkConfig 200
+[debug] [2025-10-23T21:39:50.502Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c/adminSdkConfig {"projectId":"melaninrx-4842c","storageBucket":"melaninrx-4842c.firebasestorage.app"}
+[debug] [2025-10-23T21:39:50.504Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.505Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.506Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs [none]
+[debug] [2025-10-23T21:39:50.700Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs 200
+[debug] [2025-10-23T21:39:50.701Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs {"configs":[{"name":"projects/melaninrx-4842c/configs/langflow"}]}
+[debug] [2025-10-23T21:39:50.702Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.702Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.702Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs/langflow/variables [none]
+[debug] [2025-10-23T21:39:50.815Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs/langflow/variables 200
+[debug] [2025-10-23T21:39:50.815Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs/langflow/variables {"variables":[{"name":"projects/melaninrx-4842c/configs/langflow/variables/api_key","updateTime":"2025-10-14T11:54:18.220391886Z"},{"name":"projects/melaninrx-4842c/configs/langflow/variables/key","updateTime":"2025-10-23T21:09:31.142597508Z"}]}
+[debug] [2025-10-23T21:39:50.815Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.815Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.815Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.816Z] Checked if tokens are valid: true, expires at: 1761257369064
+[debug] [2025-10-23T21:39:50.816Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs/langflow/variables/api_key [none]
+[debug] [2025-10-23T21:39:50.816Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs/langflow/variables/key [none]
+[debug] [2025-10-23T21:39:50.945Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs/langflow/variables/api_key 200
+[debug] [2025-10-23T21:39:50.945Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs/langflow/variables/api_key {"name":"projects/melaninrx-4842c/configs/langflow/variables/api_key","updateTime":"2025-10-14T11:54:18.220391886Z","text":"sk-q8ta7WbwacqbpF5fFwhjdyY-btHRaoKHroWiSn50AHw"}
+[debug] [2025-10-23T21:39:50.966Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs/langflow/variables/key 200
+[debug] [2025-10-23T21:39:50.966Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/melaninrx-4842c/configs/langflow/variables/key {"name":"projects/melaninrx-4842c/configs/langflow/variables/key","updateTime":"2025-10-23T21:09:31.142597508Z","text":"sk-L9mrKBSdhL7gCSyuV7ez-_wPlYRxTB8YlkqmLGak1vg"}
+[debug] [2025-10-23T21:39:50.969Z] Validating nodejs source
+[debug] [2025-10-23T21:39:51.664Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.6.0"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.13",
+    "eslint": "^9.9.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.32.0",
+    "firebase-functions-test": "^3.1.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.45.0"
+  },
+  "private": true
+}
+[debug] [2025-10-23T21:39:51.664Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2025-10-23T21:39:51.666Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-10-23T21:39:51.675Z] Found firebase-functions binary at '/Users/Ella/Desktop/bu/XC475/MelaninRx/melanin-rx/myApp/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8472
+
+[debug] [2025-10-23T21:39:52.207Z] Got response from /__/functions.yaml {"endpoints":{"getResources":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":10,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","region":["us-central1"],"labels":{},"httpsTrigger":{},"entryPoint":"getResources"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}

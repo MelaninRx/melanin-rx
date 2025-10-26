@@ -1,0 +1,138 @@
+[
+  {
+    "title": "Black Mamas Matter Alliance (BMMA)",
+    "category": "National and community organizations",
+    "description": "A global non-profit focused on advocating for Black maternal health, rights, and justice.",
+    "trimester": ["first"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "National Association to Advance Black Birth",
+    "category": "National and community organizations",
+    "description": "A non-profit organization focused on improving the birthing experience for Black women through advocacy, support, and programs.",
+    "trimester": ["first"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "National Birth Equity Collaborative",
+    "category": "National and community organizations",
+    "description": "Creates solutions for Black maternal and infant health through training, policy advocacy, and community-centered collaboration.",
+    "trimester": ["first"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "Black Women's Health Imperative",
+    "category": "National and community organizations",
+    "description": "The first non-profit created by Black women to protect and advance the health and wellness of Black women and girls.",
+    "trimester": ["first"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "Sistas Who Breastfeed",
+    "category": "Community and peer support",
+    "description": "A program by the Perinatal Health Equity Initiative providing peer support for Black breastfeeding mothers.",
+    "trimester": ["second", "third"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "National Black Doulas Association",
+    "category": "Doulas and midwives",
+    "description": "Provides resources, networking, and support for Black doulas and expectant families.",
+    "trimester": ["first", "second", "third"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "Black Birth Equity Fund",
+    "category": "Doulas and midwives",
+    "description": "Provides funding to help expectant Black mothers and birthing people access doula services.",
+    "trimester": ["first", "second", "third"],
+    "postpartum": false,
+    "location": "national"
+  },
+  {
+    "title": "Midwives for Black Lives",
+    "category": "Doulas and midwives",
+    "description": "A collaborative movement that aims to improve birth outcomes by increasing the number of Black midwives.",
+    "trimester": ["first", "second", "third"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "Loveland Foundation",
+    "category": "Mental health support",
+    "description": "Provides grants to Black women and girls for high-quality mental health care.",
+    "trimester": ["second", "third"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "The Shades of Blue Project",
+    "category": "Mental health support",
+    "description": "Offers mental health services and support for Black women during and after pregnancy.",
+    "trimester": ["second", "third"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "D.O.P.E Mamas",
+    "category": "Mental health support",
+    "description": "Connects mothers with therapists trained in perinatal and postpartum mental health.",
+    "trimester": ["second", "third"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "Therapy for Black Girls",
+    "category": "Mental health support",
+    "description": "A mental health initiative providing culturally competent therapy resources for Black women.",
+    "trimester": ["second", "third"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "Melanin Mass Moms",
+    "category": "Community and peer support",
+    "description": "A local and online group providing support, resources, and community for mothers of color.",
+    "trimester": ["second", "third"],
+    "postpartum": true,
+    "location": "Boston"
+  },
+  {
+    "title": "Facebook Groups (Black Parenting)",
+    "category": "Community and peer support",
+    "description": "Local and national Facebook groups providing peer support, advice, and community for Black parents.",
+    "trimester": ["third"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "The Bump",
+    "category": "Educational resources",
+    "description": "Provides articles and resources on pregnancy, parenting, and support for Black families.",
+    "trimester": ["first"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "Healthy Moms and Healthy Babies (HMHB) Program",
+    "category": "Educational resources",
+    "description": "Offers education on healthy pregnancy, breastfeeding, and parenting, along with referrals to local resources.",
+    "trimester": ["first", "second", "third"],
+    "postpartum": true,
+    "location": "national"
+  },
+  {
+    "title": "Natal Podcast",
+    "category": "Educational resources",
+    "description": "Features stories from Black women and families about their reproductive care experiences.",
+    "trimester": ["second", "third"],
+    "postpartum": true,
+    "location": "national"
+  }
+]
