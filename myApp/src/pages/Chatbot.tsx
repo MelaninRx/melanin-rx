@@ -18,7 +18,7 @@ const ChatbotPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("https://chatwithlangflow-bz35xt5xna-uc.a.run.app/", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message, user : {name: "Guest", id: "anon"} }),
