@@ -2,11 +2,6 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import {
-  IonContent,
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonInput,
   IonItem,
   IonLabel,
@@ -129,7 +124,6 @@ ${readableResources}`;
         throw new Error("No dashboard text returned from OpenAI");
       }
 
-      // Save to Firestore and wait for completion
       await setDoc(doc(db, "users", user.uid), {
         name: formData.name,
         email: formData.email,
@@ -142,10 +136,8 @@ ${readableResources}`;
 
       console.log("✅ Data saved to Firestore!");
       
-      // Add a small delay to ensure data is fully propagated
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Navigate with a flag to trigger refresh
       history.push("/home", { refresh: true });
       
     } catch (error) {
@@ -159,70 +151,64 @@ ${readableResources}`;
   // ✅ Loading screen shown while generating dashboard
   if (loading) {
     return (
-      <IonPage>
-        <IonContent className="ion-padding" fullscreen>
-          <div style={{ textAlign: "center", marginTop: "40%" }}>
-            <IonSpinner name="dots" />
-            <h2>✨ Creating your personalized dashboard...</h2>
-            <p>Please hang tight. We're tailoring your journey.</p>
-          </div>
-        </IonContent>
-      </IonPage>
+      <div style={{ textAlign: "center", marginTop: "40%" }}>
+        <IonSpinner name="dots" />
+        <h2>✨ Creating your personalized dashboard...</h2>
+        <p>Please hang tight. We're tailoring your journey.</p>
+      </div>
     );
   }
 
   return (
-    <IonPage>
-      <IonContent className="ion-padding">
-        <h2>👋 Let's get to know you</h2>
-        <IonList>
-          <IonItem>
-            <IonLabel position="stacked">Name</IonLabel>
-            <IonInput
-              value={formData.name}
-              placeholder="Enter your name"
-              onIonChange={(e) => handleChange("name", e.detail.value!)}
-            />
-          </IonItem>
+    <>
+      <h2>👋 Let's get to know you</h2>
+      <IonList>
+        <IonItem>
+          <IonLabel position="stacked">Name</IonLabel>
+          <IonInput
+            value={formData.name}
+            placeholder="Enter your name"
+            onIonChange={(e) => handleChange("name", e.detail.value!)}
+          />
+        </IonItem>
 
-          <IonItem>
-            <IonLabel position="stacked">Email</IonLabel>
-            <IonInput
-              type="email"
-              value={formData.email}
-              placeholder="Enter your email"
-              onIonChange={(e) => handleChange("email", e.detail.value!)}
-            />
-          </IonItem>
+        <IonItem>
+          <IonLabel position="stacked">Email</IonLabel>
+          <IonInput
+            type="email"
+            value={formData.email}
+            placeholder="Enter your email"
+            onIonChange={(e) => handleChange("email", e.detail.value!)}
+          />
+        </IonItem>
 
-          <IonItem>
-            <IonLabel position="stacked">Location</IonLabel>
-            <IonInput
-              value={formData.location}
-              placeholder="City or ZIP code"
-              onIonChange={(e) => handleChange("location", e.detail.value!)}
-            />
-          </IonItem>
+        <IonItem>
+          <IonLabel position="stacked">Location</IonLabel>
+          <IonInput
+            value={formData.location}
+            placeholder="City or ZIP code"
+            onIonChange={(e) => handleChange("location", e.detail.value!)}
+          />
+        </IonItem>
 
-          <IonItem>
-            <IonLabel position="stacked">Trimester</IonLabel>
-            <IonSelect
-              value={formData.trimester}
-              placeholder="Select trimester"
-              onIonChange={(e) => handleChange("trimester", e.detail.value)}
-            >
-              <IonSelectOption value="1">1st Trimester</IonSelectOption>
-              <IonSelectOption value="2">2nd Trimester</IonSelectOption>
-              <IonSelectOption value="3">3rd Trimester</IonSelectOption>
-            </IonSelect>
-          </IonItem>
-        </IonList>
+        <IonItem>
+          <IonLabel position="stacked">Trimester</IonLabel>
+          <IonSelect
+            value={formData.trimester}
+            placeholder="Select trimester"
+            onIonChange={(e) => handleChange("trimester", e.detail.value)}
+          >
+            <IonSelectOption value="1">1st Trimester</IonSelectOption>
+            <IonSelectOption value="2">2nd Trimester</IonSelectOption>
+            <IonSelectOption value="3">3rd Trimester</IonSelectOption>
+          </IonSelect>
+        </IonItem>
+      </IonList>
 
-        <IonButton expand="block" onClick={handleSubmit}>
-          Submit
-        </IonButton>
-      </IonContent>
-    </IonPage>
+      <IonButton expand="block" onClick={handleSubmit}>
+        Submit
+      </IonButton>
+    </>
   );
 };
 
