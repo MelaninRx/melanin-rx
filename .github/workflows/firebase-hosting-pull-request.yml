@@ -1,5 +1,3 @@
-# Preview build for PRs
-
 name: Deploy to Firebase Hosting and Functions on PR
 
 on: pull_request
@@ -16,33 +14,29 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: cd myApp && npm ci && npm run build
-      - run: |
-          cd myApp/functions
+
+      # Install and build the web app
+      - name: Install & build web app
+        working-directory: myApp
+        run: |
+          npm ci
+          npm run build
+
+      # Create .env file for Cloud Functions
+      - name: Create Cloud Functions .env
+        working-directory: myApp/functions
+        run: |
           printf "LANGFLOW_URL=%s\n" "${{ secrets.LANGFLOW_URL }}" > .env
           printf "LANGFLOW_API_KEY=%s\n" "${{ secrets.LANGFLOW_API_KEY }}" >> .env
-      - run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MELANINRX_4842C }}' > gcp-key.json
-      - name: Install & build Cloud Functions
-        run: |
-          cd myApp/functions
-          npm ci
-          npm run build
-      - name: Deploy Functions
-        run: |
-          npm ci
-          npm run build
 
       # Install and build Cloud Functions
-      - name: Install dependencies for Cloud Functions
-        working-directory: functions
-        run: npm ci
+      - name: Install & build Cloud Functions
+        working-directory: myApp/functions
+        run: |
+          npm ci
+          npm run build
 
-      - name: Build Cloud Functions
-        working-directory: functions
-        run: npm run build
-
-
-      # Deploy preview
+      # Deploy Firebase Hosting preview
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
