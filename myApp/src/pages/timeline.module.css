@@ -61,18 +61,15 @@
 .sectionTitle { margin-top: 14px; font-weight: 800; }
 .list { margin: 10px 0 0; padding-left: 18px; }
 
-/* ========================= */
-/* ===== Timeline Rail ===== */
-/* ========================= */
-
 .rail {
   /* keep your panel vibe */
+  --dot: 24px;
   --rail-pad: 40px; /* left/right inset so ends don't hit rounded corners */
   --rail-top: 34px; /* vertical offset of the bar within the panel */
   --rail-h: 6px;    /* bar thickness */
 
   position: relative;
-  padding: 28px;              /* panel padding */
+  padding: 28px 28px 64px;   /* ⬅️ was 28px; add bottom room for labels */
   border-radius: 20px;
   background: var(--gradient-panel);
   border: 1px solid var(--color-mid);
@@ -110,7 +107,7 @@
   position: absolute;
   left: var(--rail-pad);
   right: var(--rail-pad);
-  top: calc(var(--rail-top) + var(--rail-h) / 2); /* center line of bar */
+  top: calc(var(--rail-top) + var(--rail-h) / 2 + 8px);
   height: 0;
   z-index: 3;
 }
@@ -119,7 +116,7 @@
 .nodeAbs {
   position: absolute;
   top: 0; /* already on center line via .railStage */
-  transform: translate(-50%, -50%); /* center the node on that point */
+  transform: translate(calc(var(--dot) / -2), -50%);  /* ⬅️ was -50%, -50% */
   background: transparent;
   border: 0;
   padding: 0;
@@ -130,8 +127,8 @@
 
 .dot {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: var(--dot);
+  height: var(--dot);
   border-radius: 50%;
   background: var(--color-primary);
   border: 2px solid transparent;
@@ -142,11 +139,14 @@
 
 .nodeLabel {
   display: block;
-  margin-top: 10px;  /* space below dot */
+  margin-top: 10px;   /* space below dot */
   font-size: 14px;
-  white-space: nowrap;
   color: var(--text-secondary);
   user-select: none;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Current (glow + bold) */
