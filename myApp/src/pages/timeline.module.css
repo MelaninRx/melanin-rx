@@ -13,6 +13,7 @@
   --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
 }
 
+/* Page */
 .timelinePage {
   min-height: 100vh;
   background: var(--gradient-bg);
@@ -29,22 +30,7 @@
   background: var(--gradient-button); color: var(--text-light); font-weight: 700; cursor: pointer;
 }
 
-.rail {
-  position: relative; display: grid; grid-template-columns: repeat(3, 1fr);
-  align-items: center; gap: 16px; padding: 20px; border-radius: 20px;
-  background: var(--gradient-panel); border: 1px solid var(--color-mid);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-}
-.railLine {
-  position: absolute; left: 40px; right: 40px; top: 50%; height: 4px;
-  background: linear-gradient(to right, var(--color-accent), var(--color-secondary));
-  transform: translateY(-50%); border-radius: 999px; opacity: 0.6;
-}
-.node { position: relative; z-index: 1; display: grid; place-items: center; gap: 6px; background: transparent; border: 0; cursor: pointer; }
-.dot { width: 24px; height: 24px; border-radius: 50%; background: var(--color-primary); box-shadow: 0 6px 16px rgba(115,88,126,0.35); transition: transform .2s, box-shadow .2s; }
-.node:hover .dot { transform: scale(1.08); }
-.nodeLabel { font-size: 14px; color: var(--text-secondary); user-select: none; }
-
+/* Card grid */
 .grid { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
 
 .card {
@@ -75,62 +61,110 @@
 .sectionTitle { margin-top: 14px; font-weight: 800; }
 .list { margin: 10px 0 0; padding-left: 18px; }
 
-/* Ensure the rail can layer elements */
+/* ========================= */
+/* ===== Timeline Rail ===== */
+/* ========================= */
+
 .rail {
+  /* keep your panel vibe */
+  --rail-pad: 40px; /* left/right inset so ends don't hit rounded corners */
+  --rail-top: 34px; /* vertical offset of the bar within the panel */
+  --rail-h: 6px;    /* bar thickness */
+
   position: relative;
+  padding: 28px;              /* panel padding */
+  border-radius: 20px;
+  background: var(--gradient-panel);
+  border: 1px solid var(--color-mid);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
-/* If your .railLine already has styles, keep them.
-   We just ensure it's a nice rounded track. */
-.railLine {
-  position: relative;
-  height: 6px;
-  background: var(--ion-color-step-200, #e9ecef);
-  border-radius: 999px;
-}
-
-/* NEW: the progress fill that slides in */
+/* Track + progress share identical geometry */
+.railTrack,
 .railProgress {
   position: absolute;
-  z-index: 1;              /* under the nodes */
-  left: 0;
-  top: 0;
-  height: 6px;
-  background: var(--ion-color-primary, #3880ff);
+  left: var(--rail-pad);
+  right: var(--rail-pad);
+  top: var(--rail-top);
+  height: var(--rail-h);
   border-radius: 999px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.railTrack {
+  background: linear-gradient(to right, var(--color-accent), var(--color-secondary));
+  opacity: 0.55;
+}
+
+.railProgress {
+  left: var(--rail-pad);
+  right: auto;               /* width controls end */
   width: 0%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   transition: width 600ms cubic-bezier(.22,.74,.3,1);
 }
 
-/* Make sure nodes are above the progress fill */
-.node {
-  position: relative;
-  z-index: 2;
+/* Stage for absolute node positioning (same left/right/top as track center) */
+.railStage {
+  position: absolute;
+  left: var(--rail-pad);
+  right: var(--rail-pad);
+  top: calc(var(--rail-top) + var(--rail-h) / 2); /* center line of bar */
+  height: 0;
+  z-index: 3;
+}
+
+/* Nodes on exact percentage points, centered on the bar */
+.nodeAbs {
+  position: absolute;
+  top: 0; /* already on center line via .railStage */
+  transform: translate(-50%, -50%); /* center the node on that point */
   background: transparent;
   border: 0;
+  padding: 0;
   cursor: pointer;
+  text-align: center;
+  line-height: 1;
 }
 
-/* Your existing .dot styles stay; we add “current” state */
+.dot {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 2px solid transparent;
+  box-shadow: 0 6px 16px rgba(115,88,126,0.35);
+  transition: transform .2s, box-shadow .2s, background-color .2s, border-color .2s;
+}
+.nodeAbs:hover .dot { transform: scale(1.08); }
+
+.nodeLabel {
+  display: block;
+  margin-top: 10px;  /* space below dot */
+  font-size: 14px;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+/* Current (glow + bold) */
 .dotCurrent {
-  background: var(--ion-color-primary, #3880ff) !important;
-  border-color: var(--ion-color-primary, #3880ff) !important;
-  /* optional soft halo so it ‘pops’ */
-  box-shadow: 0 0 0 6px color-mix(in oklab, var(--ion-color-primary, #3880ff) 20%, transparent);
+  background: var(--color-primary);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--color-accent) 24%, transparent);
 }
 
-/* Label emphasis when current */
 .nodeLabelCurrent {
-  font-weight: 700;
-  color: var(--ion-color-primary, #3880ff);
+  font-weight: 800;
+  color: var(--color-primary);
 }
 
-/* Optional: subtle one-time throb for the current dot on load */
+/* Optional: gentle pulse on load */
 @keyframes railThrob {
   0% { transform: scale(1); }
   50% { transform: scale(1.06); }
   100% { transform: scale(1); }
 }
-.nodeCurrent .dotCurrent {
-  animation: railThrob 1200ms ease-out 1;
-}
+.nodeCurrent .dotCurrent { animation: railThrob 1200ms ease-out 1; }

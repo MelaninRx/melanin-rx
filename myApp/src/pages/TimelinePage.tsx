@@ -1,4 +1,3 @@
-// src/pages/TimelinePage.tsx
 import React from 'react';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton } from '@ionic/react';
 
@@ -16,22 +15,29 @@ const TimelinePage: React.FC = () => {
   const [currentTrimesterId, setCurrentTrimesterId] = React.useState<string | null>(null);
   const [currentTrimesterIndex, setCurrentTrimesterIndex] = React.useState<number | null>(null);
 
-
   React.useEffect(() => {
     document.title = 'Pregnancy Timeline — MelaninRX';
     getTrimesters().then(setData);
+
+    // TEMP for testing: simulate user in Trimester 2
     setCurrentTrimesterIndex(2);
     setCurrentTrimesterId('trimester-2');
   }, []);
-  
+
   const active = data.find(t => t.id === activeId) ?? null;
+
+  // Progress to the CENTER of the current node (T1=0, T2=0.5, T3=1 for 3 nodes)
+  // If you prefer "fill to end of trimester", use: idx / n instead.
+  const n = data.length || 1;
+  const idx = currentTrimesterIndex ?? null;
+  const progressToNodeCenter =
+    idx != null && n > 1 ? (idx - 1) / (n - 1) : 0;
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            {/* Back to previous page (Home) */}
             <IonBackButton defaultHref="/home" />
           </IonButtons>
           <IonTitle>Pregnancy Timeline</IonTitle>
@@ -51,10 +57,7 @@ const TimelinePage: React.FC = () => {
 
           <React.Suspense fallback={<div>Loading timeline…</div>}>
             <TimelineRail
-              progress={
-                currentTrimesterIndex != null && data.length > 0
-                 ? Math.min(1, currentTrimesterIndex / data.length)
-                  : 0              }
+              progress={progressToNodeCenter}
               nodes={data.map(t => ({
                 key: t.id,
                 label: `Trimester ${t.index}`,
@@ -62,6 +65,7 @@ const TimelinePage: React.FC = () => {
                 isCurrent: currentTrimesterId === t.id || currentTrimesterIndex === t.index
               }))}
             />
+
             {!active ? (
               <section className={styles.grid}>
                 {data.map(t => (
