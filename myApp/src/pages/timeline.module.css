@@ -74,3 +74,63 @@
 
 .sectionTitle { margin-top: 14px; font-weight: 800; }
 .list { margin: 10px 0 0; padding-left: 18px; }
+
+/* Ensure the rail can layer elements */
+.rail {
+  position: relative;
+}
+
+/* If your .railLine already has styles, keep them.
+   We just ensure it's a nice rounded track. */
+.railLine {
+  position: relative;
+  height: 6px;
+  background: var(--ion-color-step-200, #e9ecef);
+  border-radius: 999px;
+}
+
+/* NEW: the progress fill that slides in */
+.railProgress {
+  position: absolute;
+  z-index: 1;              /* under the nodes */
+  left: 0;
+  top: 0;
+  height: 6px;
+  background: var(--ion-color-primary, #3880ff);
+  border-radius: 999px;
+  width: 0%;
+  transition: width 600ms cubic-bezier(.22,.74,.3,1);
+}
+
+/* Make sure nodes are above the progress fill */
+.node {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+/* Your existing .dot styles stay; we add “current” state */
+.dotCurrent {
+  background: var(--ion-color-primary, #3880ff) !important;
+  border-color: var(--ion-color-primary, #3880ff) !important;
+  /* optional soft halo so it ‘pops’ */
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--ion-color-primary, #3880ff) 20%, transparent);
+}
+
+/* Label emphasis when current */
+.nodeLabelCurrent {
+  font-weight: 700;
+  color: var(--ion-color-primary, #3880ff);
+}
+
+/* Optional: subtle one-time throb for the current dot on load */
+@keyframes railThrob {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.nodeCurrent .dotCurrent {
+  animation: railThrob 1200ms ease-out 1;
+}

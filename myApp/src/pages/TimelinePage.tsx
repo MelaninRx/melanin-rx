@@ -13,12 +13,17 @@ const TrimesterExpanded = React.lazy(() => import('../components/TrimesterExpand
 const TimelinePage: React.FC = () => {
   const [data, setData] = React.useState<Trimester[]>([]);
   const [activeId, setActiveId] = React.useState<string | null>(null);
+  const [currentTrimesterId, setCurrentTrimesterId] = React.useState<string | null>(null);
+  const [currentTrimesterIndex, setCurrentTrimesterIndex] = React.useState<number | null>(null);
+
 
   React.useEffect(() => {
     document.title = 'Pregnancy Timeline — MelaninRX';
     getTrimesters().then(setData);
+    setCurrentTrimesterIndex(2);
+    setCurrentTrimesterId('trimester-2');
   }, []);
-
+  
   const active = data.find(t => t.id === activeId) ?? null;
 
   return (
@@ -46,13 +51,17 @@ const TimelinePage: React.FC = () => {
 
           <React.Suspense fallback={<div>Loading timeline…</div>}>
             <TimelineRail
+              progress={
+                currentTrimesterIndex != null && data.length > 0
+                 ? Math.min(1, currentTrimesterIndex / data.length)
+                  : 0              }
               nodes={data.map(t => ({
                 key: t.id,
                 label: `Trimester ${t.index}`,
                 onClick: () => setActiveId(t.id),
+                isCurrent: currentTrimesterId === t.id || currentTrimesterIndex === t.index
               }))}
             />
-
             {!active ? (
               <section className={styles.grid}>
                 {data.map(t => (
