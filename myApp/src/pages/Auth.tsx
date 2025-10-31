@@ -1,19 +1,63 @@
-import React, { useState } from "react";
-import { IonPage, IonContent, IonInput, IonButton, IonText } from "@ionic/react";
+import React, { useState, useEffect } from "react";
+import { IonPage, IonContent, IonInput, IonButton, IonText, IonSpinner } from "@ionic/react";
 import { loginUser, registerUser } from "../services/authService";
 import { useHistory } from "react-router-dom";
+import { auth, db } from "../firebaseConfig"; // adjust path as needed
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import "./Auth.css";
 
 const AuthPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const history = useHistory(); // use this for navigation
+
+  useEffect(() => {
+    // Check if user is already authenticated
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in, check if they have a Firestore document
+        const hasUserDoc = await checkUserDocument(user.uid);
+        
+        if (hasUserDoc) {
+          history.push("/home");
+        } else {
+          history.push("/onboarding");
+        }
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [history]);
+
+  // Check if user document exists in Firestore
+  const checkUserDocument = async (uid: string): Promise<boolean> => {
+    try {
+      const userDocRef = doc(db, "users", uid);
+      const userDoc = await getDoc(userDocRef);
+      return userDoc.exists();
+    } catch (error) {
+      console.error("Error checking user document:", error);
+      return false;
+    }
+  };
 
   const handleLogin = async () => {
     try {
-      await loginUser(email, password);
-      history.push("/home"); // redirect straight to the Home page
+      setError("");
+      const userCredential = await loginUser(email, password);
+      
+      // Check if user has completed onboarding (has Firestore document)
+      const hasUserDoc = await checkUserDocument(userCredential.user.uid);
+      
+      if (hasUserDoc) {
+        history.push("/home");
+      } else {
+        history.push("/onboarding");
+      }
     } catch (err: any) {
       setError(err.message);
     }
@@ -21,12 +65,15 @@ const AuthPage: React.FC = () => {
 
   const handleRegister = async () => {
     try {
+      setError("");
       await registerUser(email, password);
-      history.push("/home");
+      // New users always go to onboarding to create their Firestore document
+      history.push("/onboarding");
     } catch (err: any) {
       setError(err.message);
     }
   };
+
 
   return (
     <IonPage className="auth-page">

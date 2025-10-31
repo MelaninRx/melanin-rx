@@ -4,11 +4,11 @@ import { IonReactRouter } from '@ionic/react-router';
 import {useCurrentUser} from './hooks/useCurrentUser';
 import Home from './pages/Home';
 import Auth from './pages/Auth';
-import Map from './pages/Map';
 import Chatbot from './pages/Chatbot';
 import Resources from './pages/Resources';
 import TimelinePage from './pages/TimelinePage';
 import Landing from './pages/Landing';
+import Onboarding from './pages/Onboarding';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -44,16 +44,28 @@ setupIonicReact();
 
 const App: React.FC = () => {
   const user = useCurrentUser();
-  return (
 
+  // Guard: while Firebase Auth is still initializing, don't redirect yet
+  if (user === undefined) {
+    return (
+      <IonApp>
+        <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center" }}>
+          <p>Loading...</p>
+        </div>
+      </IonApp>
+    );
+  }
+
+  return (
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
           {/* Public routes */}
           <Route path="/landing" component={Landing} exact />
           <Route path="/auth" component={Auth} exact />
+          <Route exact path="/onboarding" component={Onboarding} />
 
-          {/* Protected routes (require login) */}
+          {/* Protected routes */}
           <Route
             path="/home"
             render={() => (user ? <Home /> : <Redirect to="/auth" />)}
@@ -82,5 +94,6 @@ const App: React.FC = () => {
     </IonApp>
   );
 };
+
 
 export default App;
