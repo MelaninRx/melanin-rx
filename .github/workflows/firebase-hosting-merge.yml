@@ -30,6 +30,12 @@ jobs:
           echo ".env for Vite created:"
           cat .env | sed 's/=.*/=***/'
 
+      - name: Clean old build output
+        working-directory: myApp
+        run: |
+          echo "Cleaning old Vite build output..."
+          rm -rf dist
+
       # Build Vite/Ionic app
       - name: Install dependencies and build app
         working-directory: myApp
