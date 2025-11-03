@@ -29,7 +29,6 @@ jobs:
           } > .env
           echo ".env for Vite created:"
           cat .env | sed 's/=.*/=***/'
-          console.log("API key loaded:", import.meta.env.VITE_FIREBASE_API_KEY);
 
       - name: Clean old build output
         working-directory: myApp
