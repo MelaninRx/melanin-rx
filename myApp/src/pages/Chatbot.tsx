@@ -4,7 +4,7 @@ import {
   IonHeader,
   IonToolbar,
   IonButtons,
-  IonBackButton,
+  IonButton,
   IonContent,
   IonImg,
 } from "@ionic/react";
@@ -56,9 +56,8 @@ const ChatbotPage: React.FC = () => {
       {/* ✅ Explore-style header (clean + minimal) */}
       <IonHeader className="explore-header chatbot-header">
         <IonButtons slot="start">
-                    {/* Back to previous page (Home) */}
-                    <IonBackButton defaultHref="/home" />
-                  </IonButtons>
+          <IonButton routerLink="/home" routerDirection="root" color="medium">Home</IonButton>
+        </IonButtons>
       </IonHeader>
 
       <IonContent fullscreen>

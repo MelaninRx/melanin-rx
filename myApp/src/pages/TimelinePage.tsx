@@ -1,6 +1,6 @@
 // src/pages/TimelinePage.tsx
 import React from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton } from '@ionic/react';
 
 import styles from './timeline.module.css';
 import { getTrimesters, Trimester } from '../services/timelineService';
@@ -26,8 +26,7 @@ const TimelinePage: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            {/* Back to previous page (Home) */}
-            <IonBackButton defaultHref="/home" />
+            <IonButton routerLink="/home" routerDirection="root" color="medium">Home</IonButton>
           </IonButtons>
           <IonTitle>Pregnancy Timeline</IonTitle>
         </IonToolbar>

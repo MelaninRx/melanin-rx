@@ -4,15 +4,14 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonBackButton,
   IonButtons,
+  IonButton,
   IonSpinner,
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { useCurrentUser } from "../hooks/useCurrentUser";
-import { logoutUser } from "../services/authService";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import "./Resources.css";
@@ -29,7 +28,6 @@ const Resources: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  
 
   const fetchDashboard = async () => {
     if (!user) return;
@@ -40,7 +38,7 @@ const Resources: React.FC = () => {
       if (userDoc.exists()) {
         const data = userDoc.data();
         setUserData(data);
-        setResources(data.resources || []);
+        setResources((data as any).resources || []);
       }
     } catch (error) {
       console.error("Error loading dashboard:", error);
@@ -54,14 +52,14 @@ const Resources: React.FC = () => {
   });
 
   useEffect(() => {
-    if (location.state?.refresh) fetchDashboard();
+    if ((location.state as any)?.refresh) fetchDashboard();
   }, [location.state]);
 
   useEffect(() => {
     fetchDashboard();
   }, [user]);
 
-  // ✅ Group resources by category
+  // Group resources by category
   const groupedResources = useMemo(() => {
     const groups: Record<string, Resource[]> = {};
     for (const resource of resources) {
@@ -76,10 +74,10 @@ const Resources: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Resources</IonTitle>
           <IonButtons slot="start">
-                <IonBackButton defaultHref="/home" />
-            </IonButtons>
+            <IonButton routerLink="/home" routerDirection="root" color="medium">Home</IonButton>
+          </IonButtons>
+          <IonTitle>Resources</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -91,9 +89,7 @@ const Resources: React.FC = () => {
           </div>
         ) : (
           <>
-            {/* Container */}
             <div className="resources-container">
-              {/* Pregnancy Info */}
               <section className="resource-section">
                 <h3 className="section-heading">Your Pregnancy Journey</h3>
                 <div className="card-grid">
@@ -108,7 +104,6 @@ const Resources: React.FC = () => {
                 </div>
               </section>
 
-              {/* Grouped Resource Sections */}
               {Object.keys(groupedResources).length > 0 ? (
                 Object.entries(groupedResources).map(([category, items]) => (
                   <section key={category} className="resource-section">

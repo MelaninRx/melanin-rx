@@ -66,11 +66,13 @@ const AuthPage: React.FC = () => {
   const handleRegister = async () => {
     try {
       setError("");
+      setLoading(true);
       await registerUser(email, password);
-      // New users always go to onboarding to create their Firestore document
-      history.push("/onboarding");
+      // Hard navigate to ensure a fresh route stack (avoids cached view issues)
+      window.location.replace("/onboarding");
     } catch (err: any) {
       setError(err.message);
+      setLoading(false);
     }
   };
 
@@ -78,6 +80,12 @@ const AuthPage: React.FC = () => {
   return (
     <IonPage className="auth-page">
       <IonContent className="ion-padding auth-content">
+        {loading && (
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
+            <IonSpinner name="dots" />
+            <span>Signing in...</span>
+          </div>
+        )}
         <IonInput
           placeholder="Email"
           value={email}

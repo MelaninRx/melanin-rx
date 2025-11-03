@@ -20,6 +20,9 @@ const Home: React.FC = () => {
         <IonToolbar className="home-toolbar">
           <IonTitle className="home-app-title">MelaninRX</IonTitle>
           <IonButtons slot="end">
+            <IonButton className="btn-ghost" routerLink="/community" routerDirection="root">
+              Community
+            </IonButton>
             <IonButton className="btn-ghost" onClick={logoutUser}>
               Logout
             </IonButton>
@@ -41,13 +44,13 @@ const Home: React.FC = () => {
             </p>
 
             <div className="cta-row">
-              <IonButton routerLink="/timeline" className="btn-primary">
+              <IonButton routerLink="/timeline" routerDirection="root" className="btn-primary">
                 View Timeline
               </IonButton>
-              <IonButton routerLink="/resources" className="btn-secondary">
+              <IonButton routerLink="/resources" routerDirection="root" className="btn-secondary">
                 Find Care
               </IonButton>
-              <IonButton routerLink="/chatbot" className="btn-outline">
+              <IonButton routerLink="/chatbot" routerDirection="root" className="btn-outline">
                 Ask the Chatbot
               </IonButton>
             </div>
@@ -61,7 +64,7 @@ const Home: React.FC = () => {
             <p className="panel-body">
               Check your trimester checklist and plan one small step today.
             </p>
-            <IonButton routerLink="/timeline" className="link-inline">Open Timeline</IonButton>
+            <IonButton routerLink="/timeline" routerDirection="root" className="link-inline">Open Timeline</IonButton>
           </article>
 
           <article className="panel-card">
@@ -69,7 +72,7 @@ const Home: React.FC = () => {
             <p className="panel-body">
               Explore trusted providers and resources tailored to you.
             </p>
-            <IonButton routerLink="/resources" className="link-inline">Open Resources</IonButton>
+            <IonButton routerLink="/resources" routerDirection="root" className="link-inline">Open Resources</IonButton>
           </article>
 
           <article className="panel-card">
@@ -77,7 +80,7 @@ const Home: React.FC = () => {
             <p className="panel-body">
               Ask MelaninRX for quick guidance and next steps.
             </p>
-            <IonButton routerLink="/chatbot" className="link-inline">Open Chatbot</IonButton>
+            <IonButton routerLink="/chatbot" routerDirection="root" className="link-inline">Open Chatbot</IonButton>
           </article>
         </section>
       </IonContent>

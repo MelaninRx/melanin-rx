@@ -23,13 +23,13 @@ jobs:
 
       # Install dependencies for Cloud Functions
       - name: Install dependencies for Cloud Functions
-        working-directory: functions
+        working-directory: myApp/functions
         run: |
           npm ci
 
       # Build TypeScript functions (optional, safe even if JS)
       - name: Build Cloud Functions (if using TypeScript)
-        working-directory: functions
+        working-directory: myApp/functions
         run: |
           npm run build
 
@@ -42,4 +42,3 @@ jobs:
           channelId: live
           projectId: melaninrx-4842c
           entryPoint: myApp
-
