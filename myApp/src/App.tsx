@@ -9,6 +9,8 @@ import Resources from './pages/Resources';
 import TimelinePage from './pages/TimelinePage';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
+import CommunityChannels from './pages/CommunityChannels';
+import ChannelDetail from './pages/ChannelDetail';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -84,6 +86,16 @@ const App: React.FC = () => {
           <Route
             path="/resources"
             render={() => (user ? <Resources /> : <Redirect to="/auth" />)}
+            exact
+          />
+          <Route
+            path="/community"
+            render={() => (user ? <CommunityChannels /> : <Redirect to="/auth" />)}
+            exact
+          />
+          <Route
+            path="/community/:id"
+            render={() => (user ? <ChannelDetail /> : <Redirect to="/auth" />)}
             exact
           />
 

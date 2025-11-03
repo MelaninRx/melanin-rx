@@ -3,7 +3,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 
 export function useCurrentUser() {
-  const [user, setUser] = useState<any>(null);
+  // Start as undefined so screens can distinguish "auth initializing" state
+  const [user, setUser] = useState<any>(undefined);
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, setUser);
     return () => unsub();

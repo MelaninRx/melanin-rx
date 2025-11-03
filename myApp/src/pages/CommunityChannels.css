@@ -1,0 +1,8 @@
+.community-page { --background: var(--ion-color-light); }
+.community-hero { padding: 16px; }
+.community-welcome { margin: 0 0 8px 0; font-size: 1.25rem; }
+.community-sub { color: var(--ion-color-medium); margin: 0 0 12px 0; }
+.channel-item { display: flex; align-items: center; justify-content: space-between; }
+.channel-desc { margin: 0; color: var(--ion-color-medium); font-size: 0.9rem; }
+.community-footer { padding: 16px; text-align: center; }
+.btn-outline { --background: transparent; }

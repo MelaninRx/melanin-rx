@@ -151,7 +151,7 @@ ${readableResources}`;
   // ✅ Loading screen shown while generating dashboard
   if (loading) {
     return (
-      <div style={{ textAlign: "center", marginTop: "40%" }}>
+      <div style={{ textAlign: "center", marginTop: "20%" }}>
         <IonSpinner name="dots" />
         <h2>✨ Creating your personalized dashboard...</h2>
         <p>Please hang tight. We're tailoring your journey.</p>
