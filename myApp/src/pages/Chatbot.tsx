@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { queryLangFlow } from "../services/langflowService";
 import {
   IonPage,
   IonHeader,
@@ -24,28 +25,16 @@ const ChatbotPage: React.FC = () => {
     const newUserMsg = { sender: 'user', text: message };
     setChatHistory((prev) => [...prev, newUserMsg]);
     setLoading(true);
+console.log("LangFlow URL:", import.meta.env.VITE_LANGFLOW_API_URL);
+console.log("LangFlow Key:", import.meta.env.VITE_LANGFLOW_API_KEY);
 
     try {
-      const res = await fetch("https://chatwithlangflow-bz35xt5xna-uc.a.run.app/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, user : {name: "Guest", id: "anon"} }),
-      });
-
-      // parse JSON response from LangFlow
-      const data = await res.json();
-
-      // exctract bot's response
-      const botReply =
-        data.outputs?.[0]?.outputs?.[0]?.results?.message?.text ||
-        "No response from LangFlow.";
-
-      // add bot's response to chat history
-      setChatHistory((prev) => [...prev, { sender: 'bot', text: botReply }]);
-    } catch (error) {
-      console.error("LangFlow error:", error);
-      setChatHistory((prev) => [...prev, { sender: 'bot', text: "Error connecting to LangFlow." }]);
-    }
+  const botReply = await queryLangFlow(message);
+  setChatHistory((prev) => [...prev, { sender: 'bot', text: botReply }]);
+} catch (error) {
+  console.error("LangFlow error:", error);
+  setChatHistory((prev) => [...prev, { sender: 'bot', text: "Error connecting to LangFlow." }]);
+}
 
     setMessage('');
     setLoading(false);
