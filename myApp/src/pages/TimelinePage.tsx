@@ -1,6 +1,8 @@
 import React from 'react';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton } from '@ionic/react';
-
+import StatusCard from '../components/StatusCard';
+import ChecklistCard from '../components/ChecklistCard';
+import QuestionsCard from '../components/QuestionsCard';
 import styles from './timeline.module.css';
 import { getTrimesters, Trimester } from '../services/timelineService';
 
@@ -56,8 +58,16 @@ const TimelinePage: React.FC = () => {
           </div>
 
           <React.Suspense fallback={<div>Loading timeline…</div>}>
+            {/* Status card — TODO: wire real values */}
+            <StatusCard currentWeek={22} dueDate={new Date('2026-03-01')} />
+
             <TimelineRail
-              progress={progressToNodeCenter}
+              appendBaby
+              progress={
+                // Map to 4 nodes (T1,T2,T3,Baby). Node centers at 0, 1/3, 2/3, 1.
+                (currentTrimesterIndex && n > 1) ? (currentTrimesterIndex - 1) / ( (n + 1) - 1 ) : 0
+                // ^ n = data.length, +1 because of the Baby node
+              }
               nodes={data.map(t => ({
                 key: t.id,
                 label: `Trimester ${t.index}`,
@@ -73,9 +83,26 @@ const TimelinePage: React.FC = () => {
                 ))}
               </section>
             ) : (
-              <section className={styles.expandedWrap}>
-                <TrimesterExpanded data={active} onBack={() => setActiveId(null)} />
-              </section>
+              <>
+                <section className={styles.expandedWrap}>
+                  <div className={styles.infoCard}>
+                    <div className={styles.cardTitle}>{active.title}</div>
+                    <div className={styles.cardSub}>{active.weeksRange}</div>
+                    <p className={styles.cardBody} style={{ marginTop: 10 }}>{active.summary}</p>
+                  </div>
+                </section>
+
+                <section className={styles.expandedWrap}>
+                  <ChecklistCard
+                    items={active.checklist}
+                    storageKey={`chk_${active.id}_demoUser`}  /* swap demoUser for real user id later */
+                  />
+                </section>
+
+                <section className={styles.expandedWrap}>
+                  <QuestionsCard items={active.doctorTips} />
+                </section>
+              </>
             )}
           </React.Suspense>
         </main>

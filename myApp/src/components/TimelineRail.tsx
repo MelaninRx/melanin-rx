@@ -10,30 +10,35 @@ export type RailNode = {
 
 export default function TimelineRail({
   nodes,
-  progress = 0, // 0..1
+  progress = 0, // 0..1 across the whole rail
+  appendBaby = true,
 }: {
   nodes: RailNode[];
   progress?: number;
+  appendBaby?: boolean;
 }) {
+  const nodesWithBaby = React.useMemo(() => {
+    if (!appendBaby) return nodes;
+    return [...nodes, { key: 'baby', label: '👶', onClick: () => {} }];
+  }, [nodes, appendBaby]);
+
   const [anim, setAnim] = React.useState(0);
   React.useEffect(() => {
-    // animate from 0 -> progress on mount/update
     requestAnimationFrame(() => setAnim(progress));
   }, [progress]);
 
   const pct = Math.min(1, Math.max(0, anim)) * 100;
-  const last = Math.max(1, nodes.length - 1);
+  const last = Math.max(1, nodesWithBaby.length - 1);
 
   return (
     <div className={styles.rail}>
-      {/* Track layers (don’t affect layout) */}
       <div className={styles.railTrack} />
       <div className={styles.railProgress} style={{ width: `${pct}%` }} />
 
-      {/* Stage: same left/right/top as the track, so positions match exactly */}
       <div className={styles.railStage}>
-        {nodes.map((n, i) => {
-          const leftPct = (i / last) * 100; // e.g., 0%, 50%, 100% for 3 nodes
+        {nodesWithBaby.map((n, i) => {
+          const leftPct = (i / last) * 100;
+          const isBaby = n.key === 'baby';
           return (
             <button
               key={n.key}
@@ -44,7 +49,7 @@ export default function TimelineRail({
               aria-label={`Open ${n.label}`}
               aria-pressed={n.isCurrent ? true : undefined}
             >
-              <span className={`${styles.dot} ${n.isCurrent ? styles.dotCurrent : ''}`} />
+              <span className={`${styles.dot} ${isBaby ? styles.dotBaby : ''} ${n.isCurrent ? styles.dotCurrent : ''}`} />
               <span className={`${styles.nodeLabel} ${n.isCurrent ? styles.nodeLabelCurrent : ''}`}>
                 {n.label}
               </span>

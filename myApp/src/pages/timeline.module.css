@@ -168,3 +168,74 @@
   100% { transform: scale(1); }
 }
 .nodeCurrent .dotCurrent { animation: railThrob 1200ms ease-out 1; }
+
+/* --- Baby dot variant (keeps palette) --- */
+.dotBaby {
+  background: var(--color-accent);
+  box-shadow: 0 6px 16px rgba(169,139,179,0.35);
+}
+
+/* --- Status Card --- */
+.statusCard {
+  border: 1px solid var(--color-mid);
+  background: var(--gradient-panel);
+  border-radius: 20px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+}
+.statusTitle { font-size: 16px; font-weight: 800; color: var(--text-primary); margin: 0 0 6px; }
+.statusSub { font-size: 14px; color: var(--text-muted); margin: 0; }
+.pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill {
+  background: var(--gradient-button);
+  color: var(--text-light);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.miniStat { text-align: right; color: var(--text-secondary); font-size: 13px; }
+.miniStat strong { display: block; color: var(--text-primary); font-size: 18px; }
+
+/* --- Trimester info card --- */
+.infoCard {
+  border: 1px solid var(--color-mid);
+  background: var(--color-light);
+  border-radius: 20px;
+  padding: 16px;
+}
+
+/* --- Checklist card --- */
+.checklistCard {
+  border: 1px solid var(--color-mid);
+  background: var(--color-light);
+  border-radius: 20px;
+  padding: 16px;
+}
+.checkItem {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 8px; border-radius: 12px; cursor: pointer;
+  transition: background .15s ease;
+}
+.checkItem:hover { background: #f4eef8; }
+.checkBox {
+  width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--color-accent);
+  display: grid; place-items: center; background: #fff;
+}
+.checkBoxChecked { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
+.checkText { color: var(--text-primary); font-size: 14px; }
+.checkTextDone { text-decoration: line-through; color: var(--text-muted); }
+
+/* --- Questions card --- */
+.qaCard {
+  border: 1px solid var(--color-mid);
+  background: var(--color-light);
+  border-radius: 20px;
+  padding: 16px;
+}
+.qaItem { margin: 8px 0; font-size: 14px; color: var(--text-primary); }
