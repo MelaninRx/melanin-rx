@@ -57,7 +57,6 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Quick panels */}
         <section className="panels">
           <article className="panel-card">
             <h3 className="panel-title">Today’s Focus</h3>
