@@ -15,18 +15,16 @@ jobs:
     steps:
       # 1️⃣ Checkout repo
       - uses: actions/checkout@v4
-      - run: cd myApp && npm ci && npm run build
-      - run: |
-          cd myApp/functions
-          printf "LANGFLOW_URL=%s\n" "${{ secrets.LANGFLOW_URL }}" > .env
-          printf "LANGFLOW_API_KEY=%s\n" "${{ secrets.LANGFLOW_API_KEY }}" >> .env
-      - run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MELANINRX_4842C }}' > gcp-key.json
-      - name: Install & build Cloud Functions
+
+      # 2️⃣ Debug directory structure (optional)
+      - name: Debug repo structure
         run: |
-          cd myApp/functions
-          npm ci
-          npm run build
-      - name: Deploy Functions
+          echo "Current directory: $(pwd)"
+          ls -R
+
+      # 3️⃣ Create .env for Vite web app
+      - name: Create .env for Vite web app
+        working-directory: myApp
         run: |
           echo "Creating .env for Vite..."
           {
@@ -41,31 +39,16 @@ jobs:
           echo "Created .env file:"
           cat .env | sed 's/=.*/=***/'
 
-      # 3️⃣ Debug Firebase environment vars (optional)
-      - name: Debug Firebase environment vars
-        working-directory: myApp
-        env:
-          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-        run: |
-          echo "Firebase environment variables visible to CI:"
-          echo "VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY"
-          echo "VITE_FIREBASE_PROJECT_ID=$VITE_FIREBASE_PROJECT_ID"
-
-      # 4️⃣ Install dependencies and build Vite app
+      # 4️⃣ Install and build Vite web app
       - name: Install and build web app
         working-directory: myApp
         run: |
-          echo "Installing dependencies and building web app..."
           npm ci
-          echo "Checking .env before build:"
-          cat .env | sed 's/=.*/=***/'
           npm run build
-          echo "Build complete."
 
       # 5️⃣ Create .env for Cloud Functions
       - name: Create .env for Cloud Functions
-        working-directory: myApp/functions
+        working-directory: functions
         run: |
           echo "Creating .env for Cloud Functions..."
           {
@@ -77,16 +60,14 @@ jobs:
 
       # 6️⃣ Install and build Cloud Functions
       - name: Install and build Cloud Functions
-        working-directory: myApp/functions
+        working-directory: functions
         run: |
-          echo "Installing and building Cloud Functions..."
           npm ci
           if [ -f tsconfig.json ]; then
             npm run build
           else
             echo "No tsconfig.json found — skipping build step."
           fi
-          echo "Functions ready."
 
       # 7️⃣ Deploy Firebase Hosting preview
       - uses: FirebaseExtended/action-hosting-deploy@v0
