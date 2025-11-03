@@ -60,7 +60,7 @@ jobs:
 
       # 6️⃣ Install and build Cloud Functions
       - name: Install and build Cloud Functions
-        working-directory: functions
+        working-directory: myApp/functions
         run: |
           npm ci
           if [ -f tsconfig.json ]; then
