@@ -24,7 +24,6 @@
   font-family: 'Plus Jakarta Sans', 'Courier New', monospace !important;
 }
 
-/* 输入框 focus/invalid 高亮 */
 .input.ion-touched.ion-invalid,
 .input.input-has-focus {
   box-shadow: 0 0 0 3px rgba(169, 139, 179, 0.18);
@@ -179,7 +178,7 @@
   transform: translateY(-50%);
   width: 20px;
   height: 20px;
-  pointer-events: none;  /* 不阻挡输入点击 */
+  pointer-events: none;
 }
 
 .input-label {
