@@ -28,19 +28,36 @@
 .home-toolbar {
   --background: transparent;
   backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(115, 88, 126, 0.12);
+  min-height: 65px;
+  display: flex;
+  align-items: center; 
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.08); 
+  box-shadow: none !important;
 }
 
-.home-app-title {
-  font-weight: 800;
-  letter-spacing: 0.3px;
-  color: var(--text-primary);
+.home-app-logo {
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
+
+.home-app-logo .logo {
+  height: 40px;
+  width: auto;
+  padding-left: 2px;
+}
+
 
 /* Buttons (palette-aware) */
 .btn-ghost {
   --background: transparent;
   --color: var(--text-secondary);
+  height: auto;
+  line-height: normal;
+  display: flex;
+  align-items: center; 
 }
 
 .btn-primary {

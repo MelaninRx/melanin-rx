@@ -6,10 +6,12 @@ import {
   IonToolbar,
   IonButton,
   IonButtons,
+  IonImg,
 } from '@ionic/react';
 import './Home.css';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { logoutUser } from '../services/authService';
+import MelaninRxIcon from '../icons/MelaninRX.svg';
 
 const Home: React.FC = () => {
   const user = useCurrentUser();
@@ -18,7 +20,12 @@ const Home: React.FC = () => {
     <IonPage className="home-page">
       <IonHeader className="home-header">
         <IonToolbar className="home-toolbar">
-          <IonTitle className="home-app-title">MelaninRX</IonTitle>
+
+          <div className="home-app-logo">
+            <img src={MelaninRxIcon} 
+            className='logo'/>
+          </div>
+
           <IonButtons slot="end">
             <IonButton className="btn-ghost" routerLink="/community" routerDirection="root">
               Community
