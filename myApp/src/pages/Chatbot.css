@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
 :root {
   /* Brand palette */
-  --color-primary: #73587e;     /* Muted deep mauve (anchor tone) */
-  --color-secondary: #d8cbe1;   /* Gentle lavender-gray */
-  --color-accent: #a98bb3;      /* Elegant mid-tone accent purple */
+  --color-primary: #f1ebf3;     /* Muted deep mauve (anchor tone) */
+  --color-secondary: #885e87;   /* Gentle lavender-gray */
+  --color-accent: #642d56;      /* Elegant mid-tone accent purple */
   --color-light: #f7f5f8;       /* Clean soft white background */
   --color-mid: #e2d9e8;         /* Neutral divider/panel tone */
 
@@ -13,25 +15,25 @@
   --text-muted: #7d6c87;        /* Muted support text */
 
   /* Gradients */
-  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
+  --gradient-bg: linear-gradient(to top left, #642d5653, #885e8c29);
   --gradient-panel: linear-gradient(180deg, #faf8fc, #ece5f2);
   --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
   --gradient-user-bubble: linear-gradient(135deg, #9272a2, #c2a9ce);
   --gradient-bot-bubble: linear-gradient(135deg, #ede6f2, #ffffff);
 }
 
-
+ 
 body, html, #root, ion-app, ion-page, ion-content {
   background: var(--gradient-bg);
   color: var(--text-primary); 
-  font-family: 'Source Serif Pro', 'Courier New', monospace; /* 保留字体设置 */
+  font-family: 'Plus Jakarta Sans', 'Courier New', monospace !important;
   min-height: 100vh;
   margin: 0;
   padding: 0;
 }
 
 .history-panel,
-.chat-panel {
+.chat-panel {                                                                                                                 
   background: var(--gradient-panel);
   background-repeat: no-repeat;
 }
@@ -42,71 +44,90 @@ body, html, #root, ion-app, ion-page, ion-content {
   100% { background-position: 0% 50%; }
 }
 
-.container {
-  display: flex;
-  height: 100vh; 
-}
-
-.sidebar {
-  width: 80px;
-  background: var(--color-secondary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  padding-top: 10px;
-}
-
-.divider {
-  width: 80%;             /* 分割线长度可调 */
-  height: 2px;            /* 线条高度 */
-  background: linear-gradient(to right, var(--color-accent), var(--color-secondary)); /* 线条颜色 */
-  margin: 10px auto;      /* 上下间距，居中显示 */
-}
-
-.sidebar-top {
+.side-panel {
   width: 60px;
-  height: 60px;
-  margin: 10px 0;
-  background: var(--color-light);
-  cursor: pointer;
+  position: fixed;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  background: var(--color-primary);
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-top: 10px;
+  justify-content: space-between;
+  align-items: start;
+  padding: 12px 0;
 }
 
-.sidebar-middle {
-  width: 40px;
+.side-panel:hover {
+  width: 200px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.menu-item:hover {
+  background: rgba(136, 94, 140, 0.1);
+  transform: scale(1.05);
+}
+
+.menu-text {
+  opacity: 0;
+  margin-left: 10px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.side-panel:hover .menu-text {
+  opacity: 1;
+}
+
+.side-panel .nav-top,
+.side-panel .nav-bottom {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  padding-left: 13px !important;
 }
 
-.sidebar-bottom {
-  margin-top: auto;
-  margin-bottom: 15px;
+.side-panel ion-button {
+  --color: var(--text-light);
+  --background: transparent;
+  --border-radius: 12px;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 6px;
+  --padding-bottom: 6px;
+  font-size: 22px;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.side-panel ion-button:hover {
+  opacity: 0.85;
+  transform: scale(1.08);
+}
+
+
+.main-content {
+  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+  flex-direction: row;
+  overflow: hidden;
+  padding-left: 60px;
+  min-height: 0; 
 }
 
-.user-pic {
-  width: 50px;                  /* 头像宽度 */
-  height: 50px;                 /* 头像高度 */
-  border-radius: 4px;
-  border: 1px solid rgba(115, 88, 126, 0.08); /* faint tint of your primary */
-  cursor: pointer;              /* 鼠标悬停显示可点击 */
-}
-
-.icon {
-  width: 40px;  
-  height: 40px;
-  margin: 10px 0;
-  background: linear-gradient(135deg, #e9d3f1, #d8b9e7);
-  cursor: pointer;
-}
 
 .history-top{
   display: flex;
@@ -115,7 +136,6 @@ body, html, #root, ion-app, ion-page, ion-content {
   padding: 10px;
   box-shadow: 0 1px 0 rgba(255,255,255,0.1);
   margin-bottom: 0.5px;
-  /* border-bottom: 1px solid #161616; /* 顶部分割线 */ 
 }
 
 .history-title {
@@ -129,11 +149,11 @@ body, html, #root, ion-app, ion-page, ion-content {
   font-size: 15px;
   cursor: pointer;
   border: none;
-  border-radius: 24px;               /* 更圆润 */
+  border-radius: 24px; 
   background: var(--gradient-button);
   color: var(--text-light);
   font-weight: 600;
-  backdrop-filter: blur(8px);        /* 轻微玻璃感 */
+  backdrop-filter: blur(8px);
   transition: all 0.3s ease;
 }
 
@@ -142,7 +162,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .history-search {
-  margin: 12px 12px 2px 12px;
+  margin: 4px 12px 2px 12px;
   width: 90%;
   display: flex;
 }
@@ -161,19 +181,14 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .history-panel {
-  width: 250px;
-  border-left: 0.3px solid ;
+  flex: 0 0 250px; 
+  min-height: 0; 
+  min-width: 250px;
+  border-left: 0.3px solid #d3baba;
   border-right: 0.3px solid #d3baba;
   padding: 10px;
   overflow-y: auto;
-}
-
-.history-panel {
-  width: 250px;
-  border-left: 0.3px solid #d3baba;
-  border-right: 0.3px solid #d3baba;
   padding: 0;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
@@ -211,10 +226,26 @@ body, html, #root, ion-app, ion-page, ion-content {
   background-color: var(--color-secondary);
 }
 
+.chatbot-content {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  overflow: hidden; 
+}
+
+.chatbot-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .chat-panel {
   flex: 1;
   padding: 10px;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .chat-top {
@@ -248,12 +279,19 @@ body, html, #root, ion-app, ion-page, ion-content {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+}
+
+.chat-panel.has-messages {
+  justify-content: flex-start;
+}
+
+.chat-panel.empty {
+  justify-content: center;
 }
 
 .chat-input-area {
   position: absolute;
-  bottom: 20px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   width: min(86%, 1100px);
@@ -304,7 +342,7 @@ body, html, #root, ion-app, ion-page, ion-content {
   padding: 20px;
   overflow-y: auto;
   max-height: calc(100vh - 160px); /* leaves room for greeting & input */
-  padding-bottom: 100px;
+  padding-bottom: 165px;
 }
 
 /* Base bubble style */
@@ -334,4 +372,44 @@ body, html, #root, ion-app, ion-page, ion-content {
 
 * {
   color: var(--text-primary);
+}
+
+.suggested-questions-row {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;  
+  gap: 24px;  
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.question-box {
+  flex: 1; 
+  min-width: 260px;
+  max-width: 300px;
+  height: 120px;
+  border-radius: 20px;
+  border: none;
+  background: #ffffff !important;
+  color: rgb(43, 41, 41);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 20px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.question-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
 }
