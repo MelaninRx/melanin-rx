@@ -25,6 +25,7 @@ import menuIcon from '../icons/menu.svg';
 import chatbotIcon from '../icons/message-square.svg';
 import communityIcon from '../icons/users.svg';
 import timelineIcon from '../icons/calendar-days.svg';
+import LogoutIcon from "../icons/log-out.svg"
 import aboutIcon from '../icons/book-text.svg';
 import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
@@ -35,9 +36,8 @@ const Home: React.FC = () => {
 
   return (
     <IonPage className="home-page">
-
       <IonContent fullscreen className="home-content">
-        {/* Hero */}
+        {/* side panel */}
         <aside className="side-panel">
           <div className="nav-top">
             <IonButton fill="clear" routerLink="/menu">
@@ -68,7 +68,8 @@ const Home: React.FC = () => {
 
           <div className="nav-bottom">
             <IonButton fill='clear' onClick={logoutUser}>
-              Logout
+              <IonIcon icon={LogoutIcon} />
+              <span className = "menu-text">Log out</span>
             </IonButton>
             <IonButton fill="clear" routerLink="/settings">
               <IonIcon icon={settingsIcon} />
@@ -81,83 +82,84 @@ const Home: React.FC = () => {
           </div>
         </aside>
 
-        <section className="hero">
-          <div className="hero-text transparent">
-            <h1 className="hero-title">
-              {user?.email
-                ? `Good afternoon, ${user.email}.`
-                : 'Personalized tools to navigate each trimester with confidence.'}
-            </h1>
-            <p className='hero-subtitle'>
-              This week, you make expect more energy and a growing bump. Continue staying hydrated and nourishing your body, each small step supports both you and your baby’s health.
-            </p>
-          </div>
-        </section>
+          <section className="hero">
+            {/* hero */}
+            <div className="hero-text transparent">
+              <h1 className="hero-title">
+                {user?.email
+                  ? `Good afternoon, ${user.email}.`
+                  : 'Personalized tools to navigate each trimester with confidence.'}
+              </h1>
+              <p className='hero-subtitle'>
+                This week, you make expect more energy and a growing bump. Continue staying hydrated and nourishing your body, each small step supports both you and your baby’s health.
+              </p>
+            </div>
+          </section>
 
-        <section className="panels">
-          <IonRouterLink routerLink="/timeline" className="panel-card-link">
-            <article className="panel-card">
-              <div className="panel-icon-bar">
-                <img src={AppointmentIcon} className="panel-icon" />
-                <img src={JumpIcon} className="panel-icon right" />
-              </div>
+          <section className="panels">
+            <IonRouterLink routerLink="/timeline" className="panel-card-link">
+              <article className="panel-card">
+                <div className="panel-icon-bar">
+                  <img src={AppointmentIcon} className="panel-icon" />
+                  <img src={JumpIcon} className="panel-icon right" />
+                </div>
 
-              <div className="panel-content">
-                <h3 className="panel-title">Timeline</h3>
-                <p className="panel-body">Know where you are and what to expect.</p>
-              </div>
-            </article>
-          </IonRouterLink>
+                <div className="panel-content">
+                  <h3 className="panel-title">Timeline</h3>
+                  <p className="panel-body">Know where you are and what to expect.</p>
+                </div>
+              </article>
+            </IonRouterLink>
 
-          <IonRouterLink routerLink="/resources" className="panel-card-link">
-            <article className="panel-card">
-              <div className="panel-icon-bar">
-                <img src={DocIcon} className="panel-icon" />
-                <img src={JumpIcon} className="panel-icon right" />
-              </div>
-              
-              <div className="panel-content">
-                <h3 className="panel-title">Health Resources</h3>
-                <p className="panel-body">
-                  Access health resources to prepare for pregnancy.
-                </p>
-              </div>
-            </article>
-          </IonRouterLink>
+            <IonRouterLink routerLink="/resources" className="panel-card-link">
+              <article className="panel-card">
+                <div className="panel-icon-bar">
+                  <img src={DocIcon} className="panel-icon" />
+                  <img src={JumpIcon} className="panel-icon right" />
+                </div>
+                
+                <div className="panel-content">
+                  <h3 className="panel-title">Health Resources</h3>
+                  <p className="panel-body">
+                    Access health resources to prepare for pregnancy.
+                  </p>
+                </div>
+              </article>
+            </IonRouterLink>
 
-          <IonRouterLink routerLink="/chatbot" className="panel-card-link">
-            <article className="panel-card">
-              <div className="panel-icon-bar">
-                <img src={ChatIcon} className="panel-icon" />
-                <img src={JumpIcon} className="panel-icon right" />
-              </div>
+            <IonRouterLink routerLink="/chatbot" className="panel-card-link">
+              <article className="panel-card">
+                <div className="panel-icon-bar">
+                  <img src={ChatIcon} className="panel-icon" />
+                  <img src={JumpIcon} className="panel-icon right" />
+                </div>
 
-              <div className="panel-content">
-                <h3 className="panel-title">Chatbot</h3>
-                <p className="panel-body">
-                  Get personalized health insight and prepare for doctor visits.
-                </p>
-              </div>
-            </article>
-          </IonRouterLink>
+                <div className="panel-content">
+                  <h3 className="panel-title">Chatbot</h3>
+                  <p className="panel-body">
+                    Get personalized health insight and prepare for doctor visits.
+                  </p>
+                </div>
+              </article>
+            </IonRouterLink>
 
-          <IonRouterLink routerLink="/community" className="panel-card-link">
-            <article className="panel-card">
-              <div className="panel-icon-bar">
-                <img src={PeopleIcon} className="panel-icon" />
-                <img src={JumpIcon} className="panel-icon right" />
-              </div>
+            <IonRouterLink routerLink="/community" className="panel-card-link">
+              <article className="panel-card">
+                <div className="panel-icon-bar">
+                  <img src={PeopleIcon} className="panel-icon" />
+                  <img src={JumpIcon} className="panel-icon right" />
+                </div>
 
-              <div className="panel-content">
-                <h3 className="panel-title">Communities</h3>
-                <p className="panel-body">
-                  Connect with other expectant mothers in your area.
-                </p>
-              </div>
-            </article>
-          </IonRouterLink>
+                <div className="panel-content">
+                  <h3 className="panel-title">Communities</h3>
+                  <p className="panel-body">
+                    Connect with other expectant mothers in your area.
+                  </p>
+                </div>
+              </article>
+            </IonRouterLink>
 
-        </section>
+          </section>
 
       </IonContent>
     </IonPage>
