@@ -1,55 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-
-:root {
-  /* Brand palette */
-  --color-primary: #73587e;
-  --color-secondary: #d8cbe1;
-  --color-accent: #a98bb3;
-  --color-light: #f7f5f8;
-  --color-mid: #e2d9e8;
-
-  /* Text */
-  --text-primary: #2a1d31;
-  --text-secondary: #55405e;
-  --text-light: #ffffff;
-  --text-muted: #7d6c87;
-
-  /* Gradients */
-  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
-  --gradient-panel: linear-gradient(180deg, #faf8fc, #ece5f2);
-  --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
-}
-
-
-body, html, #root, ion-app, ion-page, ion-content {
-  background: var(--gradient-bg);
-  color: var(--text-primary); 
-  font-family: 'Plus Jakarta Sans', 'Courier New', monospace !important;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-}
-
-.resources-header {
-  --background: #ffffff !important;
-  color: var(--text-primary);
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.header-left{
-  width: 125px;
-  height: 70px;
+.resources-content {
+  --background: linear-gradient(to bottom, #f4effb, #e8ddf6);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  margin: 5px 0 0 25px;
-  cursor: pointer;
-}
-
-.header-left ion-icon
- {
-  width: 125px;
-  height: 70px;
+  padding: 1.5rem 1rem 3rem;
+  color: #3a2c4a;
+  font-family: "Source Serif Pro", serif;
 }
 
 .resources-header-section {
@@ -178,11 +134,3 @@ body, html, #root, ion-app, ion-page, ion-content {
     gap: 0.6rem;
   }
 }
-
-
-
-
-
-
-
-
