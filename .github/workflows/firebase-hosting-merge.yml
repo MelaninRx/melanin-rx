@@ -45,7 +45,7 @@ jobs:
 
       # Create .env for Cloud Functions (Langflow)
       - name: Create .env for Cloud Functions
-        working-directory: myApp/functions
+        working-directory: myApp/functions/src
         run: |
           echo "Creating .env for Cloud Functions..."
           {

@@ -48,7 +48,7 @@ jobs:
 
       # 5️⃣ Create .env for Cloud Functions
       - name: Create .env for Cloud Functions
-        working-directory: functions
+        working-directory: myApp/functions
         run: |
           echo "Creating .env for Cloud Functions..."
           {
