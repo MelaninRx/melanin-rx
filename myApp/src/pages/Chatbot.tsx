@@ -61,6 +61,7 @@ const handleSendWithText = async (text: string) => {
   setMessage('');
   setLoading(false);
 };
+/*comment for redeploy*/
 
 const handleQuickQuestion = async (question: string) => {
   setMessage(question);
