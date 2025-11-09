@@ -12,7 +12,7 @@ import {
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { useCurrentUser } from "../hooks/useCurrentUser";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import "./Resources.css";
 
@@ -20,6 +20,8 @@ interface Resource {
   title: string;
   description: string;
   category: string;
+  url?: string;
+  image?: string;
 }
 
 const Resources: React.FC = () => {
@@ -28,7 +30,9 @@ const Resources: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<string>("");
 
+  // 🔹 Fetch user data + resources from Firestore
   const fetchDashboard = async () => {
     if (!user) return;
 
@@ -38,7 +42,46 @@ const Resources: React.FC = () => {
       if (userDoc.exists()) {
         const data = userDoc.data();
         setUserData(data);
-        setResources((data as any).resources || []);
+
+        const trimesterLabel =
+          data.trimester === "1"
+            ? "first"
+            : data.trimester === "2"
+            ? "second"
+            : data.trimester === "3"
+            ? "third"
+            : null;
+
+        let resourceQuery = collection(db, "resources");
+
+        if (trimesterLabel && data.location) {
+          resourceQuery = query(
+            collection(db, "resources"),
+            where("trimester", "array-contains", trimesterLabel),
+            where("location", "in", [data.location, "national"])
+          ) as any;
+        } else if (trimesterLabel) {
+          resourceQuery = query(
+            collection(db, "resources"),
+            where("trimester", "array-contains", trimesterLabel)
+          ) as any;
+        }
+
+        const querySnapshot = await getDocs(resourceQuery);
+        const firestoreResources = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        const formattedResources = firestoreResources.map((r: any) => ({
+          title: r.title?.trim() || "Untitled",
+          description: r.description?.trim() || "",
+          category: r.category || "General",
+          url: r.url || r.website || "",
+          image: r.image || r.logo || "",
+        }));
+
+        setResources(formattedResources);
       }
     } catch (error) {
       console.error("Error loading dashboard:", error);
@@ -47,82 +90,121 @@ const Resources: React.FC = () => {
     }
   };
 
-  useIonViewWillEnter(() => {
-    fetchDashboard();
-  });
+ // FIX: wrap async function call
+useIonViewWillEnter(() => {
+  fetchDashboard();
+});
 
   useEffect(() => {
     if ((location.state as any)?.refresh) fetchDashboard();
   }, [location.state]);
-
   useEffect(() => {
     fetchDashboard();
   }, [user]);
 
-  // Group resources by category
-  const groupedResources = useMemo(() => {
-    const groups: Record<string, Resource[]> = {};
-    for (const resource of resources) {
-      const category = resource.category || "Other";
-      if (!groups[category]) groups[category] = [];
-      groups[category].push(resource);
-    }
-    return groups;
+  // 🔹 Dynamically generate list of unique categories
+  const categories = useMemo(() => {
+    const unique = [...new Set(resources.map((r) => r.category))];
+    return unique.sort(); // optional alphabetical sort
   }, [resources]);
 
+  // 🔹 Initialize first tab automatically
+  useEffect(() => {
+    if (resources.length > 0 && !activeTab) {
+      setActiveTab(resources[0].category);
+    }
+  }, [resources, activeTab]);
+
+  // 🔹 Filter resources by selected tab/category
+  const filteredResources = useMemo(() => {
+    if (!activeTab) return [];
+    return resources.filter(
+      (r) => r.category.toLowerCase() === activeTab.toLowerCase()
+    );
+  }, [resources, activeTab]);
+
+  // Debug logging
+  useEffect(() => {
+    if (resources.length > 0) {
+      console.log("📋 Total resources:", resources.length);
+      console.log("📋 Categories:", categories);
+      console.log("📋 Active tab:", activeTab);
+      console.log("📋 Filtered resources:", filteredResources.map((r) => r.title));
+    } else {
+      console.log("⚠️ No resources loaded");
+    }
+  }, [resources, activeTab, filteredResources]);
+
   return (
-    <IonPage>
+    <IonPage className="resources-page">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton routerLink="/home" routerDirection="root" color="medium">Home</IonButton>
+            <IonButton routerLink="/home" routerDirection="root" color="medium">
+              Home
+            </IonButton>
           </IonButtons>
-          <IonTitle>Resources</IonTitle>
+          <IonTitle className="centered-title">Resources</IonTitle>
         </IonToolbar>
       </IonHeader>
 
+
       <IonContent className="resources-content">
         {loading ? (
-          <div style={{ textAlign: "center", marginTop: "2rem" }}>
+          <div className="loading-container">
             <IonSpinner name="crescent" />
             <p>Loading your personalized dashboard...</p>
           </div>
         ) : (
-          <>
-            <div className="resources-container">
-              <section className="resource-section">
-                <h3 className="section-heading">Your Pregnancy Journey</h3>
-                <div className="card-grid">
-                  <div className="resource-card">
-                    <h3>Overview</h3>
-                    <p>
-                      <strong>Location:</strong> {userData?.location}
-                      <br />
-                      <strong>Trimester:</strong> {userData?.trimester}
-                    </p>
-                  </div>
-                </div>
-              </section>
+          <div className="resources-wrapper">
+            <h1 className="resources-title">Your Resources</h1>
 
-              {Object.keys(groupedResources).length > 0 ? (
-                Object.entries(groupedResources).map(([category, items]) => (
-                  <section key={category} className="resource-section">
-                    <h3 className="section-heading">{category}</h3>
-                    <div className="card-grid">
-                      {items.map((r, i) => (
-                        <div key={i} className="resource-card">
-                          <h3>{r.title}</h3>
-                          <p>{r.description}</p>
-                        </div>
-                      ))}
+            <div className="resources-tabs">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  className={`tab ${activeTab === cat ? "active" : ""}`}
+                  onClick={() => setActiveTab(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="resources-grid">
+              {filteredResources.length > 0 ? (
+                filteredResources.map((r, i) => (
+                  <div key={i} className="resource-card">
+                    <div className="resource-image">
+                      {r.image ? (
+                        <img src={r.image} alt={r.title} />
+                      ) : (
+                        <div className="placeholder-image"></div>
+                      )}
                     </div>
-                  </section>
+                    <h3 className="resource-title">{r.title}</h3>
+                    <p className="resource-description">{r.description}</p>
+                    {r.url && (
+                      <a
+                        href={r.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="visit-website-btn"
+                      >
+                        Visit Website
+                      </a>
+                    )}
+                  </div>
                 ))
               ) : (
-                <p>No resources found.</p>
+                <div className="no-resources">
+                  <p>No resources found in this category.</p>
+                </div>
               )}
             </div>
-          </>
+
+            <footer className="resources-footer" />
+          </div>
         )}
       </IonContent>
     </IonPage>

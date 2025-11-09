@@ -1,136 +1,199 @@
+:root {
+  /* Brand palette (matches home.css) */
+  --color-primary: #73587e;     /* Muted deep mauve */
+  --color-secondary: #d8cbe1;   /* Gentle lavender-gray */
+  --color-accent: #a98bb3;      /* Mid-tone accent purple */
+  --color-light: #f7f5f8;       /* Soft white background */
+  --color-mid: #e2d9e8;         /* Neutral divider/panel */
+
+  /* Text */
+  --text-primary: #2a1d31;
+  --text-secondary: #55405e;
+  --text-light: #ffffff;
+  --text-muted: #7d6c87;
+
+  /* Gradients */
+  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
+  --gradient-panel: linear-gradient(180deg, #faf8fc, #ece5f2);
+  --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
+}
+
+/* === Page shell === */
+.resources-page,
 .resources-content {
-  --background: linear-gradient(to bottom, #f4effb, #e8ddf6);
+  background: var(--gradient-bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+/* === Header === */
+ion-header {
+  --background: var(--color-light);
+  border-bottom: 1px solid rgba(115, 88, 126, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+.centered-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: fit-content;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* === Loading State === */
+.loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem 1rem 3rem;
-  color: #3a2c4a;
-  font-family: "Source Serif Pro", serif;
+  justify-content: center;
+  height: 60vh;
+  color: var(--text-secondary);
 }
 
-.resources-header-section {
-  width: 100%;
+/* === Page Title === */
+.resources-title {
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 800;
+  text-align: center;
+  color: var(--text-primary);
+  margin: 40px 0 20px 0;
+}
+
+/* === Tabs === */
+.resources-tabs {
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin-top: 2rem;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px auto 30px auto;
+  width: min(800px, 94vw);
 }
 
-.resources-title {
-  font-size: 2.3rem;
-  font-weight: 700;
-  color: #4b2c77;
-  text-align: center;
-  margin: 0;
+.tab {
+  background: var(--color-light);
+  color: var(--text-secondary);
+  border: 1px solid var(--color-mid);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-/* Container layout */
-.resources-container {
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 1rem 4rem;
+.tab:hover {
+  background: var(--color-secondary);
+  color: var(--text-primary);
 }
 
-/* Each section (Doulas, Providers, etc.) */
-.resource-section {
-  margin-bottom: 1.8rem;       /* smaller space between sections */
-  padding-bottom: 1.2rem;
-  border-bottom: 2px solid #4b2c77; /* purple divider */
-  max-width: 900px;            /* keeps line within content width */
-  margin-left: auto;
-  margin-right: auto;          /* centers section */
-  box-sizing: border-box;
-  padding-left: 1rem;
-  padding-right: 1rem;
+.tab.active {
+  background: var(--gradient-button);
+  color: var(--text-light);
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(115, 88, 126, 0.25);
 }
 
-
-/* remove line from last section */
-.resource-section:last-of-type {
-  border-bottom: none;
-}
-
-/* Section headings */
-.section-heading {
-  color: #4b2c77;
-  font-size: 1.6rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 1rem; /* closer to cards */
-}
-
-.card-grid {
+/* === Resource Grid === */
+.resources-grid {
+  width: min(1100px, 94vw);
+  margin: 0 auto 80px auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 0.3rem; /* very tight spacing between cards */
-  justify-items: center;
-  align-items: start;
-  margin: 0;
-  padding: 0;
+  gap: 20px;
 }
 
- .resource-card {
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(75, 44, 119, 0.12);
-  border: 1px solid rgba(123, 80, 160, 0.15);
-  padding: 0.8rem;              /* smaller inner padding */
-  width: 100%;
-  max-width: 300px;             /* 👈 smaller overall size */
-  text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin: 0;
-  aspect-ratio: 1 / 1;          /* keep perfectly square */
+/* === Resource Card === */
+.resource-card {
+  background: var(--color-light);
+  border: 1px solid var(--color-mid);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
- }
+  align-items: flex-start;
+  text-align: left;
+  transition: all 0.2s ease;
+}
 
 .resource-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 14px rgba(75, 44, 119, 0.25);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
-/* Typography inside cards */
-.resource-card h3 {
-  color: #4b2c77;
-  font-size: 1.15rem;
-  margin-bottom: 0.4rem;
+.resource-image {
+  width: 100%;
+  height: 160px;
+  border-radius: 14px;
+  background: var(--color-mid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 14px;
 }
 
-.resource-card p {
-  color: #3a2c4a;
-  font-size: 0.9rem;
-  margin-bottom: 0.8rem;
-  line-height: 1.4;
+.resource-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.resource-card a {
-  color: #7c5fc3;
-  font-weight: 600;
+.placeholder-image {
+  background: var(--color-mid);
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+}
+
+.resource-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 4px 0 6px 0;
+}
+
+.resource-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  flex-grow: 1;
+}
+
+/* === Visit Website Button === */
+.visit-website-btn {
+  display: inline-block;
+  background: var(--gradient-button);
+  color: var(--text-light);
   text-decoration: none;
-  transition: color 0.2s ease;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
-.resource-card a:hover {
-  color: #4b2c77;
-  text-decoration: underline;
+.visit-website-btn:hover {
+  opacity: 0.9;
 }
 
-/* Responsive tweaks */
-@media screen and (max-width: 768px) {
-  .resources-title {
-    font-size: 2rem;
-  }
+/* === Empty State === */
+.no-resources {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
 
-  .section-heading {
-    font-size: 1.4rem;
-  }
+/* === Footer (empty placeholder) === */
+.resources-footer {
+  height: 60px;
+}
 
-  .card-grid {
-    grid-template-columns: 1fr;
-    gap: 0.6rem;
-  }
+/* === Scroll padding for Ionic === */
+ion-content.resources-content::part(scroll) {
+  padding-bottom: 60px !important;
 }
