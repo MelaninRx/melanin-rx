@@ -8,10 +8,9 @@
  */
 
 const functions = require("firebase-functions");
-const fetch = require("node-fetch");
 
-;// import {onRequest} from "firebase-functions/https";
-// import * as logger from "firebase-functions/logger";
+//import {onRequest} from "firebase-functions/https";
+//import * as logger from "firebase-functions/logger";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -34,17 +33,22 @@ functions.setGlobalOptions({ maxInstances: 10 });
 //   response.send("Hello from Firebase!");
 // });
 
+const LANGFLOW_URL = process.env.LANGFLOW_URL!;
+const LANGFLOW_API_KEY = process.env.LANGFLOW_API_KEY;
+
 exports.chatWithLangFlow = functions.https.onRequest(async (req: any, res: any) => {
   try {
-    const { message, user } = req.body;
-    const apiKey = functions.config().langflow.api_key;
-    const langflowUrl = "http://localhost:7860/api/v1/run/adb0eec5-c7e1-49fe-a46d-be1e21880053"
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") return res.status(204).send();
 
-    const response = await fetch(langflowUrl, {
+    const { message, user } = req.body;
+
+    const response = await fetch(LANGFLOW_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${LANGFLOW_API_KEY}`,
       },
       body: JSON.stringify({
         inputs: {
