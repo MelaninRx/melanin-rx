@@ -27,40 +27,48 @@ const ChatbotPage: React.FC = () => {
   const [chatHistory, setChatHistory] = useState<{ sender: string; text: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // handleSend - when user clicks "Send"
-  const handleSend = async () => {
-    if (!message.trim()) return;
+const handleSend = async () => {
+  if (!message.trim()) return;
+  await handleSendWithText(message);
+};
 
-    // add user message to chat history
-    const newUserMsg = { sender: 'user', text: message };
-    setChatHistory((prev) => [...prev, newUserMsg]);
-    setLoading(true);
+const handleSendWithText = async (text: string) => {
+  const newUserMsg = { sender: 'user', text };
+  setChatHistory((prev) => [...prev, newUserMsg]);
+  setLoading(true);
 
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, user : {name: "Guest", id: "anon"} }),
-      });
+  try {
+    const res = await fetch("https://chatwithlangflow-bz35xt5xna-uc.a.run.app/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text, user: { name: "Guest", id: "anon" } }),
+    });
 
-      // parse JSON response from LangFlow
-      const data = await res.json();
+    const data = await res.json();
+    const botReply =
+      data.outputs?.[0]?.outputs?.[0]?.results?.message?.text ||
+      "No response from LangFlow.";
 
-      // exctract bot's response
-      const botReply =
-        data.outputs?.[0]?.outputs?.[0]?.results?.message?.text ||
-        "No response from LangFlow.";
+    setChatHistory((prev) => [...prev, { sender: 'bot', text: botReply }]);
+  } catch (error) {
+    console.error("LangFlow error:", error);
+    setChatHistory((prev) => [
+      ...prev,
+      { sender: 'bot', text: "Error connecting to LangFlow." },
+    ]);
+  }
 
-      // add bot's response to chat history
-      setChatHistory((prev) => [...prev, { sender: 'bot', text: botReply }]);
-    } catch (error) {
-      console.error("LangFlow error:", error);
-      setChatHistory((prev) => [...prev, { sender: 'bot', text: "Error connecting to LangFlow." }]);
-    }
+  setMessage('');
+  setLoading(false);
+};
+/*comment for redeploy*/
 
-    setMessage('');
-    setLoading(false);
-  };
+const handleQuickQuestion = async (question: string) => {
+  setMessage(question);
+  await handleSendWithText(question);
+};
+
+  const isChatStarted = chatHistory.length > 0;
 
   return (
     <IonPage className="chatbot-page">
