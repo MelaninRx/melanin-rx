@@ -9,8 +9,8 @@
 
 const functions = require("firebase-functions");
 
-import {onRequest} from "firebase-functions/https";
-import * as logger from "firebase-functions/logger";
+//import {onRequest} from "firebase-functions/https";
+//import * as logger from "firebase-functions/logger";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -33,7 +33,7 @@ functions.setGlobalOptions({ maxInstances: 10 });
 //   response.send("Hello from Firebase!");
 // });
 
-const LANGFLOW_URL = process.env.LANGFLOW_URL;
+const LANGFLOW_URL = process.env.LANGFLOW_URL!;
 const LANGFLOW_API_KEY = process.env.LANGFLOW_API_KEY;
 
 exports.chatWithLangFlow = functions.https.onRequest(async (req: any, res: any) => {

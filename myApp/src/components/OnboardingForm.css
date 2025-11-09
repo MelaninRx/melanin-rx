@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Brand palette */
+  --color-primary: #73587e;
+  --color-secondary: #d8cbe1;
+  --color-accent: #a98bb3;
+  --color-light: #f7f5f8;
+  --color-mid: #e2d9e8;
+
+  /* Text */
+  --text-primary: #2a1d31;
+  --text-secondary: #55405e;
+  --text-light: #ffffff;
+  --text-muted: #7d6c87;
+
+  /* Gradients */
+  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
+  --gradient-panel: linear-gradient(180deg, #faf8fc, #ece5f2);
+  --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
+}
+
+
+body, html, #root, ion-app, ion-page, ion-content {
+  background: var(--gradient-bg);
+  color: var(--text-primary); 
+  font-family: 'Plus Jakarta Sans', 'Courier New', monospace !important;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+ion-item {
+  --background: transparent; 
+  border: 1px solid rgba(136, 94, 140, 0.2);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  --inner-padding-start: 0;
+  --inner-padding-end: 12px;
+  --highlight-height: 0px;
+}
+
+ion-label {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+ion-input {
+  --background: transparent;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.label-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 6px; 
+  margin-bottom: 8px;
+}
+
+.label-icon {
+  width: 20px;
+  height: 20px;
+  padding-left: 6px;
+}
+
+.btn-primary {
+  --background: #642d56;
+  --background-activated: var(--gradient-button);
+  --color: #ffffff;
+  --border-radius: 12px !important;
+  font-weight: 700;
+}
+
+.btn-primary::part(inner),
+.btn-primary::part(native) {
+  color: var(--text-light) !important;
+}
+
