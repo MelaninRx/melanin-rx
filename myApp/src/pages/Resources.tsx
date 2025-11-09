@@ -8,6 +8,7 @@ import {
   IonButton,
   IonSpinner,
   useIonViewWillEnter,
+  IonIcon,
 } from "@ionic/react";
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
@@ -15,6 +16,7 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import "./Resources.css";
+import MelaninRxIcon from '../icons/MelaninRX.svg';
 
 interface Resource {
   title: string;
@@ -72,12 +74,13 @@ const Resources: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader className="resources-header">
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton routerLink="/home" routerDirection="root" color="medium">Home</IonButton>
+          <IonButtons className="header-left" slot="start">
+            <IonButton routerLink="/home" routerDirection="root" color="medium">
+              <IonIcon icon={MelaninRxIcon} />
+            </IonButton>
           </IonButtons>
-          <IonTitle>Resources</IonTitle>
         </IonToolbar>
       </IonHeader>
 
