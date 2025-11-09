@@ -72,7 +72,7 @@ const handleQuickQuestion = async (question: string) => {
   return (
     <IonPage className="chatbot-page">
       {/* Header */}
-      <IonHeader className="explore-header chatbot-header">
+      <IonHeader className="chatbot-header">
         <IonButtons slot="start">
           <IonBackButton defaultHref="/home" />
         </IonButtons>

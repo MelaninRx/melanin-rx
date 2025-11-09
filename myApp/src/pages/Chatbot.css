@@ -32,6 +32,16 @@ body, html, #root, ion-app, ion-page, ion-content {
   padding: 0;
 }
 
+.chatbot-page {
+  --side-panel-width: 60px;
+  --side-panel-expanded-width: 200px;
+}
+
+.chatbot-page:has(.side-panel:hover) {
+  --side-panel-width: 200px;
+}
+
+
 .history-panel,
 .chat-panel {                                                                                                                 
   background: var(--gradient-panel);
@@ -45,7 +55,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .side-panel {
-  width: 60px;
+  width: var(--side-panel-width);;
   position: fixed;
   transition: width 0.3s ease;
   overflow: hidden;
@@ -62,7 +72,12 @@ body, html, #root, ion-app, ion-page, ion-content {
 }
 
 .side-panel:hover {
-  width: 200px;
+  --side-panel-width: 200px;
+}
+
+ion-header.chatbot-header {
+  margin-left: var(--side-panel-width) !important;
+  transition: margin-left 0.3s ease;
 }
 
 .menu-item {
@@ -120,11 +135,11 @@ body, html, #root, ion-app, ion-page, ion-content {
 
 
 .main-content {
+  margin-left: var(--side-panel-width);
   flex: 1;
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  padding-left: 60px;
   min-height: 0; 
 }
 
