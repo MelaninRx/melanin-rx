@@ -67,6 +67,9 @@ const Home: React.FC = () => {
           </div>
 
           <div className="nav-bottom">
+            <IonButton fill='clear' onClick={logoutUser}>
+              Logout
+            </IonButton>
             <IonButton fill="clear" routerLink="/settings">
               <IonIcon icon={settingsIcon} />
               <span className = "menu-text">Setting</span>
