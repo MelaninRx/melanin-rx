@@ -102,7 +102,8 @@ export const chatWithLangFlow = functions.https.onRequest(async (req: any, res: 
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${LANGFLOW_API_KEY}`,
+        "x-api-key": LANGFLOW_API_KEY!, // Some instances use this
+        "Authorization": `Bearer ${LANGFLOW_API_KEY}`, // Or this
       },
       body: JSON.stringify(langflowPayload),
     });
