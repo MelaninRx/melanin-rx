@@ -28,6 +28,8 @@ jobs:
             echo "VITE_OPEN_AI_API_KEY=${{ secrets.VITE_OPEN_AI_API_KEY }}"
           } > .env
           echo ".env for Vite created:"
+          echo "VITE_FIREBASE_API_KEY length: ${#VITE_FIREBASE_API_KEY}"
+          echo "VITE_OPEN_AI_API_KEY length: ${#VITE_OPEN_AI_API_KEY}"
           cat .env | sed 's/=.*/=***/'
 
       - name: Clean old build output
