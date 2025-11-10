@@ -189,10 +189,6 @@ const handleGoogleLogin = async () => {
                 >
                   Login with Google
                 </IonButton>
-
-                
-
-
               </div>
               <p className="auth-small-text">
                   Don’t have an account?{" "}
