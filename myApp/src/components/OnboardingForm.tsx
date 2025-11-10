@@ -54,7 +54,6 @@ const OnboardingForm: React.FC = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // ✅ Google Signup Handler (signs in, pre-fills fields, hides button)
   const handleGoogleSignup = async () => {
     setLoading(true);
     setError("");
@@ -80,7 +79,6 @@ const OnboardingForm: React.FC = () => {
     }
   };
 
-  // ✅ Main Onboarding Submit Handler (shared for Google + Email)
   const handleSubmit = async () => {
     console.log("Form Submitted:", formData);
     setLoading(true);
@@ -102,7 +100,6 @@ const OnboardingForm: React.FC = () => {
         await updateProfile(user, { displayName: name });
       }
 
-      // ✅ Case 2: Email signup — create Firebase Auth user
       if (!isGoogleUser) {
         if (!password) {
           setError("Please enter a password or use Sign up with Google.");
@@ -119,12 +116,10 @@ const OnboardingForm: React.FC = () => {
         await updateProfile(user, { displayName: name });
       }
 
-      // ✅ Safety check
       if (!user) {
         throw new Error("User authentication failed. Please try again.");
       }
 
-      // ✅ Fetch resources matching trimester + location
       const trimesterLabel = { "1": "first", "2": "second", "3": "third" }[
         trimester
       ];
@@ -150,7 +145,6 @@ const OnboardingForm: React.FC = () => {
         throw new Error("Resources are empty or improperly formatted.");
       }
 
-      // ✅ Generate personalized dashboard via OpenAI
       const fullPrompt = `Location: ${location}
 Trimester: ${trimester}
 Resources:
@@ -195,7 +189,7 @@ ${readableResources}`;
         createdAt: new Date(),
       });
 
-      console.log("✅ User + Firestore setup complete!");
+      console.log("User + Firestore setup complete!");
       history.push("/home", { refresh: true });
     } catch (error: any) {
       console.error("Error during onboarding:", error);
@@ -205,7 +199,6 @@ ${readableResources}`;
     }
   };
 
-  // ✅ Loading spinner during dashboard generation
   if (loading) {
     return (
       <div style={{ textAlign: "center", marginTop: "20%" }}>
@@ -217,17 +210,10 @@ ${readableResources}`;
   }
 
   return (
-    <IonPage>
-    <IonContent fullscreen={true} className="onboarding-content" scrollY={true}>
-
-      
-      {/* Main content */}
-      <div className="onboarding-page">
-        <div className="onboarding-container">
-          <h1>Create Your Account</h1>
-          <p>Tell us about yourself to get started</p>
-
-
+    <div className="onboarding-container">
+      <div className="onboarding-card">
+        <h1 className="onboarding-title">Create Your Account</h1>
+        <p className="onboarding-subtitle">Tell us about yourself to get started</p>
         <IonList>
           {/* Name */}
           <div className="input-wrapper">
@@ -235,8 +221,20 @@ ${readableResources}`;
               <IonIcon src={UserIcon} slot="start" className="label-icon" />
               <label className="input-label">Name</label>
             </div>
-            <IonItem className="input-item">
+            <IonItem className="input-item" style={{
+              '--background': '#fff',
+              '--color': '#2a1d31',
+              '--border-radius': '12px',
+              '--border-color': '#73587e',
+              border: '1px solid #73587e',
+              marginBottom: '12px'
+            }}>
               <IonInput
+                style={{
+                  '--color': '#2a1d31',
+                  '--placeholder-color': '#7d6c87',
+                  fontSize: '16px'
+                }}
                 value={formData.name}
                 placeholder="Enter your name"
                 onIonChange={(e) => handleChange("name", e.detail.value!)}
@@ -250,8 +248,20 @@ ${readableResources}`;
               <IonIcon src={EmailIcon} slot="start" className="label-icon" />
               <label className="input-label">Email</label>
             </div>
-            <IonItem className="input-item">
+            <IonItem className="input-item" style={{
+              '--background': '#fff',
+              '--color': '#2a1d31',
+              '--border-radius': '12px',
+              '--border-color': '#73587e',
+              border: '1px solid #73587e',
+              marginBottom: '12px'
+            }}>
               <IonInput
+                style={{
+                  '--color': '#2a1d31',
+                  '--placeholder-color': '#7d6c87',
+                  fontSize: '16px'
+                }}
                 type="email"
                 value={formData.email}
                 placeholder="Enter your email"
@@ -268,8 +278,20 @@ ${readableResources}`;
                 <IonIcon src={LockIcon} slot="start" className="label-icon" />
                 <label className="input-label">Password</label>
               </div>
-              <IonItem className="input-item">
+              <IonItem className="input-item" style={{
+                '--background': '#fff',
+                '--color': '#2a1d31',
+                '--border-radius': '12px',
+                '--border-color': '#73587e',
+                border: '1px solid #73587e',
+                marginBottom: '12px'
+              }}>
                 <IonInput
+                  style={{
+                    '--color': '#2a1d31',
+                    '--placeholder-color': '#7d6c87',
+                    fontSize: '16px'
+                  }}
                   type="password"
                   value={formData.password}
                   placeholder="Create a password"
@@ -285,8 +307,20 @@ ${readableResources}`;
               <IonIcon src={CityIcon} slot="start" className="label-icon" />
               <label className="input-label">Location</label>
             </div>
-            <IonItem className="input-item">
+            <IonItem className="input-item" style={{
+              '--background': '#fff',
+              '--color': '#2a1d31',
+              '--border-radius': '12px',
+              '--border-color': '#73587e',
+              border: '1px solid #73587e',
+              marginBottom: '12px'
+            }}>
               <IonInput
+                style={{
+                  '--color': '#2a1d31',
+                  '--placeholder-color': '#7d6c87',
+                  fontSize: '16px'
+                }}
                 value={formData.location}
                 placeholder="City or ZIP code"
                 onIonChange={(e) => handleChange("location", e.detail.value!)}
@@ -300,8 +334,20 @@ ${readableResources}`;
               <IonIcon src={PregnancyIcon} slot="start" className="label-icon" />
               <label className="input-label">Trimester</label>
             </div>
-            <IonItem className="input-item">
+            <IonItem className="input-item" style={{
+              '--background': '#fff',
+              '--color': '#2a1d31',
+              '--border-radius': '12px',
+              '--border-color': '#73587e',
+              border: '1px solid #73587e',
+              marginBottom: '12px'
+            }}>
               <IonSelect
+                style={{
+                  '--color': '#2a1d31',
+                  '--placeholder-color': '#7d6c87',
+                  fontSize: '16px'
+                }}
                 value={formData.trimester}
                 placeholder="Select trimester"
                 onIonChange={(e) => handleChange("trimester", e.detail.value)}
@@ -316,27 +362,33 @@ ${readableResources}`;
 
         {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
 
-          <IonButton expand="block" className="btn-primary" onClick={handleSubmit}>
-            Create Account
-          </IonButton>
-
+        <div className="onboarding-buttons">
+          <button
+            className="onboarding-btn"
+            onClick={handleSubmit}
+            disabled={loading}
+            type="button"
+          >
+            CREATE ACCOUNT
+          </button>
           {!isGoogleUser && (
-            <IonButton
-              expand="block"
-              className="btn-secondary"
+            <button
+              className="onboarding-btn google"
               onClick={handleGoogleSignup}
+              disabled={loading}
+              type="button"
             >
-              Sign Up with Google
-            </IonButton>
+              SIGN UP WITH GOOGLE
+            </button>
           )}
-          <p className="auth-small-text">
-            Already have an account?{" "}
-            <span onClick={() => history.push("/auth")}>Log in</span>
-          </p>
         </div>
+
+        <p className="auth-small-text">
+          Already have an account?{" "}
+          <span onClick={() => history.push("/auth")}>Log in</span>
+        </p>
       </div>
-    </IonContent>
-  </IonPage>
+    </div>
   );
 };
 

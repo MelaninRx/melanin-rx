@@ -31,10 +31,9 @@
 }
 
 .auth-content {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   padding: 0;
-  overflow: hidden; /* prevent double scrollbars */
 }
 
 .auth-page {
@@ -47,8 +46,8 @@
 .auth-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: auto; /* ✅ allow growth */
   min-height: 100vh;
+  height: 100%;
 }
 
 .auth-left,
@@ -95,10 +94,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: #ffffff;
   padding: clamp(20px, 5vw, 48px);
-  overflow-y: auto; /* ✅ scrolls if content exceeds screen height */
-  max-height: 100vh; /* ✅ keeps it contained within viewport */
+  background: #ffffff;
+  height: 100%;
+  padding: 0px; 
+  position: relative;
 }
 
 .auth-right-top{
@@ -127,7 +127,6 @@
   flex-direction: column;
   gap: 16px;
   padding: 24px;
-  margin-bottom: 2rem; /* ✅ ensures last button isn't hidden */
 }
 
 .auth-heading h1 {
@@ -255,28 +254,6 @@
   background: rgba(169, 139, 179, 0.12);
 }
 
-.input-error {
-  border: 1.5px solid #e74c3c !important;
-  border-radius: 12px;
-  box-shadow: 0 0 4px rgba(231, 76, 60, 0.4);
-}
-
-.ion-toast {
-  font-weight: 500;
-  --border-radius: 14px;
-}
-
-.input-label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-
-.auth-form-wrapper p {
-  margin-bottom: 12px;
-}
-
-
 @media (max-width: 768px) {
   .auth-wrapper {
     grid-template-columns: 1fr;
@@ -289,13 +266,6 @@
     text-align: center;
   }
 
-  .auth-right {
-  overflow-y: auto;
-  justify-content: flex-start;
-  padding-top: 3rem;
-}
-
-
   .auth-left-bottom {
     margin-bottom: 0;
   }
@@ -304,66 +274,3 @@
     max-width: 100%;
   }
 }
-/* ================================
-   APPLE-STYLE INLINE ERROR BOX
-   ================================ */
-.auth-error {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: rgba(231, 76, 60, 0.1);
-  border: 1px solid rgba(231, 76, 60, 0.25);
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-top: 16px;
-  text-align: center;
-  color: #b93131;
-  font-weight: 600;
-  line-height: 1.4;
-  animation: fadeIn 0.35s ease-in-out;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 2px 6px rgba(231, 76, 60, 0.08);
-}
-
-.auth-error-icon {
-  font-size: 18px;
-  opacity: 0.8;
-  color: #b93131;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Optional: fade out after a few seconds */
-.auth-error.fade-out {
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.auth-small-text {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  color: #444;
-}
-
-.auth-small-text span {
-  color: #5b184e; /* your purple tone */
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.auth-small-text span:hover {
-  text-decoration: underline;
-}
-
-

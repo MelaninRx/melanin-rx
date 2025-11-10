@@ -1,152 +1,141 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 :root {
   --color-primary: #73587e;
-  --color-secondary: #d8cbe1;
   --color-accent: #a98bb3;
-  --color-light: #f7f5f8;
-  --color-mid: #e2d9e8;
+  --color-secondary: #d8cbe1;
+  --color-light: #ffffff;
   --text-primary: #2a1d31;
   --text-secondary: #55405e;
   --text-light: #ffffff;
   --text-muted: #7d6c87;
-  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
   --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
 }
 
-/* ==== Page wrapper ==== */
-.onboarding-page {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  background: var(--gradient-bg);
-  overflow-y: auto;
-  padding: 6rem 1rem 4rem;
-  box-sizing: border-box;
-}
-
-/* ==== Form container ==== */
-.onboarding-container {
-  width: 100%;
-  max-width: 800px;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  padding: 3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 3rem;
-}
-
-.onboarding-container h1,
-.onboarding-container p {
-  text-align: center;
-}
-
-ion-item {
-  --background: transparent;
-  border: 1px solid rgba(136, 94, 140, 0.2);
-  border-radius: 12px;
-  margin-bottom: 12px;
-  --inner-padding-start: 0;
-  --inner-padding-end: 12px;
-  --highlight-height: 0px;
-}
-
-ion-label {
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-
-ion-input {
-  --background: transparent;
-  font-size: 15px;
+body, html, #root, ion-app, ion-page, ion-content {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
   color: var(--text-primary);
 }
 
+/* ---- Form Layout ---- */
+.onboarding-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+.onboarding-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.onboarding-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.onboarding-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+/* ---- Input + Label Styles ---- */
 .label-with-icon {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .label-icon {
   width: 20px;
   height: 20px;
-  padding-left: 6px;
 }
 
-.btn-primary {
-  --background: #642d56;
-  --background-activated: var(--gradient-button);
-  --color: #ffffff;
-  --border-radius: 12px !important;
-  font-weight: 700;
-  margin-top: 1rem;
+.input-label {
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
-.btn-secondary {
-  --background: #642d56;
-  --background-activated: var(--color-primary);
-  --color: var(--text-light);
-  --border-radius: 12px !important;
-  font-weight: 700;
-  margin-top: 0.5rem;
-  opacity: 0.98;
+.input-item {
+  border: 1px solid rgba(115, 88, 126, 0.3);
+  border-radius: 10px;
+  margin-bottom: 14px;
+  --highlight-height: 0;
 }
 
-.btn-primary::part(inner),
-.btn-primary::part(native),
-.btn-secondary::part(inner),
-.btn-secondary::part(native) {
-  color: var(--text-light) !important;
-}
-
-.onboarding-content {
-  --background: var(--gradient-bg);
-  background: var(--gradient-bg);
-  overflow-y: auto;
-  min-height: 100vh;
+/* ---- Buttons ---- */
+.onboarding-buttons {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
 }
 
-.onboarding-header {
+.onboarding-btn {
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
+  border-radius: 12px;
+  height: 48px;
   width: 100%;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding-left: 2rem;
-}
-
-.onboarding-logo {
-  height: 40px;
-  width: auto;
+  letter-spacing: 0.5px;
   cursor: pointer;
+  box-shadow: 0 2px 6px rgba(115, 88, 126, 0.25);
+  transition: all 0.2s ease-in-out;
 }
 
-.onboarding-page {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem 1rem 4rem;
-  flex-grow: 1;
+.onboarding-btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
 }
 
+/* ---- Google Button Variant ---- */
+.onboarding-btn.google {
+  background: #ffffff;
+  color: var(--text-primary);
+  border: 1px solid rgba(115, 88, 126, 0.3);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
 
-@media (max-width: 768px) {
-  .onboarding-page {
-    padding: 2rem 1rem;
-  }
+.onboarding-btn.google:hover {
+  border-color: var(--color-primary);
+  background-color: #f8f6fa;
+}
 
-  .onboarding-container {
-    padding: 1.5rem;
-  }
+/* ---- Footer Text ---- */
+.auth-small-text {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-top: 24px;
+}
+
+.auth-small-text span {
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.auth-small-text span:hover {
+  text-decoration: underline;
+}
+
+/* Remove Ionic's default background on the list container */
+ion-list.list-md {
+  background: transparent !important;
+  --ion-item-background: transparent !important;
+  --ion-background-color: transparent !important;
 }

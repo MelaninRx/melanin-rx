@@ -1,2 +1,48 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+
+:root {
+  /* ----------- BRAND COLORS ----------- */
+  --color-primary: #73587e;
+  --color-secondary: #d8cbe1;
+  --color-accent: #a98bb3;
+  --color-light: #f7f5f8;
+  --color-mid: #e2d9e8;
+
+  /* ----------- TEXT COLORS ----------- */
+  --text-primary: #2a1d31;
+  --text-secondary: #55405e;
+  --text-light: #ffffff;
+  --text-muted: #7d6c87;
+
+  /* ----------- GRADIENTS ----------- */
+  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
+  --gradient-panel: linear-gradient(180deg, #faf8fc, #ece5f2);
+  --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
+  --gradient-user-bubble: linear-gradient(135deg, #9272a2, #c2a9ce);
+  --gradient-bot-bubble: linear-gradient(135deg, #ede6f2, #ffffff);
+
+  /* ----------- IONIC CORE COLORS ----------- */
+  --ion-color-primary: #73587e;
+  --ion-color-primary-rgb: 115, 88, 126;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #60476a;
+  --ion-color-primary-tint: #846a8f;
+
+  --ion-color-secondary: #a98bb3;
+  --ion-color-secondary-rgb: 169, 139, 179;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #93779c;
+  --ion-color-secondary-tint: #b399be;
+
+  --ion-background-color: #f8f6fa;
+  --ion-text-color: #2a1d31;
+}
+
+html, body, ion-app, ion-content {
+  background: var(--gradient-bg) !important;
+  color: var(--text-primary) !important;
+}
+
