@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./OnboardingForm.css";
 import { useHistory } from "react-router-dom";
 import {
@@ -21,6 +21,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   User,
+  onAuthStateChanged,
 } from "firebase/auth";
 import {
   collection,
@@ -29,6 +30,7 @@ import {
   getDocs,
   query,
   where,
+  getDoc,
 } from "firebase/firestore";
 import EmailIcon from "../icons/mail.svg";
 import CityIcon from "../icons/solar_city-bold.svg";
@@ -50,6 +52,40 @@ const OnboardingForm: React.FC = () => {
     trimester: "",
   });
 
+  // Check for Google user on component mount
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Check if this is a new Google user (no Firestore doc yet)
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        
+        if (!userDoc.exists()) {
+          // New Google user - populate form
+          setFormData((prev) => ({
+            ...prev,
+            name: user.displayName || "",
+            email: user.email || "",
+          }));
+          setIsGoogleUser(true);
+          
+          // Store flag in sessionStorage to persist across redirects
+          sessionStorage.setItem("googleSignupInProgress", "true");
+        } else {
+          // Existing user with completed profile - redirect
+          history.push("/home", { refresh: true });
+        }
+      } else {
+        // Check if we were in the middle of Google signup
+        const googleSignupInProgress = sessionStorage.getItem("googleSignupInProgress");
+        if (googleSignupInProgress === "true") {
+          sessionStorage.removeItem("googleSignupInProgress");
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, [history]);
+
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -60,20 +96,46 @@ const OnboardingForm: React.FC = () => {
     const provider = new GoogleAuthProvider();
 
     try {
+      // Set flag before popup to persist through any redirects
+      sessionStorage.setItem("googleSignupInProgress", "true");
+      
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      setFormData({
-        ...formData,
+      // Check if user already exists in Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        sessionStorage.removeItem("googleSignupInProgress");
+        setError("This account already exists. Redirecting to home...");
+        setTimeout(() => {
+          history.push("/home", { refresh: true });
+        }, 1500);
+        return;
+      }
+
+      // New user - update form data with Google info
+      setFormData((prev) => ({
+        ...prev,
         name: user.displayName || "",
         email: user.email || "",
-        password: "", // No password needed
-      });
+        password: "",
+      }));
 
-      setIsGoogleUser(true); // Hide the button after signing in
+      setIsGoogleUser(true);
+      setError("");
     } catch (error: any) {
       console.error("Google signup error:", error);
-      setError("There was a problem signing up with Google.");
+      sessionStorage.removeItem("googleSignupInProgress");
+      
+      if (error.code === "auth/popup-closed-by-user") {
+        setError("Sign-in cancelled. Please try again.");
+      } else if (error.code === "auth/popup-blocked") {
+        setError("Pop-up blocked. Please allow pop-ups for this site.");
+      } else if (error.code === "auth/cancelled-popup-request") {
+        setError(""); // User closed popup, don't show error
+      } else {
+        setError("There was a problem signing up with Google. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -100,6 +162,7 @@ const OnboardingForm: React.FC = () => {
         await updateProfile(user, { displayName: name });
       }
 
+      // ✅ Case 2: Email/password signup
       if (!isGoogleUser) {
         if (!password) {
           setError("Please enter a password or use Sign up with Google.");
@@ -189,6 +252,9 @@ ${readableResources}`;
         createdAt: new Date(),
       });
 
+      // Clear the Google signup flag
+      sessionStorage.removeItem("googleSignupInProgress");
+
       console.log("User + Firestore setup complete!");
       history.push("/home", { refresh: true });
     } catch (error: any) {
@@ -213,63 +279,70 @@ ${readableResources}`;
     <div className="onboarding-container">
       <div className="onboarding-card">
         <h1 className="onboarding-title">Create Your Account</h1>
-        <p className="onboarding-subtitle">Tell us about yourself to get started</p>
+        <p className="onboarding-subtitle">
+          {isGoogleUser 
+            ? `Welcome, ${formData.name}! Complete your profile below.` 
+            : "Tell us about yourself to get started"}
+        </p>
         <IonList>
-          {/* Name */}
-          <div className="input-wrapper">
-            <div className="label-with-icon">
-              <IonIcon src={UserIcon} slot="start" className="label-icon" />
-              <label className="input-label">Name</label>
+          {/* Name (only for non-Google users) */}
+          {!isGoogleUser && (
+            <div className="input-wrapper">
+              <div className="label-with-icon">
+                <IonIcon src={UserIcon} slot="start" className="label-icon" />
+                <label className="input-label">Name</label>
+              </div>
+              <IonItem className="input-item" style={{
+                '--background': '#fff',
+                '--color': '#2a1d31',
+                '--border-radius': '12px',
+                '--border-color': '#73587e',
+                border: '1px solid #73587e',
+                marginBottom: '12px'
+              }}>
+                <IonInput
+                  style={{
+                    '--color': '#2a1d31',
+                    '--placeholder-color': '#7d6c87',
+                    fontSize: '16px'
+                  }}
+                  value={formData.name}
+                  placeholder="Enter your name"
+                  onIonChange={(e) => handleChange("name", e.detail.value!)}
+                />
+              </IonItem>
             </div>
-            <IonItem className="input-item" style={{
-              '--background': '#fff',
-              '--color': '#2a1d31',
-              '--border-radius': '12px',
-              '--border-color': '#73587e',
-              border: '1px solid #73587e',
-              marginBottom: '12px'
-            }}>
-              <IonInput
-                style={{
-                  '--color': '#2a1d31',
-                  '--placeholder-color': '#7d6c87',
-                  fontSize: '16px'
-                }}
-                value={formData.name}
-                placeholder="Enter your name"
-                onIonChange={(e) => handleChange("name", e.detail.value!)}
-              />
-            </IonItem>
-          </div>
+          )}
 
-          {/* Email */}
-          <div className="input-wrapper">
-            <div className="label-with-icon">
-              <IonIcon src={EmailIcon} slot="start" className="label-icon" />
-              <label className="input-label">Email</label>
+          {/* Email (only for non-Google users) */}
+          {!isGoogleUser && (
+            <div className="input-wrapper">
+              <div className="label-with-icon">
+                <IonIcon src={EmailIcon} slot="start" className="label-icon" />
+                <label className="input-label">Email</label>
+              </div>
+              <IonItem className="input-item" style={{
+                '--background': '#fff',
+                '--color': '#2a1d31',
+                '--border-radius': '12px',
+                '--border-color': '#73587e',
+                border: '1px solid #73587e',
+                marginBottom: '12px'
+              }}>
+                <IonInput
+                  style={{
+                    '--color': '#2a1d31',
+                    '--placeholder-color': '#7d6c87',
+                    fontSize: '16px'
+                  }}
+                  type="email"
+                  value={formData.email}
+                  placeholder="Enter your email"
+                  onIonChange={(e) => handleChange("email", e.detail.value!)}
+                />
+              </IonItem>
             </div>
-            <IonItem className="input-item" style={{
-              '--background': '#fff',
-              '--color': '#2a1d31',
-              '--border-radius': '12px',
-              '--border-color': '#73587e',
-              border: '1px solid #73587e',
-              marginBottom: '12px'
-            }}>
-              <IonInput
-                style={{
-                  '--color': '#2a1d31',
-                  '--placeholder-color': '#7d6c87',
-                  fontSize: '16px'
-                }}
-                type="email"
-                value={formData.email}
-                placeholder="Enter your email"
-                onIonChange={(e) => handleChange("email", e.detail.value!)}
-                disabled={isGoogleUser}
-              />
-            </IonItem>
-          </div>
+          )}
 
           {/* Password (only for non-Google users) */}
           {!isGoogleUser && (
