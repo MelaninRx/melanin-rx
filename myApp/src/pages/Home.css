@@ -125,13 +125,10 @@ ion-header.home-header {
 }
 
 /* Hero */
-/* ✅ Hero 主容器修改：从居中 -> 靠左上 */
 .hero {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-
-  /* ✅ 给 side panel 留空间 */
   padding-left: calc(var(--side-panel-width) + 24px);
   padding-top: 32px;
   padding-right: 16px;
@@ -215,18 +212,21 @@ ion-header.home-header {
 .panels {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
-  padding: 0 10px;
-  width: 100%;
-  max-width: 1200px;
-  margin: 20px auto 40px;
+  gap: 14px;
+  padding-left: 20px;
+  padding-right: 30px; 
+  width: calc(100% - var(--side-panel-width) - 20px);
+  margin-left: calc(var(--side-panel-width) + 10px);
+  margin-right: 20px;
+  max-width: none;
   box-sizing: border-box;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .panel-card {
   flex: 1 1 0; 
-  min-width: 240px;
+  min-width: 0;
   max-width: 280px;
   background: var(--color-light);
   border: 1px solid var(--color-mid);
