@@ -53,6 +53,8 @@ jobs:
             echo "LANGFLOW_API_KEY=${{ secrets.LANGFLOW_API_KEY }}"
           } > .env
           echo ".env for Functions created:"
+          echo "::add-mask::$LANGFLOW_URL"
+          echo "::add-mask::$LANGFLOW_API_KEY"
           cat .env | sed 's/=.*/=***/'
 
       # Install dependencies for Cloud Functions
