@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import "./OnboardingForm.css";
 import { useHistory } from "react-router-dom";
-import { getAuth } from "firebase/auth";
-import EmailIcon from '../icons/mail.svg';
-import LockIcon from '../icons/lock.svg';
-import CityIcon from "../icons/solar_city-bold.svg"
-import UserIcon from "../icons/mdi_user.svg"
-import PregnancyIcon from "../icons/streamline-ultimate_pregnancy-pregnant-bold.svg"
-
 import {
   IonInput,
   IonItem,
@@ -18,26 +11,41 @@ import {
   IonList,
   IonSpinner,
   IonIcon,
+  IonPage,
+  IonContent,
 } from "@ionic/react";
-import { db } from "../firebaseConfig";
+import { db, auth } from "../firebaseConfig";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
+  User,
+} from "firebase/auth";
 import {
   collection,
   doc,
-  getDoc,
   setDoc,
   getDocs,
   query,
   where,
 } from "firebase/firestore";
+import EmailIcon from "../icons/mail.svg";
+import CityIcon from "../icons/solar_city-bold.svg";
+import UserIcon from "../icons/mdi_user.svg";
+import PregnancyIcon from "../icons/streamline-ultimate_pregnancy-pregnant-bold.svg";
+import LockIcon from "../icons/lock.svg";
 
 const OnboardingForm: React.FC = () => {
-  const auth = getAuth();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    password: "",
     location: "",
     trimester: "",
   });
@@ -46,33 +54,85 @@ const OnboardingForm: React.FC = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // ✅ Google Signup Handler (signs in, pre-fills fields, hides button)
+  const handleGoogleSignup = async () => {
+    setLoading(true);
+    setError("");
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      setFormData({
+        ...formData,
+        name: user.displayName || "",
+        email: user.email || "",
+        password: "", // No password needed
+      });
+
+      setIsGoogleUser(true); // Hide the button after signing in
+    } catch (error: any) {
+      console.error("Google signup error:", error);
+      setError("There was a problem signing up with Google.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Main Onboarding Submit Handler (shared for Google + Email)
   const handleSubmit = async () => {
     console.log("Form Submitted:", formData);
     setLoading(true);
+    setError("");
 
     try {
-      const user = auth.currentUser;
-      if (!user) throw new Error("No user is signed in.");
+      const { name, email, password, location, trimester } = formData;
 
-      const existingUserDoc = await getDoc(doc(db, "users", user.uid));
-      if (existingUserDoc.exists()) {
-        console.log("User already onboarded, redirecting...");
-        history.push("/home");
+      if (!name || !email || !location || !trimester) {
+        setError("Please fill in all required fields.");
+        setLoading(false);
         return;
       }
 
-      const trimesterLabel = {
-        "1": "first",
-        "2": "second",
-        "3": "third",
-      }[formData.trimester];
+      let user: User | null = auth.currentUser;
 
+      // ✅ Case 1: Google user already signed in
+      if (isGoogleUser && user) {
+        await updateProfile(user, { displayName: name });
+      }
+
+      // ✅ Case 2: Email signup — create Firebase Auth user
+      if (!isGoogleUser) {
+        if (!password) {
+          setError("Please enter a password or use Sign up with Google.");
+          setLoading(false);
+          return;
+        }
+
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        user = userCredential.user;
+        await updateProfile(user, { displayName: name });
+      }
+
+      // ✅ Safety check
+      if (!user) {
+        throw new Error("User authentication failed. Please try again.");
+      }
+
+      // ✅ Fetch resources matching trimester + location
+      const trimesterLabel = { "1": "first", "2": "second", "3": "third" }[
+        trimester
+      ];
       const resourceQuery = query(
         collection(db, "resources"),
         where("trimester", "array-contains", trimesterLabel),
-        where("location", "in", [formData.location, "national"])
+        where("location", "in", [location, "national"])
       );
-
       const querySnapshot = await getDocs(resourceQuery);
       const resources = querySnapshot.docs.map((doc) => doc.data());
 
@@ -90,9 +150,9 @@ const OnboardingForm: React.FC = () => {
         throw new Error("Resources are empty or improperly formatted.");
       }
 
-      const fullPrompt = `Location: ${formData.location}
-Trimester: ${formData.trimester}
-
+      // ✅ Generate personalized dashboard via OpenAI
+      const fullPrompt = `Location: ${location}
+Trimester: ${trimester}
 Resources:
 ${readableResources}`;
 
@@ -100,7 +160,7 @@ ${readableResources}`;
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${import.meta.env.VITE_OPEN_AI_API_KEY}`,
+          Authorization: `Bearer ${import.meta.env.VITE_OPEN_AI_API_KEY}`,
         },
         body: JSON.stringify({
           model: "gpt-4-turbo",
@@ -110,53 +170,42 @@ ${readableResources}`;
               content:
                 "You are a culturally-aware health assistant helping pregnant Black women understand their pregnancy journey. Create personalized dashboards using ONLY the exact information provided.",
             },
-            {
-              role: "user",
-              content: fullPrompt,
-            },
+            { role: "user", content: fullPrompt },
           ],
           temperature: 0.1,
         }),
       });
 
-      console.log("OpenAI Response status:", response.status);
       const result = await response.json();
-      console.log("OpenAI result:", result);
-
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(`OpenAI API error: ${result.error?.message || "Unknown error"}`);
-      }
 
       const dashboardText = result.choices?.[0]?.message?.content;
-      if (!dashboardText) {
-        throw new Error("No dashboard text returned from OpenAI");
-      }
+      if (!dashboardText)
+        throw new Error("No dashboard text returned from OpenAI.");
 
+      // ✅ Create Firestore document linked to Auth UID
       await setDoc(doc(db, "users", user.uid), {
-        name: formData.name,
-        email: formData.email,
-        location: formData.location,
-        trimester: formData.trimester,
+        name,
+        email,
+        location,
+        trimester,
         dashboard: dashboardText,
         resources: formattedResources,
-        updatedAt: new Date(),
+        createdAt: new Date(),
       });
 
-      console.log("✅ Data saved to Firestore!");
-      
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      console.log("✅ User + Firestore setup complete!");
       history.push("/home", { refresh: true });
-      
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during onboarding:", error);
-      alert("There was an error submitting your form. Please try again.");
+      setError(error.message || "There was an error creating your account.");
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ Loading screen shown while generating dashboard
+  // ✅ Loading spinner during dashboard generation
   if (loading) {
     return (
       <div style={{ textAlign: "center", marginTop: "20%" }}>
@@ -168,77 +217,126 @@ ${readableResources}`;
   }
 
   return (
-    <>
-      <h1>Create Your Account</h1>
-      <p>Tell us about yourself to get started</p>
+    <IonPage>
+    <IonContent fullscreen={true} className="onboarding-content" scrollY={true}>
+
       
-      <IonList>
-        <div className="input-wrapper">
-          <div className="label-with-icon">
-            <IonIcon src={UserIcon} slot="start" className="label-icon" />
-            <label className="input-label">Name</label>
-          </div>
-          <IonItem className="input-item">
-            <IonInput
-              value={formData.name}
-              placeholder="Enter your name"
-              onIonChange={(e) => handleChange("name", e.detail.value!)}
-            />
-          </IonItem>
-        </div>
+      {/* Main content */}
+      <div className="onboarding-page">
+        <div className="onboarding-container">
+          <h1>Create Your Account</h1>
+          <p>Tell us about yourself to get started</p>
 
-        <div className="input-wrapper">
-          <div className="label-with-icon">
-            <IonIcon src={EmailIcon} slot="start" className="label-icon" />
-            <label className="input-label">Email</label>
-          </div>
-          <IonItem className="input-item">
-            <IonInput
-              type="email"
-              value={formData.email}
-              placeholder="Enter your email"
-              onIonChange={(e) => handleChange("email", e.detail.value!)}
-            />
-          </IonItem>
-        </div>
 
-        <div className="input-wrapper">
-          <div className="label-with-icon">
-            <IonIcon src={CityIcon} slot="start" className="label-icon" />
-            <label className="input-label">Location</label>
+        <IonList>
+          {/* Name */}
+          <div className="input-wrapper">
+            <div className="label-with-icon">
+              <IonIcon src={UserIcon} slot="start" className="label-icon" />
+              <label className="input-label">Name</label>
+            </div>
+            <IonItem className="input-item">
+              <IonInput
+                value={formData.name}
+                placeholder="Enter your name"
+                onIonChange={(e) => handleChange("name", e.detail.value!)}
+              />
+            </IonItem>
           </div>
-          <IonItem className="input-item">
-            <IonInput
-              value={formData.location}
-              placeholder="City or ZIP code"
-              onIonChange={(e) => handleChange("location", e.detail.value!)}
-            />
-          </IonItem>
-        </div>
 
-        <div className="input-wrapper">
-          <div className="label-with-icon">
-            <IonIcon src={PregnancyIcon} slot="start" className="label-icon" />
-            <label className="input-label">Trimester</label>
+          {/* Email */}
+          <div className="input-wrapper">
+            <div className="label-with-icon">
+              <IonIcon src={EmailIcon} slot="start" className="label-icon" />
+              <label className="input-label">Email</label>
+            </div>
+            <IonItem className="input-item">
+              <IonInput
+                type="email"
+                value={formData.email}
+                placeholder="Enter your email"
+                onIonChange={(e) => handleChange("email", e.detail.value!)}
+                disabled={isGoogleUser}
+              />
+            </IonItem>
           </div>
-          <IonItem className="input-item">
-            <IonSelect
-              value={formData.trimester}
-              placeholder="Select trimester"
-              onIonChange={(e) => handleChange("trimester", e.detail.value)}
+
+          {/* Password (only for non-Google users) */}
+          {!isGoogleUser && (
+            <div className="input-wrapper">
+              <div className="label-with-icon">
+                <IonIcon src={LockIcon} slot="start" className="label-icon" />
+                <label className="input-label">Password</label>
+              </div>
+              <IonItem className="input-item">
+                <IonInput
+                  type="password"
+                  value={formData.password}
+                  placeholder="Create a password"
+                  onIonChange={(e) => handleChange("password", e.detail.value!)}
+                />
+              </IonItem>
+            </div>
+          )}
+
+          {/* Location */}
+          <div className="input-wrapper">
+            <div className="label-with-icon">
+              <IonIcon src={CityIcon} slot="start" className="label-icon" />
+              <label className="input-label">Location</label>
+            </div>
+            <IonItem className="input-item">
+              <IonInput
+                value={formData.location}
+                placeholder="City or ZIP code"
+                onIonChange={(e) => handleChange("location", e.detail.value!)}
+              />
+            </IonItem>
+          </div>
+
+          {/* Trimester */}
+          <div className="input-wrapper">
+            <div className="label-with-icon">
+              <IonIcon src={PregnancyIcon} slot="start" className="label-icon" />
+              <label className="input-label">Trimester</label>
+            </div>
+            <IonItem className="input-item">
+              <IonSelect
+                value={formData.trimester}
+                placeholder="Select trimester"
+                onIonChange={(e) => handleChange("trimester", e.detail.value)}
+              >
+                <IonSelectOption value="1">1st Trimester</IonSelectOption>
+                <IonSelectOption value="2">2nd Trimester</IonSelectOption>
+                <IonSelectOption value="3">3rd Trimester</IonSelectOption>
+              </IonSelect>
+            </IonItem>
+          </div>
+        </IonList>
+
+        {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+
+          <IonButton expand="block" className="btn-primary" onClick={handleSubmit}>
+            Create Account
+          </IonButton>
+
+          {!isGoogleUser && (
+            <IonButton
+              expand="block"
+              className="btn-secondary"
+              onClick={handleGoogleSignup}
             >
-              <IonSelectOption value="1">1st Trimester</IonSelectOption>
-              <IonSelectOption value="2">2nd Trimester</IonSelectOption>
-              <IonSelectOption value="3">3rd Trimester</IonSelectOption>
-            </IonSelect>
-          </IonItem>
+              Sign Up with Google
+            </IonButton>
+          )}
+          <p className="auth-small-text">
+            Already have an account?{" "}
+            <span onClick={() => history.push("/auth")}>Log in</span>
+          </p>
         </div>
-      </IonList>
-
-      <IonButton expand="block" className="btn-primary" onClick={handleSubmit}>
-        Submit
-      </IonButton>
-    </>
+      </div>
+    </IonContent>
+  </IonPage>
   );
 };
 

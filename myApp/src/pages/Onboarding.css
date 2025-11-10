@@ -34,6 +34,7 @@ body, html, #root, ion-app, ion-page, ion-content {
   --background: #ffffff !important;
   color: var(--text-primary);
   border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 5px;
 }
 
 .header-left{
