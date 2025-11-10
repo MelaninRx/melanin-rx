@@ -1,0 +1,7 @@
+/* Ensure Ionic content respects your theme */
+ion-app, ion-content {
+  --ion-background-color: var(--gradient-bg) !important;
+  --background: var(--gradient-bg) !important;
+  background: var(--gradient-bg) !important;
+  color: var(--text-primary);
+}
