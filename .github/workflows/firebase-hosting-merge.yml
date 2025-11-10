@@ -30,7 +30,7 @@ jobs:
           echo ".env for Vite created:"
           echo "VITE_FIREBASE_API_KEY length: ${#VITE_FIREBASE_API_KEY}"
           echo "VITE_OPEN_AI_API_KEY length: ${#VITE_OPEN_AI_API_KEY}"
-          cat .env
+          cat .env | sed 's/=.*/=***/'
 
       - name: Clean old build output
         working-directory: myApp
@@ -55,12 +55,12 @@ jobs:
             echo "LANGFLOW_API_KEY=${{ secrets.LANGFLOW_API_KEY }}"
           } > .env
           echo ".env for Functions created:"
-          echo "::add-mask::$LANGFLOW_URL"
-          echo "::add-mask::$LANGFLOW_API_KEY"
+          sed -E 's/(LANGFLOW_URL=).*/\1*** (masked)/' .env | \
+          sed -E 's/(LANGFLOW_API_KEY=).*/\1*** (masked)/'
 
           echo "LANGFLOW_URL length: ${#LANGFLOW_URL}"
           echo "LANGFLOW_API_KEY length: ${#LANGFLOW_API_KEY}"
-          cat .env
+          cat .env | sed 's/=.*/=***/'
 
       # Install dependencies for Cloud Functions
       - name: Install dependencies for Cloud Functions
