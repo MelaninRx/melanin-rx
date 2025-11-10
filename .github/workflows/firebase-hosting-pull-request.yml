@@ -38,6 +38,8 @@ jobs:
           } > .env
           echo "Created .env file:"
           cat .env | sed 's/=.*/=***/'
+          echo "VITE_FIREBASE_API_KEY length: ${#VITE_FIREBASE_API_KEY}"
+          echo "VITE_OPEN_AI_API_KEY length: ${#VITE_OPEN_AI_API_KEY}"
 
       # 4️⃣ Install and build Vite web app
       - name: Install and build web app
@@ -56,6 +58,8 @@ jobs:
             echo "LANGFLOW_API_KEY=${{ secrets.LANGFLOW_API_KEY }}"
           } > .env
           echo "Functions .env created:"
+          echo "LANGFLOW_URL length: ${#LANGFLOW_URL}"
+          echo "LANGFLOW_API_KEY length: ${#LANGFLOW_API_KEY}"
           cat .env | sed 's/=.*/=***/'
 
       # 6️⃣ Install and build Cloud Functions
