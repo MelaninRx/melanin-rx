@@ -22,6 +22,13 @@ import aboutIcon from '../icons/book-text.svg';
 import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 
+// Use your Firebase project ID here
+const FIREBASE_PROJECT_ID = "melaninrx-4842c";
+const FIREBASE_REGION = "us-central1"; // Change if your functions are in a different region
+
+// Construct the Firebase Function URL
+const LANGFLOW_PROXY_URL = `https://${FIREBASE_REGION}-${FIREBASE_PROJECT_ID}.cloudfunctions.net/chatWithLangFlow`;
+
 const ChatbotPage: React.FC = () => {
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState<{ sender: string; text: string }[]>([]);
@@ -38,13 +45,24 @@ const handleSendWithText = async (text: string) => {
   setLoading(true);
 
   try {
-    const res = await fetch("https://chatwithlangflow-bz35xt5xna-uc.a.run.app/", {
+    console.log("Sending message to Firebase Function:", LANGFLOW_PROXY_URL);
+    const res = await fetch(LANGFLOW_PROXY_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: text, user: { name: "Guest", id: "anon" } }),
     });
 
+    console.log("Response status:", res.status);
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
+      console.error("Error response from Firebase Function:", errorData);
+      throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
+    }
+
     const data = await res.json();
+    console.log("LangFlow response:", data);
+
     const botReply =
       data.outputs?.[0]?.outputs?.[0]?.results?.message?.text ||
       "No response from LangFlow.";
@@ -52,9 +70,10 @@ const handleSendWithText = async (text: string) => {
     setChatHistory((prev) => [...prev, { sender: 'bot', text: botReply }]);
   } catch (error) {
     console.error("LangFlow error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Error connecting to LangFlow.";
     setChatHistory((prev) => [
       ...prev,
-      { sender: 'bot', text: "Error connecting to LangFlow." },
+      { sender: 'bot', text: `Error: ${errorMessage}` },
     ]);
   }
 
