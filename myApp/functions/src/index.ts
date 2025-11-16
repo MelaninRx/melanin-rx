@@ -48,7 +48,7 @@ export const chatWithLangFlow = functions.https.onRequest(async (req: any, res: 
   try {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization, x-api-key");
     if (req.method === "OPTIONS") return res.status(204).send();
 
     // Validate environment variables
