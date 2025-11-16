@@ -10,11 +10,23 @@ import {
   IonLabel,
   IonButton,
   IonButtons,
+  IonIcon,
 } from '@ionic/react';
 import './CommunityChannels.css';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { db } from '../firebaseConfig';
 import { doc, getDoc, collection, getDocs, onSnapshot } from 'firebase/firestore';
+import homeIcon from '../icons/house.svg';
+import addIcon from '../icons/Vector.svg';
+import menuIcon from '../icons/menu.svg';
+import chatbotIcon from '../icons/message-square.svg';
+import communityIcon from '../icons/users.svg';
+import timelineIcon from '../icons/calendar-days.svg';
+import AppointmentIcon from '../icons/Frame 112.svg';
+import LogoutIcon from "../icons/log-out.svg";
+import settingsIcon from '../icons/settings.svg';
+import profileIcon from '../icons/circle-user-round.svg';
+import { logoutUser } from '../services/authService';
 
 type UserProfile = {
   name?: string;
@@ -155,13 +167,57 @@ const CommunityChannels: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Community Channels</IonTitle>
-          <IonButtons slot="end">
-            <IonButton routerLink="/home" routerDirection="root" color="medium">Home</IonButton>
-          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen className="community-content">
+      <IonContent fullscreen>
+        <aside className="side-panel">
+          <div className="nav-top">
+            <IonButton fill="clear" routerLink="/menu">
+              <IonIcon icon={menuIcon} />
+              <span className="menu-text">Menu</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/home">
+              <IonIcon icon={homeIcon} />
+              <span className="menu-text">Home</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/add">
+              <IonIcon icon={addIcon} />
+              <span className="menu-text">New Chat</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/chatbot">
+              <IonIcon icon={chatbotIcon} />
+              <span className="menu-text">Chats</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/community">
+              <IonIcon icon={communityIcon} />
+              <span className="menu-text">Communities</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/timeline">
+              <IonIcon icon={timelineIcon} />
+              <span className="menu-text">Timeline</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/appointments">
+              <IonIcon icon={AppointmentIcon} />
+              <span className="menu-text">Appointments</span>
+            </IonButton>
+          </div>
+          <div className="nav-bottom">
+            <IonButton fill='clear' onClick={logoutUser}>
+              <IonIcon icon={LogoutIcon} />
+              <span className="menu-text">Log out</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/settings">
+              <IonIcon icon={settingsIcon} />
+              <span className="menu-text">Setting</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/profile">
+              <IonIcon icon={profileIcon} />
+              <span className="menu-text">Profile</span>
+            </IonButton>
+          </div>
+        </aside>
+
         <section className="community-hero">
           <h2 className="community-welcome">
             {user?.email ? `Welcome, ${user.email}` : 'Welcome to MelaninRX Community'}

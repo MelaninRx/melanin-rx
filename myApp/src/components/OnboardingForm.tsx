@@ -11,8 +11,6 @@ import {
   IonList,
   IonSpinner,
   IonIcon,
-  IonPage,
-  IonContent,
 } from "@ionic/react";
 import { db, auth } from "../firebaseConfig";
 import {
@@ -43,6 +41,11 @@ const OnboardingForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isGoogleUser, setIsGoogleUser] = useState(false);
+  const [waitingForOnboard, setWaitingForOnboard] = useState(false);
+  const [isPolling, setIsPolling] = useState(false);
+  const [submitted, setSubmitted] = useState(() => {
+    return sessionStorage.getItem("onboardingSubmitted") === "true";
+  });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -51,40 +54,6 @@ const OnboardingForm: React.FC = () => {
     location: "",
     trimester: "",
   });
-
-  // Check for Google user on component mount
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // Check if this is a new Google user (no Firestore doc yet)
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        
-        if (!userDoc.exists()) {
-          // New Google user - populate form
-          setFormData((prev) => ({
-            ...prev,
-            name: user.displayName || "",
-            email: user.email || "",
-          }));
-          setIsGoogleUser(true);
-          
-          // Store flag in sessionStorage to persist across redirects
-          sessionStorage.setItem("googleSignupInProgress", "true");
-        } else {
-          // Existing user with completed profile - redirect
-          history.push("/home", { refresh: true });
-        }
-      } else {
-        // Check if we were in the middle of Google signup
-        const googleSignupInProgress = sessionStorage.getItem("googleSignupInProgress");
-        if (googleSignupInProgress === "true") {
-          sessionStorage.removeItem("googleSignupInProgress");
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, [history]);
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -98,22 +67,10 @@ const OnboardingForm: React.FC = () => {
     try {
       // Set flag before popup to persist through any redirects
       sessionStorage.setItem("googleSignupInProgress", "true");
-      
+
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // Check if user already exists in Firestore
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (userDoc.exists()) {
-        sessionStorage.removeItem("googleSignupInProgress");
-        setError("This account already exists. Redirecting to home...");
-        setTimeout(() => {
-          history.push("/home", { refresh: true });
-        }, 1500);
-        return;
-      }
-
-      // New user - update form data with Google info
       setFormData((prev) => ({
         ...prev,
         name: user.displayName || "",
@@ -126,7 +83,7 @@ const OnboardingForm: React.FC = () => {
     } catch (error: any) {
       console.error("Google signup error:", error);
       sessionStorage.removeItem("googleSignupInProgress");
-      
+
       if (error.code === "auth/popup-closed-by-user") {
         setError("Sign-in cancelled. Please try again.");
       } else if (error.code === "auth/popup-blocked") {
@@ -141,7 +98,33 @@ const OnboardingForm: React.FC = () => {
     }
   };
 
+  const pollOnboardingComplete = async (uid: string) => {
+    setIsPolling(true);
+    console.log('[OnboardingForm] Starting polling for onboardingComplete');
+    const userDocRef = doc(db, "users", uid);
+    for (let i = 0; i < 20; i++) {
+      const userDoc = await getDoc(userDocRef);
+      console.log(`[OnboardingForm] Poll attempt ${i + 1}:`, userDoc.exists() ? userDoc.data().onboardingComplete : 'no user doc');
+      if (userDoc.exists() && userDoc.data().onboardingComplete === true) {
+        console.log('[OnboardingForm] onboardingComplete is true, redirecting to home');
+        setWaitingForOnboard(false);
+        setIsPolling(false);
+        setLoading(false);
+        history.push("/home", { refresh: true });
+        return;
+      }
+      await new Promise(res => setTimeout(res, 1000));
+    }
+    console.log('[OnboardingForm] Polling timed out, onboardingComplete not true');
+    setError("Onboarding did not complete. Please refresh or contact support.");
+    setWaitingForOnboard(false);
+    setIsPolling(false);
+    setLoading(false);
+  };
+
   const handleSubmit = async () => {
+    setSubmitted(true);
+    sessionStorage.setItem("onboardingSubmitted", "true");
     console.log("Form Submitted:", formData);
     setLoading(true);
     setError("");
@@ -157,12 +140,12 @@ const OnboardingForm: React.FC = () => {
 
       let user: User | null = auth.currentUser;
 
-      // ✅ Case 1: Google user already signed in
+      // Case 1: Google user already signed in
       if (isGoogleUser && user) {
         await updateProfile(user, { displayName: name });
       }
 
-      // ✅ Case 2: Email/password signup
+      // Case 2: Email/password signup
       if (!isGoogleUser) {
         if (!password) {
           setError("Please enter a password or use Sign up with Google.");
@@ -180,7 +163,9 @@ const OnboardingForm: React.FC = () => {
       }
 
       if (!user) {
-        throw new Error("User authentication failed. Please try again.");
+        setError("No user detected. Please log in again.");
+        setLoading(false);
+        return;
       }
 
       const trimesterLabel = { "1": "first", "2": "second", "3": "third" }[
@@ -241,7 +226,6 @@ ${readableResources}`;
       if (!dashboardText)
         throw new Error("No dashboard text returned from OpenAI.");
 
-      // ✅ Create Firestore document linked to Auth UID
       await setDoc(doc(db, "users", user.uid), {
         name,
         email,
@@ -250,24 +234,62 @@ ${readableResources}`;
         dashboard: dashboardText,
         resources: formattedResources,
         createdAt: new Date(),
-      });
+        onboardingComplete: true,
+      }, { merge: true });
 
-      // Clear the Google signup flag
+      await auth.currentUser?.reload();
       sessionStorage.removeItem("googleSignupInProgress");
-
-      console.log("User + Firestore setup complete!");
-      history.push("/home", { refresh: true });
+      setWaitingForOnboard(true);
+      setIsPolling(true);
+      pollOnboardingComplete(user.uid);
+      return;
     } catch (error: any) {
       console.error("Error during onboarding:", error);
       setError(error.message || "There was an error creating your account.");
     } finally {
-      setLoading(false);
+      // Do not setLoading(false) here
     }
   };
 
-  if (loading) {
+  // Check for Google user on component mount
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setWaitingForOnboard(true); // Show loading immediately when user is present
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const isGoogle = user.providerData.some(p => p.providerId === "google.com");
+
+        if (!userDoc.exists()) {
+          // New user - populate form
+          setFormData((prev) => ({
+            ...prev,
+            name: user.displayName || "",
+            email: user.email || "",
+          }));
+          setIsGoogleUser(isGoogle);
+          if (isGoogle) sessionStorage.setItem("googleSignupInProgress", "true");
+          setWaitingForOnboard(false); // Show form for new user
+        } else if (userDoc.data()?.onboardingComplete) {
+          // Only redirect if onboarding is actually complete
+          sessionStorage.removeItem("onboardingSubmitted");
+          setSubmitted(false);
+          history.push("/home", { refresh: true });
+        } else {
+          // If doc exists but onboarding not complete, show loading screen
+          setWaitingForOnboard(true);
+        }
+        setIsGoogleUser(isGoogle);
+      } else {
+        setIsGoogleUser(false);
+        setWaitingForOnboard(false); // Show form if no user
+      }
+    });
+    return () => unsubscribe();
+  }, [history]);
+
+  if (submitted) {
     return (
-      <div style={{ textAlign: "center", marginTop: "20%" }}>
+      <div className="centered-loading">
         <IonSpinner name="dots" />
         <h2>✨ Creating your personalized dashboard...</h2>
         <p>Please hang tight. We're tailoring your journey.</p>
@@ -275,194 +297,202 @@ ${readableResources}`;
     );
   }
 
-  return (
-    <div className="onboarding-container">
-      <div className="onboarding-card">
-        <h1 className="onboarding-title">Create Your Account</h1>
-        <p className="onboarding-subtitle">
-          {isGoogleUser 
-            ? `Welcome, ${formData.name}! Complete your profile below.` 
-            : "Tell us about yourself to get started"}
-        </p>
-        <IonList>
-          {/* Name (only for non-Google users) */}
-          {!isGoogleUser && (
-            <div className="input-wrapper">
-              <div className="label-with-icon">
-                <IonIcon src={UserIcon} slot="start" className="label-icon" />
-                <label className="input-label">Name</label>
-              </div>
-              <IonItem className="input-item" style={{
-                '--background': '#fff',
-                '--color': '#2a1d31',
-                '--border-radius': '12px',
-                '--border-color': '#73587e',
-                border: '1px solid #73587e',
-                marginBottom: '12px'
-              }}>
-                <IonInput
-                  style={{
-                    '--color': '#2a1d31',
-                    '--placeholder-color': '#7d6c87',
-                    fontSize: '16px'
-                  }}
-                  value={formData.name}
-                  placeholder="Enter your name"
-                  onIonChange={(e) => handleChange("name", e.detail.value!)}
-                />
-              </IonItem>
-            </div>
-          )}
+  if (loading || waitingForOnboard || isPolling) {
+    return (
+      <div className="centered-loading">
+        <IonSpinner name="dots" />
+        <h2>✨ Creating your personalized dashboard...</h2>
+        <p>Please hang tight. We're tailoring your journey.</p>
+      </div>
+    );
+  }
 
-          {/* Email (only for non-Google users) */}
-          {!isGoogleUser && (
-            <div className="input-wrapper">
-              <div className="label-with-icon">
-                <IonIcon src={EmailIcon} slot="start" className="label-icon" />
-                <label className="input-label">Email</label>
-              </div>
-              <IonItem className="input-item" style={{
-                '--background': '#fff',
-                '--color': '#2a1d31',
-                '--border-radius': '12px',
-                '--border-color': '#73587e',
-                border: '1px solid #73587e',
-                marginBottom: '12px'
-              }}>
-                <IonInput
-                  style={{
-                    '--color': '#2a1d31',
-                    '--placeholder-color': '#7d6c87',
-                    fontSize: '16px'
-                  }}
-                  type="email"
-                  value={formData.email}
-                  placeholder="Enter your email"
-                  onIonChange={(e) => handleChange("email", e.detail.value!)}
-                />
-              </IonItem>
-            </div>
-          )}
-
-          {/* Password (only for non-Google users) */}
-          {!isGoogleUser && (
-            <div className="input-wrapper">
-              <div className="label-with-icon">
-                <IonIcon src={LockIcon} slot="start" className="label-icon" />
-                <label className="input-label">Password</label>
-              </div>
-              <IonItem className="input-item" style={{
-                '--background': '#fff',
-                '--color': '#2a1d31',
-                '--border-radius': '12px',
-                '--border-color': '#73587e',
-                border: '1px solid #73587e',
-                marginBottom: '12px'
-              }}>
-                <IonInput
-                  style={{
-                    '--color': '#2a1d31',
-                    '--placeholder-color': '#7d6c87',
-                    fontSize: '16px'
-                  }}
-                  type="password"
-                  value={formData.password}
-                  placeholder="Create a password"
-                  onIonChange={(e) => handleChange("password", e.detail.value!)}
-                />
-              </IonItem>
-            </div>
-          )}
-
-          {/* Location */}
-          <div className="input-wrapper">
-            <div className="label-with-icon">
-              <IonIcon src={CityIcon} slot="start" className="label-icon" />
-              <label className="input-label">Location</label>
-            </div>
-            <IonItem className="input-item" style={{
-              '--background': '#fff',
-              '--color': '#2a1d31',
-              '--border-radius': '12px',
-              '--border-color': '#73587e',
-              border: '1px solid #73587e',
-              marginBottom: '12px'
-            }}>
-              <IonInput
-                style={{
+  // Only show onboarding form if not waitingForOnboard AND not loading
+  if (!waitingForOnboard && !loading && !isPolling) {
+    return (
+      <div className="onboarding-container">
+        <div className="onboarding-card">
+          <h1 className="onboarding-title">Create Your Account</h1>
+          <p className="onboarding-subtitle">
+            {isGoogleUser 
+              ? `Welcome, ${formData.name}! Complete your profile below.` 
+              : "Tell us about yourself to get started"}
+          </p>
+          <IonList>
+            {/* Name (only for non-Google users) */}
+            {!isGoogleUser && (
+              <div className="input-wrapper">
+                <div className="label-with-icon">
+                  <IonIcon src={UserIcon} slot="start" className="label-icon" />
+                  <label className="input-label">Name</label>
+                </div>
+                <IonItem className="input-item" style={{
+                  '--background': '#fff',
                   '--color': '#2a1d31',
-                  '--placeholder-color': '#7d6c87',
-                  fontSize: '16px'
-                }}
-                value={formData.location}
-                placeholder="City or ZIP code"
-                onIonChange={(e) => handleChange("location", e.detail.value!)}
-              />
-            </IonItem>
-          </div>
-
-          {/* Trimester */}
-          <div className="input-wrapper">
-            <div className="label-with-icon">
-              <IonIcon src={PregnancyIcon} slot="start" className="label-icon" />
-              <label className="input-label">Trimester</label>
-            </div>
-            <IonItem className="input-item" style={{
-              '--background': '#fff',
-              '--color': '#2a1d31',
-              '--border-radius': '12px',
-              '--border-color': '#73587e',
-              border: '1px solid #73587e',
-              marginBottom: '12px'
-            }}>
-              <IonSelect
-                style={{
+                  '--border-radius': '12px',
+                  '--border-color': '#73587e',
+                  border: '1px solid #73587e',
+                  marginBottom: '12px'
+                }}>
+                  <IonInput
+                    style={{
+                      '--color': '#2a1d31',
+                      '--placeholder-color': '#7d6c87',
+                      fontSize: '16px'
+                    }}
+                    value={formData.name}
+                    placeholder="Enter your name"
+                    onIonChange={(e) => handleChange("name", e.detail.value!)}
+                  />
+                </IonItem>
+              </div>
+            )}
+            {/* Email (only for non-Google users) */}
+            {!isGoogleUser && (
+              <div className="input-wrapper">
+                <div className="label-with-icon">
+                  <IonIcon src={EmailIcon} slot="start" className="label-icon" />
+                  <label className="input-label">Email</label>
+                </div>
+                <IonItem className="input-item" style={{
+                  '--background': '#fff',
                   '--color': '#2a1d31',
-                  '--placeholder-color': '#7d6c87',
-                  fontSize: '16px'
-                }}
-                value={formData.trimester}
-                placeholder="Select trimester"
-                onIonChange={(e) => handleChange("trimester", e.detail.value)}
-              >
-                <IonSelectOption value="1">1st Trimester</IonSelectOption>
-                <IonSelectOption value="2">2nd Trimester</IonSelectOption>
-                <IonSelectOption value="3">3rd Trimester</IonSelectOption>
-              </IonSelect>
-            </IonItem>
-          </div>
-        </IonList>
-
-        {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
-
-        <div className="onboarding-buttons">
-          <button
-            className="onboarding-btn"
-            onClick={handleSubmit}
-            disabled={loading}
-            type="button"
-          >
-            CREATE ACCOUNT
-          </button>
-          {!isGoogleUser && (
+                  '--border-radius': '12px',
+                  '--border-color': '#73587e',
+                  border: '1px solid #73587e',
+                  marginBottom: '12px'
+                }}>
+                  <IonInput
+                    style={{
+                      '--color': '#2a1d31',
+                      '--placeholder-color': '#7d6c87',
+                      fontSize: '16px'
+                    }}
+                    type="email"
+                    value={formData.email}
+                    placeholder="Enter your email"
+                    onIonChange={(e) => handleChange("email", e.detail.value!)}
+                  />
+                </IonItem>
+              </div>
+            )}
+            {/* Password (only for non-Google users) */}
+            {!isGoogleUser && (
+              <div className="input-wrapper">
+                <div className="label-with-icon">
+                  <IonIcon src={LockIcon} slot="start" className="label-icon" />
+                  <label className="input-label">Password</label>
+                </div>
+                <IonItem className="input-item" style={{
+                  '--background': '#fff',
+                  '--color': '#2a1d31',
+                  '--border-radius': '12px',
+                  '--border-color': '#73587e',
+                  border: '1px solid #73587e',
+                  marginBottom: '12px'
+                }}>
+                  <IonInput
+                    style={{
+                      '--color': '#2a1d31',
+                      '--placeholder-color': '#7d6c87',
+                      fontSize: '16px'
+                    }}
+                    type="password"
+                    value={formData.password}
+                    placeholder="Create a password"
+                    onIonChange={(e) => handleChange("password", e.detail.value!)}
+                  />
+                </IonItem>
+              </div>
+            )}
+            {/* Location */}
+            <div className="input-wrapper">
+              <div className="label-with-icon">
+                <IonIcon src={CityIcon} slot="start" className="label-icon" />
+                <label className="input-label">Location</label>
+              </div>
+              <IonItem className="input-item" style={{
+                '--background': '#fff',
+                '--color': '#2a1d31',
+                '--border-radius': '12px',
+                '--border-color': '#73587e',
+                border: '1px solid #73587e',
+                marginBottom: '12px'
+              }}>
+                <IonInput
+                  style={{
+                    '--color': '#2a1d31',
+                    '--placeholder-color': '#7d6c87',
+                    fontSize: '16px'
+                  }}
+                  value={formData.location}
+                  placeholder="City or ZIP code"
+                  onIonChange={(e) => handleChange("location", e.detail.value!)}
+                />
+              </IonItem>
+            </div>
+            {/* Trimester */}
+            <div className="input-wrapper">
+              <div className="label-with-icon">
+                <IonIcon src={PregnancyIcon} slot="start" className="label-icon" />
+                <label className="input-label">Trimester</label>
+              </div>
+              <IonItem className="input-item" style={{
+                '--background': '#fff',
+                '--color': '#2a1d31',
+                '--border-radius': '12px',
+                '--border-color': '#73587e',
+                border: '1px solid #73587e',
+                marginBottom: '12px'
+              }}>
+                <IonSelect
+                  style={{
+                    '--color': '#2a1d31',
+                    '--placeholder-color': '#7d6c87',
+                    fontSize: '16px'
+                  }}
+                  value={formData.trimester}
+                  placeholder="Select trimester"
+                  onIonChange={(e) => handleChange("trimester", e.detail.value)}
+                >
+                  <IonSelectOption value="1">1st Trimester</IonSelectOption>
+                  <IonSelectOption value="2">2nd Trimester</IonSelectOption>
+                  <IonSelectOption value="3">3rd Trimester</IonSelectOption>
+                </IonSelect>
+              </IonItem>
+            </div>
+          </IonList>
+          {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+          <div className="onboarding-buttons">
             <button
-              className="onboarding-btn google"
-              onClick={handleGoogleSignup}
+              className="onboarding-btn"
+              onClick={handleSubmit}
               disabled={loading}
               type="button"
             >
-              SIGN UP WITH GOOGLE
+              CREATE ACCOUNT
             </button>
-          )}
+            {!isGoogleUser && (
+              <button
+                className="onboarding-btn google"
+                onClick={handleGoogleSignup}
+                disabled={loading}
+                type="button"
+              >
+                SIGN UP WITH GOOGLE
+              </button>
+            )}
+          </div>
+          <p className="auth-small-text">
+            Already have an account?{" "}
+            <span onClick={() => history.push("/auth")}>Log in</span>
+          </p>
         </div>
-
-        <p className="auth-small-text">
-          Already have an account?{" "}
-          <span onClick={() => history.push("/auth")}>Log in</span>
-        </p>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 };
 
 export default OnboardingForm;

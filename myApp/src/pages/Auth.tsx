@@ -74,7 +74,11 @@ const AuthPage: React.FC = () => {
       setLoading(true);
       const userCredential = await loginUser(email, password);
       const hasUserDoc = await checkUserDocument(userCredential.user.uid);
-      history.push(hasUserDoc ? "/home" : "/onboarding");
+      if (hasUserDoc) {
+        history.push("/home");
+      } else {
+        setErrorMessage("No account found with this email.");
+      }
     } catch (err: any) {
       console.error(err);
       handleError(err.code || "default");

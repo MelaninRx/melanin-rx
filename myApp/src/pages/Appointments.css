@@ -1,0 +1,171 @@
+.appointments-wrapper {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  margin-left: 60px;
+  transition: margin-left 0.2s cubic-bezier(.4,0,.2,1);
+}
+
+h1, h2 {
+  font-family: 'Source Serif Pro', serif;
+  color: #5A3392;
+  text-align: left;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.IonCard, .appointments-wrapper .IonCard {
+  background: #F7F3FF;
+  border-radius: 22px;
+  box-shadow: 0 2px 16px rgba(90,51,146,0.10);
+  margin-bottom: 2rem;
+  border: none;
+  padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+}
+
+.IonCardTitle, .appointments-wrapper .IonCardTitle {
+  color: #5A3392;
+  font-family: 'Source Serif Pro', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.IonCardContent, .appointments-wrapper .IonCardContent {
+  font-family: 'Source Serif Pro', serif;
+  color: #3D246C;
+  padding-top: 0.5rem;
+}
+
+.IonButton.btn-primary, .appointments-wrapper .IonButton.btn-primary {
+  --background: #5A3392;
+  --color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.IonButton.btn-secondary, .appointments-wrapper .IonButton.btn-secondary {
+  --background: #E9DFF6;
+  --color: #5A3392;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.IonTextarea, .appointments-wrapper .IonTextarea {
+  font-family: 'Source Serif Pro', serif;
+  background: #F7F3FF;
+  border-radius: 12px;
+  color: #3D246C;
+  border: 1.5px solid #B36AE2;
+  font-size: 1.1rem;
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+
+.IonItem, .appointments-wrapper .IonItem {
+  background: transparent;
+  border: none;
+  margin-bottom: 0.5rem;
+}
+
+.IonLabel, .appointments-wrapper .IonLabel {
+  color: #5A3392;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.IonCard[color="warning"] {
+  background: #F7F3FF;
+  border-left: 8px solid #5A3392;
+}
+
+.IonButton[color="danger"] {
+  --background: #B36AE2;
+  --color: #fff;
+}
+
+.IonButton[color="success"] {
+  display: none;
+}
+
+.IonButton[color="medium"] {
+  --background: #E9DFF6;
+  --color: #5A3392;
+}
+
+.IonButton {
+  font-family: 'Source Serif Pro', serif;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.IonButton[size="small"] {
+  font-size: 0.95rem;
+  padding: 0.3rem 1rem;
+}
+
+.side-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 60px;
+  background: #fff;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.07);
+  z-index: 100;
+  transition: width 0.2s cubic-bezier(.4,0,.2,1);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.side-panel:hover,
+.side-panel:focus-within {
+  width: 220px;
+}
+
+.side-panel .nav-top, .side-panel .nav-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.menu-text {
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-left: 12px;
+  white-space: nowrap;
+}
+.side-panel:hover .menu-text,
+.side-panel:focus-within .menu-text {
+  opacity: 1;
+}
+
+.side-panel IonButton {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.side-panel:hover ~ .appointments-wrapper,
+.side-panel:focus-within ~ .appointments-wrapper {
+  margin-left: 220px;
+}
+
+@media (max-width: 700px) {
+  .appointments-wrapper {
+    padding: 1rem 0.5rem;
+    margin-left: 0;
+  }
+  .side-panel {
+    width: 0;
+  }
+  .side-panel:hover,
+  .side-panel:focus-within {
+    width: 180px;
+  }
+  .side-panel:hover ~ .appointments-wrapper,
+  .side-panel:focus-within ~ .appointments-wrapper {
+    margin-left: 180px;
+  }
+}

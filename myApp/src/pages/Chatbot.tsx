@@ -18,9 +18,11 @@ import menuIcon from '../icons/menu.svg';
 import chatbotIcon from '../icons/message-square.svg';
 import communityIcon from '../icons/users.svg';
 import timelineIcon from '../icons/calendar-days.svg';
-import aboutIcon from '../icons/book-text.svg';
+import AppointmentIcon from '../icons/Frame 112.svg';
+import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
+import { logoutUser } from '../services/authService';
 
 // Use your Firebase project ID here
 const FIREBASE_PROJECT_ID = "melaninrx-4842c";
@@ -99,44 +101,52 @@ const handleQuickQuestion = async (question: string) => {
       </IonHeader>
 
       {/* Content */}
-      <IonContent fullscreen className="chatbot-content">
+      <IonContent fullscreen>
         {/* Side Panel */}
         <aside className="side-panel">
           <div className="nav-top">
             <IonButton fill="clear" routerLink="/menu">
               <IonIcon icon={menuIcon} />
-              <span className = "menu-text">Menu</span>
+              <span className="menu-text">Menu</span>
             </IonButton>
             <IonButton fill="clear" routerLink="/home">
               <IonIcon icon={homeIcon} />
-              <span className = "menu-text">Home</span>
+              <span className="menu-text">Home</span>
             </IonButton>
             <IonButton fill="clear" routerLink="/add">
               <IonIcon icon={addIcon} />
-              <span className = "menu-text">New Chat</span>
+              <span className="menu-text">New Chat</span>
             </IonButton>
             <IonButton fill="clear" routerLink="/chatbot">
               <IonIcon icon={chatbotIcon} />
-              <span className = "menu-text">Chats</span>
+              <span className="menu-text">Chats</span>
             </IonButton>
             <IonButton fill="clear" routerLink="/community">
               <IonIcon icon={communityIcon} />
-              <span className = "menu-text">Communities</span>
+              <span className="menu-text">Communities</span>
             </IonButton>
             <IonButton fill="clear" routerLink="/timeline">
               <IonIcon icon={timelineIcon} />
-              <span className = "menu-text">Timeline</span>
+              <span className="menu-text">Timeline</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/appointments">
+              <IonIcon icon={AppointmentIcon} />
+              <span className="menu-text">Appointments</span>
             </IonButton>
           </div>
 
           <div className="nav-bottom">
+            <IonButton fill='clear' onClick={logoutUser}>
+              <IonIcon icon={LogoutIcon} />
+              <span className="menu-text">Log out</span>
+            </IonButton>
             <IonButton fill="clear" routerLink="/settings">
               <IonIcon icon={settingsIcon} />
-              <span className = "menu-text">Setting</span>
+              <span className="menu-text">Setting</span>
             </IonButton>
             <IonButton fill="clear" routerLink="/profile">
               <IonIcon icon={profileIcon} />
-              <span className = "menu-text">Profile</span>
+              <span className="menu-text">Profile</span>
             </IonButton>
           </div>
         </aside>
