@@ -47,6 +47,7 @@ export const chatWithLangFlow = functions.https.onRequest(async (req: any, res: 
 
   try {
     res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
     res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
     if (req.method === "OPTIONS") return res.status(204).send();
 
@@ -92,16 +93,24 @@ export const chatWithLangFlow = functions.https.onRequest(async (req: any, res: 
     console.log(JSON.stringify(langflowPayload));
 
     // set API key as query parameter
+    // set API key as query parameter
     const langflowUrl = new URL(LANGFLOW_URL);
     langflowUrl.searchParams.append('api_key', LANGFLOW_API_KEY!);
-    
+
     console.log("=== CALLING LANGFLOW ===");
-    console.log("URL:", LANGFLOW_URL);
+    console.log("URL (without key):", LANGFLOW_URL);
+    // ADD THESE NEW LINES:
+    console.log("First 10 chars of API key:", LANGFLOW_API_KEY?.substring(0, 10));
+    console.log("Last 5 chars of API key:", LANGFLOW_API_KEY?.substring(LANGFLOW_API_KEY.length - 5));
+    console.log("API key has quotes?:", LANGFLOW_API_KEY?.includes('"'));
+    console.log("API key has spaces?:", LANGFLOW_API_KEY?.includes(' '));
     
     const response = await fetch(langflowUrl.toString(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+         "x-api-key": LANGFLOW_API_KEY!,
+        "Authorization": `Bearer ${LANGFLOW_API_KEY}`,
       },
       body: JSON.stringify(langflowPayload),
     });
