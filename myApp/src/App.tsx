@@ -11,6 +11,8 @@ import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
 import CommunityChannels from './pages/CommunityChannels';
 import ChannelDetail from './pages/ChannelDetail';
+import AppointmentsPage from './pages/Appointments';
+import AppointmentDetail from './pages/AppointmentDetail';
 
 // Ionic setup
 import { defineCustomElements } from "@ionic/core/loader";
@@ -72,7 +74,7 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <IonRouterOutlet>
+        <IonRouterOutlet key={window.location.pathname}>
           {/* Public routes */}
           <Route path="/landing" component={Landing} exact />
           <Route path="/auth" component={Auth} exact />
@@ -81,34 +83,44 @@ const App: React.FC = () => {
           {/* Protected routes */}
           <Route
             path="/home"
-            render={() => (user ? <Home /> : <Redirect to="/auth" />)}
+            render={() => (user ? <Home key="home" /> : <Redirect to="/auth" />)}
             exact
           />
           <Route
             path="/chatbot"
-            render={() => (user ? <Chatbot /> : <Redirect to="/auth" />)}
+            render={() => (user ? <Chatbot key="chatbot" /> : <Redirect to="/auth" />)}
             exact
           />
           <Route
             path="/timeline"
-            render={() => (user ? <TimelinePage /> : <Redirect to="/auth" />)}
+            render={() => (
+              user
+                ? <TimelinePage key="timeline" />
+                : <Redirect to="/auth" />
+            )}
             exact
           />
           <Route
             path="/resources"
-            render={() => (user ? <Resources /> : <Redirect to="/auth" />)}
+            render={() => (user ? <Resources key="resources" /> : <Redirect to="/auth" />)}
             exact
           />
           <Route
             path="/community"
-            render={() => (user ? <CommunityChannels /> : <Redirect to="/auth" />)}
+            render={() => (user ? <CommunityChannels key="community" /> : <Redirect to="/auth" />)}
             exact
           />
           <Route
             path="/community/:id"
-            render={() => (user ? <ChannelDetail /> : <Redirect to="/auth" />)}
+            render={() => (user ? <ChannelDetail key="community-detail" /> : <Redirect to="/auth" />)}
             exact
           />
+          <Route
+            path="/appointments"
+            render={() => (user ? <AppointmentsPage key="appointments" /> : <Redirect to="/auth" />)}
+            exact
+          />
+          <Route path="/appointments/:uid/:id" component={AppointmentDetail} exact />
 
           {/* Default redirect */}
           <Redirect exact from="/" to={user ? "/home" : "/landing"} />
