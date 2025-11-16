@@ -105,12 +105,11 @@ export const chatWithLangFlow = functions.https.onRequest(async (req: any, res: 
     console.log("API key has quotes?:", LANGFLOW_API_KEY?.includes('"'));
     console.log("API key has spaces?:", LANGFLOW_API_KEY?.includes(' '));
     
-    const response = await fetch(langflowUrl.toString(), {
+    const response = await fetch(LANGFLOW_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
          "x-api-key": LANGFLOW_API_KEY!,
-        "Authorization": `Bearer ${LANGFLOW_API_KEY}`,
       },
       body: JSON.stringify(langflowPayload),
     });
