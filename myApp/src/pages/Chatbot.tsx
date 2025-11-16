@@ -203,7 +203,7 @@ const handleQuickQuestion = async (question: string) => {
                       handleQuickQuestion("What are common postpartum symptoms?")
                     }
                   >
-                    Help me describe my pain level and history accurately.
+                    What are common postpartum symptoms?
                   </button>
                   
                   <button
