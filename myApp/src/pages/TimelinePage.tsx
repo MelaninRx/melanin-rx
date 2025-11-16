@@ -1,30 +1,233 @@
 import React from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton, IonButton, IonIcon, IonRouterLink, IonSpinner } from '@ionic/react';
 import StatusCard from '../components/StatusCard';
 import ChecklistCard from '../components/ChecklistCard';
 import QuestionsCard from '../components/QuestionsCard';
 import styles from './timeline.module.css';
 import { getTrimesters, Trimester } from '../services/timelineService';
+import homeIcon from '../icons/house.svg';
+import addIcon from '../icons/Vector.svg';
+import menuIcon from '../icons/menu.svg';
+import chatbotIcon from '../icons/message-square.svg';
+import communityIcon from '../icons/users.svg';
+import timelineIcon from '../icons/calendar-days.svg';
+import AppointmentIcon from '../icons/Frame 112.svg';
+import LogoutIcon from "../icons/log-out.svg";
+import settingsIcon from '../icons/settings.svg';
+import profileIcon from '../icons/circle-user-round.svg';
+import { logoutUser } from '../services/authService';
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import { getFirestore, collection, getDocs, Timestamp } from 'firebase/firestore';
 
 // Lazy-load the timeline parts
 const TimelineRail = React.lazy(() => import('../components/TimelineRail'));
 const TrimesterCard = React.lazy(() => import('../components/TrimesterCard'));
 const TrimesterExpanded = React.lazy(() => import('../components/TrimesterExpanded'));
 
+// Calendar component for TimelinePage
+function CalendarView({ appointments = [] }: { appointments?: any[] }) {
+  const today = new Date();
+  const [month, setMonth] = React.useState(today.getMonth());
+  const [year, setYear] = React.useState(today.getFullYear());
+
+  // Collect appointment dates for this month/year
+  const apptDates = appointments
+    .map(appt => {
+      let apptDate;
+      if (appt.dateTime instanceof Timestamp) {
+        apptDate = appt.dateTime.toDate();
+      } else if (typeof appt.dateTime === 'string') {
+        apptDate = new Date(appt.dateTime);
+      } else if (appt.dateTime?.toDate) {
+        apptDate = appt.dateTime.toDate();
+      } else {
+        return null;
+      }
+      return apptDate.getFullYear() === year && apptDate.getMonth() === month ? apptDate.getDate() : null;
+    })
+    .filter(Boolean);
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const weeks = [];
+  let day = 1 - firstDay;
+  for (let w = 0; w < 6; w++) {
+    const week = [];
+    for (let d = 0; d < 7; d++, day++) {
+      if (day > 0 && day <= daysInMonth) {
+        week.push(day);
+      } else {
+        week.push('');
+      }
+    }
+    weeks.push(week);
+    if (day > daysInMonth) break;
+  }
+
+  // Navigation handlers for month/year
+  const handlePrevMonth = () => {
+    if (month === 0) {
+      setMonth(11);
+      setYear(year - 1);
+    } else {
+      setMonth(month - 1);
+    }
+  };
+  const handleNextMonth = () => {
+    if (month === 11) {
+      setMonth(0);
+      setYear(year + 1);
+    } else {
+      setMonth(month + 1);
+    }
+  };
+
+  return (
+    <div style={{ background: '#FFF', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', border: '1px solid #E0D7F7', padding: '24px', minWidth: '280px', maxWidth: '400px', width: '100%', display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+        <button onClick={handlePrevMonth} style={{ background: 'none', border: 'none', color: '#6C4AB6', fontSize: '20px', cursor: 'pointer' }}>{'<'}</button>
+        <h2 style={{ color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, fontSize: '1.25rem', margin: 0 }}>{monthNames[month]} {year}</h2>
+        <button onClick={handleNextMonth} style={{ background: 'none', border: 'none', color: '#6C4AB6', fontSize: '20px', cursor: 'pointer' }}>{'>'}</button>
+      </div>
+      <table style={{ width: '100%', textAlign: 'center', borderCollapse: 'collapse', fontSize: '15px', color: '#3D246C', marginTop: '8px', marginBottom: '8px' }}>
+        <thead>
+          <tr>
+            <th style={{ paddingBottom: '10px' }}>Sun</th><th style={{ paddingBottom: '10px' }}>Mon</th><th style={{ paddingBottom: '10px' }}>Tue</th><th style={{ paddingBottom: '10px' }}>Wed</th><th style={{ paddingBottom: '10px' }}>Thu</th><th style={{ paddingBottom: '10px' }}>Fri</th><th style={{ paddingBottom: '10px' }}>Sat</th>
+          </tr>
+        </thead>
+        <tbody>
+          {weeks.map((week, i) => (
+            <tr key={i}>
+              {week.map((d, j) => {
+                const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+                const hasAppt = apptDates.includes(d);
+                return (
+                  <td key={j} style={{
+                    background: isToday ? '#F3E8FF' : 'none',
+                    borderRadius: isToday ? '50%' : '0',
+                    fontWeight: isToday ? 700 : 400,
+                    color: isToday ? '#6C4AB6' : undefined,
+                    padding: '10px 0 16px 0',
+                    position: 'relative',
+                    minWidth: '36px',
+                    height: '38px',
+                    verticalAlign: 'middle',
+                  }}>
+                    {d || ''}
+                    {hasAppt && d && (
+                      <span style={{
+                        display: 'block',
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        background: '#6C4AB6',
+                        position: 'absolute',
+                        left: '50%',
+                        bottom: '6px',
+                        transform: 'translateX(-50%)',
+                      }} />
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 const TimelinePage: React.FC = () => {
+  // All hooks must be called before any return!
   const [data, setData] = React.useState<Trimester[]>([]);
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const [currentTrimesterId, setCurrentTrimesterId] = React.useState<string | null>(null);
   const [currentTrimesterIndex, setCurrentTrimesterIndex] = React.useState<number | null>(null);
+  const [soonAppointments, setSoonAppointments] = React.useState<any[]>([]);
+  const [error, setError] = React.useState<string | null>(null);
+  const user = useCurrentUser();
+
+  // Debug: log user object and onboardingComplete
+  console.log('[TimelinePage] user:', user);
+  console.log('[TimelinePage] onboardingComplete:', user?.onboardingComplete);
 
   React.useEffect(() => {
     document.title = 'Pregnancy Timeline — MelaninRX';
     getTrimesters().then(setData);
-
-    // TEMP for testing: simulate user in Trimester 2
-    setCurrentTrimesterIndex(2);
+    setCurrentTrimesterIndex(2); // TEMP for testing
     setCurrentTrimesterId('trimester-2');
   }, []);
+
+  React.useEffect(() => {
+    async function fetchSoonAppointments() {
+      if (user === undefined) return;
+      if (!user?.uid) return;
+      try {
+        const db = getFirestore();
+        const allSnapshot = await getDocs(collection(db, 'users', user.uid, 'appointments'));
+        const allAppts = allSnapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
+        const now = new Date();
+        const appts = allAppts
+          .filter(appt => {
+            let apptDate;
+            if (appt.dateTime instanceof Timestamp) {
+              apptDate = appt.dateTime.toDate();
+            } else if (typeof appt.dateTime === 'string') {
+              apptDate = new Date(appt.dateTime);
+            } else if (appt.dateTime?.toDate) {
+              apptDate = appt.dateTime.toDate();
+            } else {
+              return false;
+            }
+            return apptDate >= now;
+          })
+          .sort((a, b) => {
+            let aDate = a.dateTime instanceof Timestamp ? a.dateTime.toDate() : new Date(a.dateTime);
+            let bDate = b.dateTime instanceof Timestamp ? b.dateTime.toDate() : new Date(b.dateTime);
+            return aDate.getTime() - bDate.getTime();
+          })
+          .slice(0, 2);
+        setSoonAppointments(appts);
+      } catch (err: any) {
+        setError(err.message || 'Failed to load appointments.');
+      }
+    }
+    fetchSoonAppointments();
+  }, [user]);
+
+  // All hooks above! Now do conditional rendering:
+  if (error) {
+    return (
+      <IonPage>
+        <IonContent>
+          <div style={{ textAlign: 'center', marginTop: '50%' }}>
+            <h2>An error occurred in the TimelinePage component.</h2>
+            <p>{error}</p>
+            <p>Please try refreshing the page or contact support.</p>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
+
+  if (user === undefined) {
+    return (
+      <IonPage>
+        <IonContent>
+          <div style={{ textAlign: 'center', marginTop: '50%' }}>
+            <IonSpinner />
+            <p>Loading your profile data...</p>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
 
   const active = data.find(t => t.id === activeId) ?? null;
 
@@ -39,16 +242,60 @@ const TimelinePage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton defaultHref="/home" />
-          </IonButtons>
           <IonTitle>Pregnancy Timeline</IonTitle>
         </IonToolbar>
       </IonHeader>
 
-      <IonContent className="ion-padding">
+      <IonContent fullscreen>
+        <aside className="side-panel">
+          <div className="nav-top">
+            <IonButton fill="clear" routerLink="/menu">
+              <IonIcon icon={menuIcon} />
+              <span className="menu-text">Menu</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/home">
+              <IonIcon icon={homeIcon} />
+              <span className="menu-text">Home</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/add">
+              <IonIcon icon={addIcon} />
+              <span className="menu-text">New Chat</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/chatbot">
+              <IonIcon icon={chatbotIcon} />
+              <span className="menu-text">Chats</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/community">
+              <IonIcon icon={communityIcon} />
+              <span className="menu-text">Communities</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/timeline">
+              <IonIcon icon={timelineIcon} />
+              <span className="menu-text">Timeline</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/appointments">
+              <IonIcon icon={AppointmentIcon} />
+              <span className="menu-text">Appointments</span>
+            </IonButton>
+          </div>
+          <div className="nav-bottom">
+            <IonButton fill='clear' onClick={logoutUser}>
+              <IonIcon icon={LogoutIcon} />
+              <span className="menu-text">Log out</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/settings">
+              <IonIcon icon={settingsIcon} />
+              <span className="menu-text">Setting</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/profile">
+              <IonIcon icon={profileIcon} />
+              <span className="menu-text">Profile</span>
+            </IonButton>
+          </div>
+        </aside>
+
         <main className={styles.timelinePage}>
-          <div className={styles.timelineHeader}>
+          <div className={styles.timelineHeader} style={{ paddingTop: '32px', paddingLeft: '32px', paddingRight: '32px' }}>
             <h1 className={styles.h1}>Your Pregnancy Timeline</h1>
             {active && (
               <button className={styles.backBtn} onClick={() => setActiveId(null)}>
@@ -59,51 +306,107 @@ const TimelinePage: React.FC = () => {
 
           <React.Suspense fallback={<div>Loading timeline…</div>}>
             {/* Status card — TODO: wire real values */}
-            <StatusCard currentWeek={22} dueDate={new Date('2026-03-01')} />
-
-            <TimelineRail
-              appendBaby
-              progress={
-                // Map to 4 nodes (T1,T2,T3,Baby). Node centers at 0, 1/3, 2/3, 1.
-                (currentTrimesterIndex && n > 1) ? (currentTrimesterIndex - 1) / ( (n + 1) - 1 ) : 0
-                // ^ n = data.length, +1 because of the Baby node
-              }
-              nodes={data.map(t => ({
-                key: t.id,
-                label: `Trimester ${t.index}`,
-                onClick: () => setActiveId(t.id),
-                isCurrent: currentTrimesterId === t.id || currentTrimesterIndex === t.index
-              }))}
-            />
-
-            {!active ? (
-              <section className={styles.grid}>
-                {data.map(t => (
-                  <TrimesterCard key={t.id} data={t} onOpen={setActiveId} />
-                ))}
-              </section>
-            ) : (
-              <>
-                <section className={styles.expandedWrap}>
-                  <div className={styles.infoCard}>
-                    <div className={styles.cardTitle}>{active.title}</div>
-                    <div className={styles.cardSub}>{active.weeksRange}</div>
-                    <p className={styles.cardBody} style={{ marginTop: 10 }}>{active.summary}</p>
-                  </div>
+            <div style={{ paddingLeft: '32px', paddingRight: '32px' }}>
+              <StatusCard currentWeek={22} dueDate={new Date('2026-03-01')} />
+              <TimelineRail
+                appendBaby
+                progress={progressToNodeCenter}
+                nodes={data.map(t => ({
+                  key: t.id,
+                  label: `Trimester ${t.index}`,
+                  onClick: () => setActiveId(t.id),
+                  isCurrent: currentTrimesterId === t.id || currentTrimesterIndex === t.index
+                }))}
+              />
+              {!active ? (
+                <section className={styles.grid} style={{ marginTop: '24px', marginBottom: '24px' }}>
+                  {data.map(t => (
+                    <TrimesterCard key={t.id} data={t} onOpen={setActiveId} />
+                  ))}
                 </section>
+              ) : (
+                <>
+                  <section className={styles.expandedWrap}>
+                    <div className={styles.infoCard}>
+                      <div className={styles.cardTitle}>{active.title}</div>
+                      <div className={styles.cardSub}>{active.weeksRange}</div>
+                      <p className={styles.cardBody} style={{ marginTop: 10 }}>{active.summary}</p>
+                    </div>
+                  </section>
 
-                <section className={styles.expandedWrap}>
-                  <ChecklistCard
-                    items={active.checklist}
-                    storageKey={`chk_${active.id}_demoUser`}  /* swap demoUser for real user id later */
-                  />
-                </section>
+                  <section className={styles.expandedWrap}>
+                    <ChecklistCard
+                      items={active.checklist}
+                      storageKey={`chk_${active.id}_demoUser`}
+                    />
+                  </section>
 
-                <section className={styles.expandedWrap}>
-                  <QuestionsCard items={active.doctorTips} />
-                </section>
-              </>
-            )}
+                  <section className={styles.expandedWrap}>
+                    <QuestionsCard items={active.doctorTips} />
+                  </section>
+                </>
+              )}
+            </div>
+
+            {/* Move the 3 cards below timeline and trimester cards */}
+            <div style={{ display: 'flex', gap: '24px', marginTop: '32px', paddingLeft: '32px', paddingRight: '32px', paddingBottom: '32px' }}>
+              {/* Upcoming Appointments - first slot */}
+              <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%' }}>
+                <div style={{ background: '#F3E8FF', borderRadius: '32px', boxShadow: '0 2px 16px rgba(108,74,182,0.16)', border: '2px solid #6C4AB6', padding: '32px 32px 24px 32px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
+                  <h2 style={{ color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, marginBottom: '18px', textAlign: 'center', fontSize: '1.5rem' }}>Upcoming Appointments</h2>
+                  {soonAppointments.length === 0 ? (
+                    <div style={{ textAlign: 'center', color: '#3D246C', fontFamily: 'Source Serif Pro, serif', fontSize: '18px', margin: '16px 0' }}>
+                      No upcoming appointments.
+                    </div>
+                  ) : (
+                    soonAppointments.map(appt => (
+                      <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ width: '100%', textDecoration: 'none' }}>
+                        <div style={{ background: '#FFF', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', padding: '20px', width: '100%', marginBottom: '18px', color: '#3D246C', fontFamily: 'Source Serif Pro, serif', fontSize: '18px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', cursor: 'pointer', transition: 'box-shadow 0.2s', border: 'none' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                            <IonIcon icon={AppointmentIcon} style={{ color: '#6C4AB6', fontSize: '24px' }} />
+                            <span style={{ fontWeight: 700, color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontSize: '20px' }}>{appt.provider} @ {appt.location}</span>
+                          </div>
+                          <div style={{ color: '#3D246C', fontFamily: 'Source Serif Pro, serif', marginBottom: '8px' }}>{
+                            appt.dateTime instanceof Timestamp
+                              ? appt.dateTime.toDate().toLocaleString()
+                              : appt.dateTime?.toDate?.()
+                                ? appt.dateTime.toDate().toLocaleString()
+                                : typeof appt.dateTime === 'string'
+                                  ? new Date(appt.dateTime).toLocaleString()
+                                  : ''
+                          }</div>
+                          {appt.notes && appt.notes.length > 0 && (
+                            <div style={{ marginTop: '8px', width: '100%' }}>
+                              <span style={{ color: '#6C4AB6', fontWeight: 600, fontSize: '16px' }}>Notes/Questions:</span>
+                              <ul style={{ margin: 0, paddingLeft: '18px', color: '#3D246C', fontSize: '16px' }}>
+                                {appt.notes.map((note: string, idx: number) => (
+                                  <li key={idx} style={{ fontFamily: 'Source Serif Pro, serif', marginBottom: '4px' }}>{note}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </IonRouterLink>
+                    ))
+                  )}
+                </div>
+              </div>
+              {/* Calendar - middle slot */}
+              <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%' }}>
+                <CalendarView appointments={soonAppointments} />
+              </div>
+              {/* Fetal Development Image and Credit - third slot */}
+              <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
+                <img
+                  src={'/fetal_development.jpg'}
+                  alt="Fetal Development"
+                  style={{ maxWidth: '100%', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', marginBottom: '8px' }}
+                />
+                <div style={{ fontSize: '0.95rem', color: '#6C4AB6', textAlign: 'center' }}>
+                  Image credit: <a href="https://www.omumsie.com/cdn/shop/articles/321724216128_520x500_667689fa-025d-47c6-96bf-c648f6c59565_1080x.jpg?v=1740480111" target="_blank" rel="noopener noreferrer" style={{ color: '#6C4AB6', textDecoration: 'underline' }}>Omumsie</a>
+                </div>
+              </div>
+            </div>
           </React.Suspense>
         </main>
       </IonContent>
