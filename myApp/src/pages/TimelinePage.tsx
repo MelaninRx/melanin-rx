@@ -3,6 +3,7 @@ import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBa
 import StatusCard from '../components/StatusCard';
 import ChecklistCard from '../components/ChecklistCard';
 import QuestionsCard from '../components/QuestionsCard';
+import ChatModal from '../components/ChatModal';
 import styles from './timeline.module.css';
 import { getTrimesters, Trimester } from '../services/timelineService';
 
@@ -16,6 +17,10 @@ const TimelinePage: React.FC = () => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const [currentTrimesterId, setCurrentTrimesterId] = React.useState<string | null>(null);
   const [currentTrimesterIndex, setCurrentTrimesterIndex] = React.useState<number | null>(null);
+
+  // Chat modal state
+  const [isChatOpen, setIsChatOpen] = React.useState(false);
+  const [selectedQuestion, setSelectedQuestion] = React.useState<string>('');
 
   React.useEffect(() => {
     document.title = 'Pregnancy Timeline — MelaninRX';
@@ -34,6 +39,11 @@ const TimelinePage: React.FC = () => {
   const idx = currentTrimesterIndex ?? null;
   const progressToNodeCenter =
     idx != null && n > 1 ? (idx - 1) / (n - 1) : 0;
+
+  const handleQuestionClick = (question: string) => {
+    setSelectedQuestion(question);
+    setIsChatOpen(true);
+  };
 
   return (
     <IonPage>
@@ -100,12 +110,21 @@ const TimelinePage: React.FC = () => {
                 </section>
 
                 <section className={styles.expandedWrap}>
-                  <QuestionsCard items={active.doctorTips} />
+                  <QuestionsCard
+                  items={active.doctorTips}
+                  onQuestionClick={handleQuestionClick}
+                  />
                 </section>
               </>
             )}
           </React.Suspense>
         </main>
+        {/* Chat Modal */}
+        <ChatModal
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+          initialQuestion={selectedQuestion}
+        />
       </IonContent>
     </IonPage>
   );
