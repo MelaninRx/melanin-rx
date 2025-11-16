@@ -4,6 +4,7 @@ import StatusCard from '../components/StatusCard';
 import ChecklistCard from '../components/ChecklistCard';
 import QuestionsCard from '../components/QuestionsCard';
 import ChatWidget from '../components/ChatWidget';
+import ChatButton from '../components/ChatButton';
 import styles from './timeline.module.css';
 import { getTrimesters, Trimester } from '../services/timelineService';
 
@@ -42,6 +43,11 @@ const TimelinePage: React.FC = () => {
 
   const handleQuestionClick = (question: string) => {
     setSelectedQuestion(question);
+    setIsChatOpen(true);
+  };
+
+  const handleChatButtonClick = () => {
+    setSelectedQuestion('');
     setIsChatOpen(true);
   };
 
@@ -119,6 +125,12 @@ const TimelinePage: React.FC = () => {
             )}
           </React.Suspense>
         </main>
+
+        {/* Chat Button - Always visible */}
+        {!isChatOpen && (
+          <ChatButton onClick={handleChatButtonClick} />
+        )}
+        
         {/* Chat Widget */}
         <ChatWidget
           isOpen={isChatOpen}
