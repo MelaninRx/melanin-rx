@@ -29,14 +29,56 @@ import LogoutIcon from "../icons/log-out.svg"
 import aboutIcon from '../icons/book-text.svg';
 import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
-
+import { useEffect, useState } from 'react';
+import { getFirestore, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 
 const Home: React.FC = () => {
+  const [soonAppointments, setSoonAppointments] = useState<any[]>([]);
+  const [allAppointments, setAllAppointments] = useState<any[]>([]);
+  const [rawAppointments, setRawAppointments] = useState<any[]>([]);
   const user = useCurrentUser();
+
+  useEffect(() => {
+    async function fetchSoonAppointments() {
+      if (!user?.uid) return;
+      const db = getFirestore();
+      // Fetch all appointments from subcollection under user
+      const allSnapshot = await getDocs(collection(db, 'users', user.uid, 'appointments'));
+      const rawAppts = allSnapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
+      setRawAppointments(rawAppts);
+      // Use same for filtered query
+      const snapshot = allSnapshot;
+      const now = new Date();
+      const allAppts = snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
+      setAllAppointments(allAppts);
+      const appts = allAppts
+        .filter(appt => {
+          let apptDate;
+          if (appt.dateTime instanceof Timestamp) {
+            apptDate = appt.dateTime.toDate();
+          } else if (typeof appt.dateTime === 'string') {
+            apptDate = new Date(appt.dateTime);
+          } else if (appt.dateTime?.toDate) {
+            apptDate = appt.dateTime.toDate();
+          } else {
+            return false;
+          }
+          return apptDate >= now;
+        })
+        .sort((a, b) => {
+          let aDate = a.dateTime instanceof Timestamp ? a.dateTime.toDate() : new Date(a.dateTime);
+          let bDate = b.dateTime instanceof Timestamp ? b.dateTime.toDate() : new Date(b.dateTime);
+          return aDate.getTime() - bDate.getTime();
+        })
+        .slice(0, 3);
+      setSoonAppointments(appts);
+    }
+    fetchSoonAppointments();
+  }, [user]);
 
   return (
     <IonPage className="home-page">
-      <IonContent fullscreen className="home-content">
+      <IonContent fullscreen className="home-content" style={{ paddingLeft: '80px' }}>
         {/* side panel */}
         <aside className="side-panel">
           <div className="nav-top">
@@ -63,6 +105,10 @@ const Home: React.FC = () => {
             <IonButton fill="clear" routerLink="/timeline">
               <IonIcon icon={timelineIcon} />
               <span className = "menu-text">Timeline</span>
+            </IonButton>
+            <IonButton fill="clear" routerLink="/appointments">
+              <IonIcon icon={AppointmentIcon} />
+              <span className="menu-text">Appointments</span>
             </IonButton>
           </div>
 
@@ -159,8 +205,19 @@ const Home: React.FC = () => {
               </article>
             </IonRouterLink>
 
+            <IonRouterLink routerLink="/appointments" className="panel-card-link">
+              <article className="panel-card">
+                <div className="panel-icon-bar">
+                  <img src={AppointmentIcon} className="panel-icon" />
+                  <img src={JumpIcon} className="panel-icon right" />
+                </div>
+                <div className="panel-content">
+                  <h3 className="panel-title">Appointments</h3>
+                  <p className="panel-body">Track upcoming appointments and add notes/questions.</p>
+                </div>
+              </article>
+            </IonRouterLink>
           </section>
-
       </IonContent>
     </IonPage>
   );
