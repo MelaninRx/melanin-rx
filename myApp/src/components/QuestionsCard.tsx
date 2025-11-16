@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './QuestionsCard.module.css';
+import styles from '../pages/timeline.module.css';
 
 interface QuestionsCardProps {
   items: string[];

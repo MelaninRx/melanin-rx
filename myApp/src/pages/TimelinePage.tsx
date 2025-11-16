@@ -3,7 +3,7 @@ import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBa
 import StatusCard from '../components/StatusCard';
 import ChecklistCard from '../components/ChecklistCard';
 import QuestionsCard from '../components/QuestionsCard';
-import ChatModal from '../components/ChatModal';
+import ChatWidget from '../components/ChatWidget';
 import styles from './timeline.module.css';
 import { getTrimesters, Trimester } from '../services/timelineService';
 
@@ -18,7 +18,7 @@ const TimelinePage: React.FC = () => {
   const [currentTrimesterId, setCurrentTrimesterId] = React.useState<string | null>(null);
   const [currentTrimesterIndex, setCurrentTrimesterIndex] = React.useState<number | null>(null);
 
-  // Chat modal state
+  // Chat Widget state
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   const [selectedQuestion, setSelectedQuestion] = React.useState<string>('');
 
@@ -119,8 +119,8 @@ const TimelinePage: React.FC = () => {
             )}
           </React.Suspense>
         </main>
-        {/* Chat Modal */}
-        <ChatModal
+        {/* Chat Widget */}
+        <ChatWidget
           isOpen={isChatOpen}
           onClose={() => setIsChatOpen(false)}
           initialQuestion={selectedQuestion}
