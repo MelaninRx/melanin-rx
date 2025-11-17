@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
 
 :root {
   /* Brand palette */
@@ -30,6 +30,10 @@ ion-page {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+}
+
+body, html, *, *:before, *:after {
+  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif !important;
 }
 
 /* Remove Ionic default white overlay that causes lavender tint */

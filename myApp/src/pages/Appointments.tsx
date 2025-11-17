@@ -8,18 +8,11 @@ import {
   IonList,
   IonLabel,
   IonTextarea,
-  IonDatetime,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonIcon,
   IonSpinner,
-  IonToolbar,
-  IonButtons,
+  IonIcon,
 } from "@ionic/react";
 import { db, auth } from "../firebaseConfig";
-import { collection, addDoc, query, where, getDocs, Timestamp, orderBy, updateDoc, doc } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, getDocs, Timestamp } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { useHistory } from "react-router-dom";
 import CalendarIcon from "../icons/calendar-days.svg";
@@ -49,6 +42,8 @@ const AppointmentsPage: React.FC = () => {
   const [userId, setUserId] = useState<string>("");
   const [error, setError] = useState("");
   const history = useHistory();
+  const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
+  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -87,14 +82,6 @@ const AppointmentsPage: React.FC = () => {
     setForm(prev => ({ ...prev, notes: newNotes }));
   };
 
-  const addNoteField = () => {
-    setForm(prev => ({ ...prev, notes: [...prev.notes, ""] }));
-  };
-
-  const removeNoteField = (idx: number) => {
-    setForm(prev => ({ ...prev, notes: prev.notes.filter((_, i) => i !== idx) }));
-  };
-
   const handleSubmit = async () => {
     setError("");
     if (!form.date || !form.time || !form.location || !form.provider) {
@@ -119,157 +106,242 @@ const AppointmentsPage: React.FC = () => {
     }
   };
 
-  const handleNoteUpdate = async (apptId: string, notes: string[]) => {
-    setLoading(true);
-    try {
-      await updateDoc(doc(db, "users", userId, "appointments", apptId), {
-        notes: notes.filter(n => n.trim() !== ""),
-      });
-      fetchAppointments(userId);
-    } catch (err) {
-      setError("Failed to update notes.");
-    } finally {
-      setLoading(false);
-    }
+  const getMonthDays = (month: number, year: number) => {
+    return new Date(year, month + 1, 0).getDate();
   };
+
+  const getFirstDayOfWeek = (month: number, year: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const appointmentsByDate = appointments.reduce((acc, appt) => {
+    const dateObj = appt.dateTime?.toDate?.();
+    if (dateObj && dateObj.getMonth() === calendarMonth && dateObj.getFullYear() === calendarYear) {
+      const day = dateObj.getDate();
+      acc[day] = true;
+    }
+    return acc;
+  }, {} as Record<number, boolean>);
 
   return (
     <IonPage className="appointments-page">
       <IonContent fullscreen>
-        <aside className="side-panel">
-          <div className="nav-top">
-            <IonButton fill="clear" routerLink="/menu">
-              <IonIcon icon={menuIcon} />
-              <span className="menu-text">Menu</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/home">
-              <IonIcon icon={homeIcon} />
-              <span className="menu-text">Home</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/add">
-              <IonIcon icon={addIcon} />
-              <span className="menu-text">New Chat</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/chatbot">
-              <IonIcon icon={chatbotIcon} />
-              <span className="menu-text">Chats</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/community">
-              <IonIcon icon={communityIcon} />
-              <span className="menu-text">Communities</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/timeline">
-              <IonIcon icon={timelineIcon} />
-              <span className="menu-text">Timeline</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/appointments">
-              <IonIcon icon={AppointmentIcon} />
-              <span className="menu-text">Appointments</span>
-            </IonButton>
-          </div>
-          <div className="nav-bottom">
-            <IonButton fill='clear' onClick={logoutUser}>
-              <IonIcon icon={LogoutIcon} />
-              <span className="menu-text">Log out</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/settings">
-              <IonIcon icon={settingsIcon} />
-              <span className="menu-text">Setting</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/profile">
-              <IonIcon icon={profileIcon} />
-              <span className="menu-text">Profile</span>
-            </IonButton>
-          </div>
-        </aside>
-        <div className="appointments-wrapper">
-          <h1>My Appointments</h1>
-          <IonCard>
-            <IonCardHeader>
-              <IonCardTitle>Add Appointment</IonCardTitle>
-            </IonCardHeader>
-            <IonCardContent>
-              <IonItem>
-                <IonLabel position="stacked">Date</IonLabel>
-                <IonInput
-                  type="date"
-                  value={form.date}
-                  onIonChange={e => handleFormChange("date", e.detail.value!)}
-                />
-              </IonItem>
-              <IonItem>
-                <IonLabel position="stacked">Time</IonLabel>
-                <IonInput
-                  type="time"
-                  value={form.time}
-                  onIonChange={e => handleFormChange("time", e.detail.value!)}
-                />
-              </IonItem>
-              <IonItem>
-                <IonLabel position="stacked">Location</IonLabel>
-                <IonInput
-                  value={form.location}
-                  onIonChange={e => handleFormChange("location", e.detail.value!)}
-                />
-              </IonItem>
-              <IonItem>
-                <IonLabel position="stacked">Provider</IonLabel>
-                <IonInput
-                  value={form.provider}
-                  onIonChange={e => handleFormChange("provider", e.detail.value!)}
-                />
-              </IonItem>
-              <IonLabel position="stacked">Notes/Questions</IonLabel>
-              <IonList>
-                {form.notes.map((note, idx) => (
-                  <IonItem key={idx}>
-                    <IonTextarea
-                      value={note}
-                      onIonChange={e => handleNoteChange(idx, e.detail.value!)}
-                      placeholder={`Note/Question #${idx + 1}`}
-                    />
-                    {form.notes.length > 1 && (
-                      <IonButton color="danger" onClick={() => removeNoteField(idx)} size="small">Remove</IonButton>
-                    )}
-                  </IonItem>
-                ))}
-                <IonButton onClick={addNoteField} size="small">Add Note/Question</IonButton>
-              </IonList>
-              {error && <p style={{ color: "red" }}>{error}</p>}
-              <IonButton expand="block" onClick={handleSubmit} disabled={loading}>
-                {loading ? <IonSpinner name="crescent" /> : "Add Appointment"}
+        <div className="appointments-main-layout">
+          <aside className="side-panel">
+            <div className="nav-top">
+              <IonButton fill="clear" routerLink="/menu">
+                <IonIcon icon={menuIcon} />
+                <span className="menu-text">Menu</span>
               </IonButton>
-            </IonCardContent>
-          </IonCard>
-
-          <h2>All Appointments</h2>
-          {appointments.length === 0 && <p>No appointments found.</p>}
-          <IonList>
-            {appointments.map(appt => (
-              <IonCard key={appt.id} color="warning" button onClick={() => history.push(`/appointments/${userId}/${appt.id}`)} style={{cursor: 'pointer', boxShadow: '0 2px 12px rgba(108,74,182,0.12)', borderLeft: '6px solid #6C4AB6', background: 'linear-gradient(135deg, #E9DFF6 0%, #F3E8FF 100%)', borderRadius: '18px'}}>
-                <IonCardHeader>
-                  <IonCardTitle style={{ color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontWeight: 700 }}>
-                    <IonIcon src={CalendarIcon} /> {appt.provider} @ {appt.location}
-                  </IonCardTitle>
-                  <p style={{ color: '#3D246C', fontFamily: 'Source Serif Pro, serif' }}>{appt.dateTime?.toDate?.().toLocaleString()}</p>
-                </IonCardHeader>
-                <IonCardContent style={{ fontFamily: 'Source Serif Pro, serif', color: '#3D246C' }}>
-                  <h3 style={{ color: '#6C4AB6', fontWeight: 600 }}>Notes/Questions</h3>
-                  <IonList>
-                    {appt.notes?.map((note: string, idx: number) => (
-                      <IonItem key={idx} style={{ background: 'transparent', border: 'none' }}>
-                        <IonTextarea
-                          value={note}
-                          disabled
-                          style={{ background: '#F3E8FF', borderRadius: '8px', color: '#3D246C', fontFamily: 'Source Serif Pro, serif' }}
-                        />
-                      </IonItem>
-                    ))}
-                  </IonList>
-                </IonCardContent>
-              </IonCard>
-            ))}
-          </IonList>
+              <IonButton fill="clear" routerLink="/home">
+                <IonIcon icon={homeIcon} />
+                <span className="menu-text">Home</span>
+              </IonButton>
+              <IonButton fill="clear" routerLink="/add">
+                <IonIcon icon={addIcon} />
+                <span className="menu-text">New Chat</span>
+              </IonButton>
+              <IonButton fill="clear" routerLink="/chatbot">
+                <IonIcon icon={chatbotIcon} />
+                <span className="menu-text">Chats</span>
+              </IonButton>
+              <IonButton fill="clear" routerLink="/community">
+                <IonIcon icon={communityIcon} />
+                <span className="menu-text">Communities</span>
+              </IonButton>
+              <IonButton fill="clear" routerLink="/timeline">
+                <IonIcon icon={timelineIcon} />
+                <span className="menu-text">Timeline</span>
+              </IonButton>
+              <IonButton fill="clear" routerLink="/appointments">
+                <IonIcon icon={AppointmentIcon} />
+                <span className="menu-text">Appointments</span>
+              </IonButton>
+            </div>
+            <div className="nav-bottom">
+              <IonButton fill='clear' onClick={logoutUser}>
+                <IonIcon icon={LogoutIcon} />
+                <span className="menu-text">Log out</span>
+              </IonButton>
+              <IonButton fill="clear" routerLink="/settings">
+                <IonIcon icon={settingsIcon} />
+                <span className="menu-text">Setting</span>
+              </IonButton>
+              <IonButton fill="clear" routerLink="/profile">
+                <IonIcon icon={profileIcon} />
+                <span className="menu-text">Profile</span>
+              </IonButton>
+            </div>
+          </aside>
+          <main className="appointments-content">
+            <header className="appointments-header">
+              <h1>Appointment Planner</h1>
+              <p className="subtitle">Track and manage your upcoming healthcare appointments with ease</p>
+            </header>
+            <div className="appointments-flex-row">
+              <section className="add-appointment-section card">
+                <h2>Add a New Appointment</h2>
+                <div className="add-appt-card">
+                  <div className="form-row">
+                    <IonItem className="form-item">
+                      <IonLabel position="stacked">Date</IonLabel>
+                      <IonInput type="date" value={form.date} onIonChange={e => handleFormChange("date", e.detail.value!)} />
+                    </IonItem>
+                    <IonItem className="form-item">
+                      <IonLabel position="stacked">Time</IonLabel>
+                      <IonInput type="time" value={form.time} onIonChange={e => handleFormChange("time", e.detail.value!)} />
+                    </IonItem>
+                  </div>
+                  <div className="form-row">
+                    <IonItem className="form-item">
+                      <IonLabel position="stacked">Provider</IonLabel>
+                      <IonInput value={form.provider} onIonChange={e => handleFormChange("provider", e.detail.value!)} />
+                    </IonItem>
+                  </div>
+                  <IonItem className="form-item">
+                    <IonLabel position="stacked">Location</IonLabel>
+                    <IonInput value={form.location} onIonChange={e => handleFormChange("location", e.detail.value!)} placeholder="Enter Clinic or Hospital Address" />
+                  </IonItem>
+                  <IonItem className="form-item">
+                    <IonLabel position="stacked">Notes/Questions for Provider</IonLabel>
+                    <IonTextarea value={form.notes[0]} onIonChange={e => handleNoteChange(0, e.detail.value!)} placeholder="Enter any symptoms, concerns, or questions you'd like to discuss at your appointment..." />
+                  </IonItem>
+                  {error && <p style={{ color: "red" }}>{error}</p>}
+                  <IonButton expand="block" onClick={handleSubmit} disabled={loading} className="add-appointment-btn">
+                    {loading ? <IonSpinner name="crescent" /> : "Add Appointment"}
+                  </IonButton>
+                </div>
+              </section>
+              <section className="calendar-section card">
+                <div className="calendar-widget">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <button
+                      style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#8c3a7a' }}
+                      onClick={() => {
+                        if (calendarMonth === 0) {
+                          setCalendarMonth(11);
+                          setCalendarYear(calendarYear - 1);
+                        } else {
+                          setCalendarMonth(calendarMonth - 1);
+                        }
+                      }}
+                      aria-label="Previous Month"
+                    >
+                      &#60;
+                    </button>
+                    <h3 style={{ color: '#8c3a7a', fontWeight: 700, fontSize: '1.2rem', margin: 0 }}>
+                      {new Date(calendarYear, calendarMonth).toLocaleString('default', { month: 'long' })} {calendarYear}
+                    </h3>
+                    <button
+                      style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#8c3a7a' }}
+                      onClick={() => {
+                        if (calendarMonth === 11) {
+                          setCalendarMonth(0);
+                          setCalendarYear(calendarYear + 1);
+                        } else {
+                          setCalendarMonth(calendarMonth + 1);
+                        }
+                      }}
+                      aria-label="Next Month"
+                    >
+                      &#62;
+                    </button>
+                  </div>
+                  <table className="calendar-table">
+                    <thead>
+                      <tr>
+                        <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(() => {
+                        const daysInMonth = getMonthDays(calendarMonth, calendarYear);
+                        const firstDay = getFirstDayOfWeek(calendarMonth, calendarYear);
+                        const rows = [];
+                        let day = 1 - firstDay;
+                        for (let week = 0; week < 6; week++) {
+                          const cells = [];
+                          for (let d = 0; d < 7; d++) {
+                            if (day > 0 && day <= daysInMonth) {
+                              cells.push(
+                                <td key={d} style={{ position: 'relative', height: '40px' }}>
+                                  {day}
+                                  {appointmentsByDate[day] && (
+                                    <span style={{
+                                      display: 'block',
+                                      width: '7px',
+                                      height: '7px',
+                                      borderRadius: '50%',
+                                      background: '#8c3a7a',
+                                      margin: '3px auto 0',
+                                    }}></span>
+                                  )}
+                                </td>
+                              );
+                            } else {
+                              cells.push(<td key={d}></td>);
+                            }
+                            day++;
+                          }
+                          rows.push(<tr key={week}>{cells}</tr>);
+                        }
+                        return rows;
+                      })()}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+            <div className="appointments-flex-bottom">
+              <section className="upcoming-appointments-section card">
+                <h2>Upcoming Appointments <span className="scheduled-count">{appointments.length} Scheduled</span></h2>
+                <div className="appointments-list">
+                  {appointments.length === 0 && <p>No appointments found.</p>}
+                  {appointments.map(appt => (
+                    <div
+                      className="appointment-card"
+                      key={appt.id}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => history.push(`/appointments/${userId}/${appt.id}`)}
+                    >
+                      <div className="appointment-date">{appt.dateTime?.toDate?.().toLocaleDateString('en-US', { month: 'short' }).toUpperCase()}<br/>{appt.dateTime?.toDate?.().getDate()}</div>
+                      <div className="appointment-info">
+                        <strong>{appt.provider}</strong>
+                        <div className="appointment-meta">{appt.dateTime?.toDate?.().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · {appt.location}</div>
+                        <div className="appointment-notes">Notes: {appt.notes?.join(', ')}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+              <section className="quick-actions-section card">
+                <h2>Quick Actions</h2>
+                <div className="quick-actions-list">
+                  <a href="/chatbot" className="quick-action-card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <span className="icon"><img src={chatbotIcon} alt="Chat Bot" /></span>
+                    <div>
+                      <strong>Chat Bot</strong>
+                      <p>Get personalized health insights and prepare for doctor visits</p>
+                    </div>
+                  </a>
+                  <a href="/resources" className="quick-action-card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <span className="icon"><img src={AppointmentIcon} alt="Health Resources" /></span>
+                    <div>
+                      <strong>Health Resources</strong>
+                      <p>Access health resources to prepare for pregnancy</p>
+                    </div>
+                  </a>
+                  <a href="/community" className="quick-action-card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <span className="icon"><img src={communityIcon} alt="Communities" /></span>
+                    <div>
+                      <strong>Communities</strong>
+                      <p>Connect with other expectant mothers in your area/same trimester</p>
+                    </div>
+                  </a>
+                </div>
+              </section>
+            </div>
+          </main>
         </div>
       </IonContent>
     </IonPage>

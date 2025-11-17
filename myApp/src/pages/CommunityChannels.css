@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+
+body, html, *, *:before, *:after {
+  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif !important;
+}
+
 .community-page { --background: var(--ion-color-light); }
 .community-hero { padding: 16px; }
 .community-welcome { margin: 0 0 8px 0; font-size: 1.25rem; }

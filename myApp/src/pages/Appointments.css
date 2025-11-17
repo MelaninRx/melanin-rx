@@ -1,4 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+
+body, html, *, *:before, *:after {
+  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif !important;
+}
+
 .appointments-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+  background: linear-gradient(135deg, #F7F3FF 0%, #E9DFF6 100%);
   max-width: 700px;
   margin: 0 auto;
   padding: 2rem 1rem;
@@ -105,6 +119,12 @@ h1, h2 {
   padding: 0.3rem 1rem;
 }
 
+.appointments-main-layout {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f7f3ff 0%, #e9dff6 100%);
+}
+
 .side-panel {
   position: fixed;
   top: 0;
@@ -113,11 +133,12 @@ h1, h2 {
   width: 60px;
   background: #fff;
   box-shadow: 2px 0 8px rgba(0,0,0,0.07);
-  z-index: 100;
+  z-index: 2;
   transition: width 0.2s cubic-bezier(.4,0,.2,1);
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 .side-panel:hover,
 .side-panel:focus-within {
@@ -151,6 +172,347 @@ h1, h2 {
 .side-panel:focus-within ~ .appointments-wrapper {
   margin-left: 220px;
 }
+
+.appointments-content {
+  flex: 1;
+  padding: 2.5rem 2.5rem 2.5rem 2rem;
+  margin-left: 70px;
+  background: linear-gradient(135deg, #f7f3ff 0%, #e9dff6 100%);
+  min-height: 100vh;
+  padding: 2rem 2rem 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.appointments-header {
+  margin-bottom: 2rem;
+}
+.appointments-flex-row {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+}
+.add-appointment-section {
+  flex: 1 1 700px;
+  max-width: 700px;
+}
+.calendar-section {
+  flex: 0 0 340px;
+  max-width: 340px;
+}
+.appointments-flex-bottom {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+.upcoming-appointments-section {
+  flex: 1 1 700px;
+  max-width: 700px;
+  margin-top: 0;
+}
+.quick-actions-section {
+  flex: 0 0 340px;
+  max-width: 340px;
+  margin-top: 0;
+}
+.appointments-grid {
+  display: block;
+}
+.appointments-header h1 {
+  font-size: 2.2rem;
+  color: #8c3a7a;
+  font-family: 'Source Serif Pro', serif;
+  font-weight: 700;
+  margin-left: 50px;
+}
+.subtitle {
+  color: #6c4b7c;
+  font-size: 1.1rem;
+  margin-bottom: 2.2rem;
+  margin-left: 50px;
+}
+.add-appointment-section,
+.upcoming-appointments-section {
+  width: 100%;
+  max-width: 7000px;
+}
+.card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(90,51,146,0.10);
+  padding: 1.5rem 1.5rem 1.2rem 1.5rem;
+  margin-bottom: 0;
+  max-width: 900px;
+  margin-left: 20px;
+}
+.add-appt-card {
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+}
+.form-row {
+  display: flex;
+  row-gap: 0.5rem;
+}
+.add-appointment-btn {
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.8rem 0;
+  border: none !important;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.add-appointment-btn:focus,
+.add-appointment-btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+.calendar-widget {
+  width: 100%;
+}
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.calendar-table th,
+.calendar-table td {
+  text-align: center;
+  padding: 0.4rem 0.2rem;
+  color: #6c4b7c;
+}
+.quick-actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.quick-action-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: #f7f3ff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 8px rgba(90,51,146,0.07);
+}
+.quick-action-card .icon img {
+  width: 32px;
+  height: 32px;
+}
+.scheduled-count {
+  background: #e9dff6;
+  color: #8c3a7a;
+  border-radius: 12px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.appointment-card {
+  display: flex;
+  align-items: flex-start;
+  background: #f7f3ff;
+  border-radius: 14px;
+  box-shadow: 0 1px 8px rgba(90,51,146,0.07);
+  padding: 1.2rem 1.5rem;
+  gap: 1.2rem;
+}
+.appointment-date {
+  background: #8c3a7a;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  text-align: center;
+  min-width: 54px;
+  margin-right: 1rem;
+  line-height: 1.1;
+}
+.appointment-info {
+  flex: 1;
+}
+.appointment-meta {
+  color: #6c4b7c;
+  font-size: 0.98rem;
+  margin: 0.2rem 0 0.5rem 0;
+}
+.appointment-notes {
+  color: #8c3a7a;
+  font-size: 0.97rem;
+}
+.appointment-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.edit-btn, .delete-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #8c3a7a;
+  transition: color 0.2s;
+}
+.edit-btn:hover, .delete-btn:hover {
+  color: #5a3392;
+}
+
+/* Form items - remove all ionic wrapper styles */
+.add-appointment-section .form-item {
+  flex: 1;
+  background: transparent !important;
+  border: none !important;
+  margin-bottom: 0.7rem;
+  padding: 0 !important;
+  --border-width: 0 !important;
+  --border-color: transparent !important;
+}
+
+.add-appointment-section ion-item {
+  --background: transparent !important;
+  --background-activated: transparent !important;
+  --background-focused: transparent !important;
+  --background-hover: transparent !important;
+  --border-width: 0 !important;
+  --border-color: transparent !important;
+  --padding-start: 0 !important;
+  --padding-end: 0 !important;
+  --inner-border-width: 0 !important;
+  --inner-padding-end: 0 !important;
+  --min-height: auto !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.add-appointment-section .item-native,
+.add-appointment-section .item-inner,
+.add-appointment-section .item-wrapper,
+.add-appointment-section ion-item::part(native) {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Labels */
+.add-appointment-section ion-label {
+  color: #8c3a7a !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  margin-bottom: 0.4rem !important;
+  padding: 0 !important;
+}
+
+/* Input fields - single border, clean styling */
+.add-appointment-section input,
+.add-appointment-section textarea {
+  background: #fff !important;
+  border: 2px solid #d0d0d0 !important;
+  border-radius: 10px !important;
+  color: #222 !important;
+  font-size: 1rem !important;
+  padding: 0.1rem 0.1rem !important;
+  width: 100% !important;
+  height: 44px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: border-color 0.2s;
+}
+
+.add-appointment-section textarea {
+  height: 100px !important;
+  resize: vertical;
+  min-height: 80px !important;
+}
+
+.add-appointment-section input:focus,
+.add-appointment-section textarea:focus {
+  border-color: #8c3a7a !important;
+}
+
+/* Ionic component overrides */
+.add-appointment-section ion-input,
+.add-appointment-section ion-datetime,
+.add-appointment-section ion-select {
+  --background: #fff !important;
+  --padding-start: 0 !important;
+  --padding-end: 0 !important;
+}
+
+/* Comment out styles now moved to AppointmentDetail.css */
+/*
+.detail-title {
+  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: 2.2rem;
+  color: #8c3a7a;
+  margin-bottom: 1.2rem;
+}
+.detail-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(108,74,182,0.08);
+  border: 1px solid #e0e0e0;
+  padding: 3rem 3.5rem;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+}
+.detail-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+.detail-card-title {
+  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: #222;
+  margin: 0;
+}
+.delete-btn {
+  border-radius: 8px;
+  font-weight: 600;
+  min-width: 160px;
+  font-size: 1rem;
+  width: 100%;
+  display: block;
+}
+.detail-list {
+  margin: 0;
+  padding: 0;
+}
+.save-btn {
+  background: linear-gradient(90deg, #8c3a7a 0%, #6C4AB6 100%) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 1.08rem !important;
+  margin-top: 1.2rem !important;
+  width: 100%;
+  display: block;
+}
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem !important;
+}
+.form-item {
+  margin-bottom: 2rem !important;
+}
+*/
 
 @media (max-width: 700px) {
   .appointments-wrapper {

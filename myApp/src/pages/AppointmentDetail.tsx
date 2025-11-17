@@ -13,6 +13,7 @@ import {
   IonButton,
   IonIcon,
   IonSpinner,
+  IonInput,
 } from "@ionic/react";
 import { useParams, useHistory } from "react-router-dom";
 import { db } from "../firebaseConfig";
@@ -30,6 +31,7 @@ import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
 import './Appointments.css';
+import './AppointmentDetail.css';
 
 const AppointmentDetail: React.FC = () => {
   const { id, uid } = useParams<{ id: string; uid: string }>();
@@ -127,48 +129,48 @@ const AppointmentDetail: React.FC = () => {
             </IonButton>
           </div>
         </aside>
-        <div className="appointments-wrapper">
-          <IonCard color="primary" style={{background: 'linear-gradient(135deg, #E9DFF6 0%, #F3E8FF 100%)', borderRadius: '18px', boxShadow: '0 2px 12px rgba(108,74,182,0.08)', border: 'none'}}>
-            <IonCardHeader>
-              <IonCardTitle style={{ color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontWeight: 700 }}>
-                <IonIcon src={CalendarIcon} /> {appointment.provider} @ {appointment.location}
-              </IonCardTitle>
-              <p style={{ color: '#3D246C', fontFamily: 'Source Serif Pro, serif' }}>{appointment.dateTime?.toDate?.().toLocaleString()}</p>
-            </IonCardHeader>
-            <IonCardContent style={{ fontFamily: 'Source Serif Pro, serif', color: '#3D246C' }}>
-              <IonItem style={{ background: 'transparent', border: 'none' }}>
-                <IonLabel position="stacked" style={{ color: '#6C4AB6', fontWeight: 600 }}>Location</IonLabel>
-                <p style={{ color: '#3D246C', fontFamily: 'Source Serif Pro, serif' }}>{appointment.location}</p>
-              </IonItem>
-              <IonItem style={{ background: 'transparent', border: 'none' }}>
-                <IonLabel position="stacked" style={{ color: '#6C4AB6', fontWeight: 600 }}>Provider</IonLabel>
-                <p style={{ color: '#3D246C', fontFamily: 'Source Serif Pro, serif' }}>{appointment.provider}</p>
-              </IonItem>
-              <IonLabel position="stacked" style={{ color: '#6C4AB6', fontWeight: 600 }}>Notes/Questions</IonLabel>
-              <IonList>
-                {notes.map((note, idx) => (
-                  <IonItem key={idx} style={{ background: 'transparent', border: 'none' }}>
-                    <IonTextarea
-                      value={note}
-                      onIonChange={e => handleNoteChange(idx, e.detail.value!)}
-                      placeholder={`Note/Question #${idx + 1}`}
-                      style={{ background: '#F3E8FF', borderRadius: '8px', color: '#3D246C', fontFamily: 'Source Serif Pro, serif' }}
-                    />
-                    {notes.length > 1 && (
-                      <IonButton color="danger" onClick={() => removeNoteField(idx)} size="small">Remove</IonButton>
-                    )}
+        
+        <div className="appointments-wrapper" style={{minHeight: '100vh', padding: 0, background: "transparent" }}>
+          <div style={{ margin: '1rem auto', maxWidth: 700 }}>
+            <div className="appointment-detail-wrapper" style={{ marginTop: '0' }}>
+              <IonButton fill="clear" onClick={() => history.goBack()} style={{ fontSize: '1.6rem', color: '#6C4AB6', marginBottom: '1.5rem', alignSelf: 'flex-start' }}>
+                <IonIcon icon="arrow-back-outline" slot="icon-only" />
+              </IonButton>
+              <IonCard className="detail-card">
+                <div className="detail-card-header">
+                  <h2 className="detail-card-title">Edit Appointment Details</h2>
+                </div>
+                <IonList className="detail-list">
+                  <div className="form-row">
+                    <IonItem className="form-item">
+                      <IonLabel position="stacked">Appointment Date</IonLabel>
+                      <IonInput type="date" value={appointment.dateTime?.toDate?.().toISOString().slice(0,10) || ''} onIonChange={e => setAppointment({ ...appointment, dateTime: new Date(e.detail.value + 'T' + (appointment.dateTime?.toDate?.().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || '00:00')) })} />
+                    </IonItem>
+                    <IonItem className="form-item">
+                      <IonLabel position="stacked">Time</IonLabel>
+                      <IonInput type="time" value={appointment.dateTime?.toDate?.().toISOString().slice(11,16) || ''} onIonChange={e => setAppointment({ ...appointment, dateTime: new Date((appointment.dateTime?.toDate?.().toISOString().slice(0,10) || '') + 'T' + e.detail.value) })} />
+                    </IonItem>
+                  </div>
+                  <div className="form-row">
+                    <IonItem className="form-item">
+                      <IonLabel position="stacked">Healthcare Provider</IonLabel>
+                      <IonInput value={appointment.provider || ''} onIonChange={e => setAppointment({ ...appointment, provider: e.detail.value })} />
+                    </IonItem>
+                  </div>
+                  <IonItem className="form-item">
+                    <IonLabel position="stacked">Location</IonLabel>
+                    <IonInput value={appointment.location || ''} onIonChange={e => setAppointment({ ...appointment, location: e.detail.value })} />
                   </IonItem>
-                ))}
-                <IonButton onClick={addNoteField} size="small" color="secondary">Add Note/Question</IonButton>
-              </IonList>
-              <IonButton expand="block" onClick={saveNotes} disabled={saving} color="success" style={{ borderRadius: '8px', fontWeight: 600 }}>
-                {saving ? <IonSpinner name="crescent" /> : "Save Notes"}
-              </IonButton>
-              <IonButton expand="block" color="medium" onClick={() => history.goBack()} style={{marginTop: '1rem', borderRadius: '8px', fontWeight: 600}}>
-                Back
-              </IonButton>
-            </IonCardContent>
-          </IonCard>
+                  <IonItem className="form-item">
+                    <IonLabel position="stacked">Notes/ Questions for Provider</IonLabel>
+                    <IonTextarea value={notes[0] || ''} onIonChange={e => handleNoteChange(0, e.detail.value!)} placeholder="Discuss recent fatigue and nutrition plan" />
+                  </IonItem>
+                </IonList>
+                <IonButton expand="block" className="save-btn" style={{marginTop: '1.2rem'}}>Save Changes</IonButton>
+                <IonButton color="danger" className="delete-btn" expand="block" style={{marginTop: '1rem'}}>Delete Appointment</IonButton>
+              </IonCard>
+            </div>
+          </div>
         </div>
       </IonContent>
     </IonPage>
