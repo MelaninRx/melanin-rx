@@ -23,6 +23,7 @@ import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
+import ReactMarkdown from 'react-markdown';
 
 // Use your Firebase project ID here
 const FIREBASE_PROJECT_ID = "melaninrx-4842c";
@@ -235,7 +236,11 @@ const handleQuickQuestion = async (question: string) => {
                   key={i}
                   className={`chat-bubble ${msg.sender === 'user' ? 'user' : 'bot'}`}
                 >
-                  {msg.text}
+                  {msg.sender === 'bot' ? (
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  ) : (
+                    msg.text
+                  )}
                 </div>
               ))}
               {loading && <p> Thinking...</p>}
