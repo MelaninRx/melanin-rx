@@ -9,7 +9,8 @@ import {
   IonImg,
 } from "@ionic/react";
 import "./Chatbot.css";
-import "typeface-source-serif-pro";
+import "typeface-source-serif-pro"
+import ReactMarkdown from 'react-markdown';
 
 const ChatbotPage: React.FC = () => {
   const [message, setMessage] = useState('');
@@ -130,11 +131,14 @@ const ChatbotPage: React.FC = () => {
                     : 'chat-bubble bot'
                 }
               >
-                {msg.text}
+                {msg.sender === 'bot' ? (
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
+                ) : (
+                  msg.text
+                )}
               </div>
             ))}
 
-            {/* --- Show "Thinking..." while waiting for LangFlow --- */}
             {loading && <p>🤖 Thinking...</p>}
           </div>
 

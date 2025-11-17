@@ -8,7 +8,6 @@
  */
 
 const functions = require("firebase-functions");
-const fetch = require("node-fetch");
 
 ;// import {onRequest} from "firebase-functions/https";
 // import * as logger from "firebase-functions/logger";
@@ -34,31 +33,52 @@ functions.setGlobalOptions({ maxInstances: 10 });
 //   response.send("Hello from Firebase!");
 // });
 
-exports.chatWithLangFlow = functions.https.onRequest(async (req: any, res: any) => {
-  try {
-    const { message, user } = req.body;
-    const apiKey = functions.config().langflow.api_key;
-    const langflowUrl = "http://localhost:7860/api/v1/run/adb0eec5-c7e1-49fe-a46d-be1e21880053"
+exports.chatWithLangFlow = functions.https.onRequest(
+  { secrets: ["LANGFLOW_API_KEY"] },
+  async (req: any, res: any) => {
+    // Enable CORS
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      res.status(204).send('');
+      return;
+    }
+    
+    try {
+      const { message } = req.body;
+      const apiKey = process.env.LANGFLOW_API_KEY;
+  
+      // Debug logging
+      console.log("API Key exists:", !!apiKey);
+      console.log("API Key length:", apiKey?.length);
+  
+      const langflowUrl = "https://langflow.sail.codes/api/v1/run/6d64c638-920e-4156-a6de-54b5a7b69c93";
+      console.log("Full URL:", `${langflowUrl}?api_key=${apiKey}`);
 
     const response = await fetch(langflowUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        "x-api-key": apiKey || ""
       },
       body: JSON.stringify({
-        inputs: {
-          input_text: message,
-          name: user?.name || "Guest",
-          user_id: user?.id || "anon",
-        },
+        input_value: message,
+        output_type: "chat",
+        input_type: "chat"
       }),
     });
 
-    const data = await response.json();
-    res.status(200).json(data);
-  } catch (error) {
-    console.error("LangFlow proxy error:", error);
-    res.status(500).send("Error connecting to LangFlow.");
+      const data = await response.json();
+      res.status(200).json(data);
+    } catch (error: any) {
+      console.error("LangFlow proxy error:", error);
+      console.error("Error details:", JSON.stringify(error, null, 2));
+      console.error("Error message:", error?.message);
+      console.error("Error stack:", error?.stack);
+      res.status(500).json({ error: error?.message || "Error connecting to LangFlow." });
+    }
   }
-});
+);
