@@ -1,0 +1,324 @@
+[
+  {
+    "name": "First Trimester Sister Circle",
+    "trimester": "1",
+    "category": "Community Chat",
+    "description": "A welcoming group for Black women newly pregnant — share your story, connect over early symptoms, and find sisterhood from day one.",
+    "tags": ["first trimester", "community", "support"],
+    "location": "National"
+  },
+  {
+    "name": "Mind & Body Reset (Trimester 1)",
+    "trimester": "1",
+    "category": "Mental Health",
+    "description": "Weekly reflections and affirmations for grounding yourself during early pregnancy. Led by a licensed Black therapist.",
+    "tags": ["mindfulness", "mental health", "self-care"],
+    "location": "National"
+  },
+  {
+    "name": "Ask a Midwife (First Trimester)",
+    "trimester": "1",
+    "category": "Expert Q&A",
+    "description": "Live Q&A sessions with Black midwives covering early pregnancy myths, spotting, and safe prenatal habits.",
+    "tags": ["education", "midwife", "medical"],
+    "location": "National"
+  },
+  {
+    "name": "Faith & Fertility Circle",
+    "trimester": "1",
+    "category": "Spiritual Wellness",
+    "description": "Faith-based affirmations and prayer support for Black women navigating early pregnancy uncertainty.",
+    "tags": ["faith", "spiritual", "wellness"],
+    "location": "National"
+  },
+  {
+    "name": "Morning Wellness Lounge",
+    "trimester": "1",
+    "category": "Lifestyle",
+    "description": "Daily tips and chat for handling nausea, fatigue, and building gentle morning routines.",
+    "tags": ["nausea", "first trimester", "wellness"],
+    "location": "National"
+  },
+  {
+    "name": "First Trimester Nutrition & Nausea",
+    "trimester": "1",
+    "category": "Health",
+    "description": "Sharing culturally familiar meal ideas to ease morning sickness and nourish your baby.",
+    "tags": ["nutrition", "recipes", "self-care"],
+    "location": "National"
+  },
+  {
+    "name": "Newly Pregnant in Boston",
+    "trimester": "1",
+    "category": "Local Group",
+    "description": "For Boston-based Black moms-to-be to find nearby OB/GYNs, midwives, and community events.",
+    "tags": ["Boston", "local", "meetup"],
+    "location": "Boston"
+  },
+  {
+    "name": "Body Changes & Confidence Chat",
+    "trimester": "1",
+    "category": "Body Positivity",
+    "description": "Discuss early body changes, identity, and self-love in a supportive, Black-centered space.",
+    "tags": ["body image", "confidence", "identity"],
+    "location": "National"
+  },
+  {
+    "name": "Family Planning & Sharing the News",
+    "trimester": "1",
+    "category": "Lifestyle",
+    "description": "Supportive talk about announcing pregnancy to loved ones and setting early boundaries.",
+    "tags": ["boundaries", "family", "announcement"],
+    "location": "National"
+  },
+  {
+    "name": "First Trimester Fitness Flow",
+    "trimester": "1",
+    "category": "Health",
+    "description": "Gentle yoga and stretching routines tailored for early pregnancy and Black women’s health needs.",
+    "tags": ["fitness", "yoga", "movement"],
+    "location": "National"
+  },
+
+  {
+    "name": "Glow & Grow (Trimester 2)",
+    "trimester": "2",
+    "category": "Lifestyle",
+    "description": "Celebrate milestones — baby movements, anatomy scans, and bump updates — with other radiant Black moms.",
+    "tags": ["second trimester", "joy", "celebration"],
+    "location": "National"
+  },
+  {
+    "name": "Black Maternal Health Advocates",
+    "trimester": "2",
+    "category": "Advocacy",
+    "description": "Learn about your rights, health equity, and how to advocate for yourself in the healthcare system.",
+    "tags": ["advocacy", "education", "empowerment"],
+    "location": "National"
+  },
+  {
+    "name": "Partner Support Space (Trimester 2)",
+    "trimester": "2",
+    "category": "Family",
+    "description": "Conversations for couples and co-parents on nesting, communication, and preparing together.",
+    "tags": ["partners", "relationships", "communication"],
+    "location": "National"
+  },
+  {
+    "name": "Nutrition & Wellness Chat (Trimester 2)",
+    "trimester": "2",
+    "category": "Health",
+    "description": "Sharing iron-rich recipes, hydration reminders, and culturally inspired meals.",
+    "tags": ["nutrition", "recipes", "wellness"],
+    "location": "National"
+  },
+  {
+    "name": "Movement & Stretch Lounge",
+    "trimester": "2",
+    "category": "Fitness",
+    "description": "Moderate prenatal exercise routines and mobility tips for a healthy, active pregnancy.",
+    "tags": ["fitness", "mobility", "prenatal yoga"],
+    "location": "National"
+  },
+  {
+    "name": "Creating a Birth Vision",
+    "trimester": "2",
+    "category": "Birth Planning",
+    "description": "Guided workshops and discussion threads on birth plans, choosing hospitals, and Black doulas.",
+    "tags": ["birth plan", "doula", "education"],
+    "location": "National"
+  },
+  {
+    "name": "Self-Love & Body Glow",
+    "trimester": "2",
+    "category": "Body Positivity",
+    "description": "Celebrating your evolving body through affirmations, fashion ideas, and confidence chats.",
+    "tags": ["self-love", "fashion", "affirmations"],
+    "location": "National"
+  },
+  {
+    "name": "Work & Pregnancy Balance",
+    "trimester": "2",
+    "category": "Career",
+    "description": "Navigating work, maternity leave, and stress management for Black working moms.",
+    "tags": ["career", "balance", "stress"],
+    "location": "National"
+  },
+  {
+    "name": "Preparing the Nursery",
+    "trimester": "2",
+    "category": "Home",
+    "description": "Inspiration boards, DIY décor, and culturally affirming baby room ideas.",
+    "tags": ["nursery", "home", "creative"],
+    "location": "National"
+  },
+  {
+    "name": "Second Trimester Support Boston",
+    "trimester": "2",
+    "category": "Local Group",
+    "description": "Meet Black expecting mothers in Boston’s Roxbury, Dorchester, and Jamaica Plain areas.",
+    "tags": ["Boston", "local", "meetup"],
+    "location": "Boston"
+  },
+
+  {
+    "name": "Birth Prep for Black Mamas",
+    "trimester": "3",
+    "category": "Birth Planning",
+    "description": "Learn about birth positions, hospital rights, and ways to center yourself during delivery.",
+    "tags": ["birth prep", "education", "rights"],
+    "location": "National"
+  },
+  {
+    "name": "Doula & Delivery Stories",
+    "trimester": "3",
+    "category": "Community Chat",
+    "description": "Hear real experiences from Black doulas and moms as they prepare for labor.",
+    "tags": ["doulas", "support", "stories"],
+    "location": "National"
+  },
+  {
+    "name": "Hospital Bag & Checklist Crew",
+    "trimester": "3",
+    "category": "Preparation",
+    "description": "Share and compare hospital bag must-haves, from bonnets to baby outfits.",
+    "tags": ["preparation", "checklist", "packing"],
+    "location": "National"
+  },
+  {
+    "name": "Labor Affirmations & Visualization",
+    "trimester": "3",
+    "category": "Mental Health",
+    "description": "Mindful affirmations and guided imagery to build confidence for labor day.",
+    "tags": ["affirmations", "mindfulness", "labor"],
+    "location": "National"
+  },
+  {
+    "name": "Third Trimester Wellness & Sleep",
+    "trimester": "3",
+    "category": "Health",
+    "description": "Tips for managing sleep, back pain, and swelling in the final weeks.",
+    "tags": ["wellness", "sleep", "comfort"],
+    "location": "National"
+  },
+  {
+    "name": "Birth Partner Coaching Space",
+    "trimester": "3",
+    "category": "Family",
+    "description": "For partners supporting Black birthing moms — what to expect and how to help.",
+    "tags": ["partners", "coaching", "support"],
+    "location": "National"
+  },
+  {
+    "name": "Postpartum Ready",
+    "trimester": "3",
+    "category": "Wellness",
+    "description": "Conversations about recovery, breastfeeding, and emotional prep for the fourth trimester.",
+    "tags": ["postpartum", "healing", "mental health"],
+    "location": "National"
+  },
+  {
+    "name": "Black Birth Advocacy & Rights",
+    "trimester": "3",
+    "category": "Advocacy",
+    "description": "Know your rights, request respectful care, and connect with Black maternal advocates.",
+    "tags": ["advocacy", "equity", "rights"],
+    "location": "National"
+  },
+  {
+    "name": "Third Trimester Boston Moms",
+    "trimester": "3",
+    "category": "Local Group",
+    "description": "Local meetups and birthing resource shares for moms delivering soon in the Boston area.",
+    "tags": ["Boston", "local", "community"],
+    "location": "Boston"
+  },
+  {
+    "name": "Countdown to Birth Circle",
+    "trimester": "3",
+    "category": "Community Chat",
+    "description": "Daily motivation and support as you prepare for your baby’s arrival.",
+    "tags": ["motivation", "support", "labor"],
+    "location": "National"
+  },
+  {
+    "name": "Fourth Trimester Circle",
+    "trimester": "4",
+    "category": "Community Chat",
+    "description": "A warm space for Black moms navigating the first 12 weeks after birth — share emotions, wins, and struggles.",
+    "tags": ["postpartum", "community", "support"],
+    "location": "National"
+  },
+  {
+    "name": "Postpartum Mental Health & Healing",
+    "trimester": "4",
+    "category": "Mental Health",
+    "description": "Weekly check-ins with Black therapists discussing baby blues, postpartum depression, and finding balance.",
+    "tags": ["mental health", "healing", "therapy"],
+    "location": "National"
+  },
+  {
+    "name": "Breastfeeding & Body Journey",
+    "trimester": "4",
+    "category": "Health",
+    "description": "Tips, Q&As, and encouragement for breastfeeding, pumping, or bottle-feeding — no judgment zone.",
+    "tags": ["breastfeeding", "feeding", "wellness"],
+    "location": "National"
+  },
+  {
+    "name": "Sleep & Newborn Care Chat",
+    "trimester": "4",
+    "category": "Parenting",
+    "description": "Share newborn care hacks, safe sleep routines, and night-shift survival tips.",
+    "tags": ["sleep", "newborn", "parenting"],
+    "location": "National"
+  },
+  {
+    "name": "Career Comeback Lounge",
+    "trimester": "4",
+    "category": "Career",
+    "description": "Support for Black moms returning to work — balancing identity, boundaries, and self-care.",
+    "tags": ["career", "transition", "balance"],
+    "location": "National"
+  },
+  {
+    "name": "Healing Our Bodies",
+    "trimester": "4",
+    "category": "Physical Recovery",
+    "description": "Discussions about pelvic floor therapy, postpartum bleeding, and gentle movement recovery.",
+    "tags": ["recovery", "healing", "movement"],
+    "location": "National"
+  },
+  {
+    "name": "Partner & Co-Parent Check-Ins",
+    "trimester": "4",
+    "category": "Family",
+    "description": "Space for partners to share experiences supporting Black moms postpartum.",
+    "tags": ["partners", "support", "family"],
+    "location": "National"
+  },
+  {
+    "name": "Postpartum Advocacy & Resources",
+    "trimester": "4",
+    "category": "Advocacy",
+    "description": "Learn about postpartum coverage, local programs, and Black maternal advocacy orgs.",
+    "tags": ["advocacy", "resources", "equity"],
+    "location": "National"
+  },
+  {
+    "name": "Boston Postpartum Moms",
+    "trimester": "4",
+    "category": "Local Group",
+    "description": "Boston-based meetups and baby-friendly events for postpartum moms of color.",
+    "tags": ["Boston", "local", "postpartum"],
+    "location": "Boston"
+  },
+  {
+    "name": "Finding Your New Rhythm",
+    "trimester": "4",
+    "category": "Wellness",
+    "description": "Meditations, journaling prompts, and affirmations for grounding yourself in new motherhood.",
+    "tags": ["wellness", "self-care", "reflection"],
+    "location": "National"
+  }
+]

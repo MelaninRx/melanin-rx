@@ -1,0 +1,78 @@
+name: Deploy to Firebase Hosting and Functions on PR
+
+on: pull_request
+
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  build_and_preview:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repo
+      - uses: actions/checkout@v4
+
+      # 2️⃣ Debug directory structure (optional)
+      - name: Debug repo structure
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -R
+
+      # 3️⃣ Create .env for Vite web app
+      - name: Create .env for Vite web app
+        working-directory: myApp
+        run: |
+          echo "Creating .env for Vite..."
+          {
+            echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}"
+            echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}"
+            echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}"
+            echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}"
+            echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}"
+            echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}"
+            echo "VITE_OPEN_AI_API_KEY=${{ secrets.VITE_OPEN_AI_API_KEY }}"
+          } > .env
+          echo "Created .env file:"
+          cat .env | sed 's/=.*/=***/'
+
+      # 4️⃣ Install and build Vite web app
+      - name: Install and build web app
+        working-directory: myApp
+        run: |
+          npm ci
+          npm run build
+
+      # 5️⃣ Create .env for Cloud Functions
+      - name: Create .env for Cloud Functions
+        working-directory: functions
+        run: |
+          echo "Creating .env for Cloud Functions..."
+          {
+            echo "LANGFLOW_URL=${{ secrets.LANGFLOW_URL }}"
+            echo "LANGFLOW_API_KEY=${{ secrets.LANGFLOW_API_KEY }}"
+          } > .env
+          echo "Functions .env created:"
+          cat .env | sed 's/=.*/=***/'
+
+      # 6️⃣ Install and build Cloud Functions
+      - name: Install and build Cloud Functions
+        working-directory: myApp/functions
+        run: |
+          npm ci
+          if [ -f tsconfig.json ]; then
+            npm run build
+          else
+            echo "No tsconfig.json found — skipping build step."
+          fi
+
+      # 7️⃣ Deploy Firebase Hosting preview
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MELANINRX_4842C }}
+          projectId: melaninrx-4842c
+          entryPoint: myApp

@@ -1,0 +1,337 @@
+:root {
+  /* Brand palette */
+  --color-primary: #73587e;     /* Muted deep mauve (anchor tone) */
+  --color-secondary: #d8cbe1;   /* Gentle lavender-gray */
+  --color-accent: #a98bb3;      /* Elegant mid-tone accent purple */
+  --color-light: #f7f5f8;       /* Clean soft white background */
+  --color-mid: #e2d9e8;         /* Neutral divider/panel tone */
+
+  /* Text palette */
+  --text-primary: #2a1d31;      /* Deep, legible plum */
+  --text-secondary: #55405e;    /* Softer purple-gray */
+  --text-light: #ffffff;        /* White text */
+  --text-muted: #7d6c87;        /* Muted support text */
+
+  /* Gradients */
+  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
+  --gradient-panel: linear-gradient(180deg, #faf8fc, #ece5f2);
+  --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
+  --gradient-user-bubble: linear-gradient(135deg, #9272a2, #c2a9ce);
+  --gradient-bot-bubble: linear-gradient(135deg, #ede6f2, #ffffff);
+}
+
+
+body, html, #root, ion-app, ion-page, ion-content {
+  background: var(--gradient-bg);
+  color: var(--text-primary); 
+  font-family: 'Source Serif Pro', 'Courier New', monospace; /* 保留字体设置 */
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.history-panel,
+.chat-panel {
+  background: var(--gradient-panel);
+  background-repeat: no-repeat;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.container {
+  display: flex;
+  height: 100vh; 
+}
+
+.sidebar {
+  width: 80px;
+  background: var(--color-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding-top: 10px;
+}
+
+.divider {
+  width: 80%;             /* 分割线长度可调 */
+  height: 2px;            /* 线条高度 */
+  background: linear-gradient(to right, var(--color-accent), var(--color-secondary)); /* 线条颜色 */
+  margin: 10px auto;      /* 上下间距，居中显示 */
+}
+
+.sidebar-top {
+  width: 60px;
+  height: 60px;
+  margin: 10px 0;
+  background: var(--color-light);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.sidebar-middle {
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.user-pic {
+  width: 50px;                  /* 头像宽度 */
+  height: 50px;                 /* 头像高度 */
+  border-radius: 4px;
+  border: 1px solid rgba(115, 88, 126, 0.08); /* faint tint of your primary */
+  cursor: pointer;              /* 鼠标悬停显示可点击 */
+}
+
+.icon {
+  width: 40px;  
+  height: 40px;
+  margin: 10px 0;
+  background: linear-gradient(135deg, #e9d3f1, #d8b9e7);
+  cursor: pointer;
+}
+
+.history-top{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.1);
+  margin-bottom: 0.5px;
+  /* border-bottom: 1px solid #161616; /* 顶部分割线 */ 
+}
+
+.history-title {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.new-chat-btn {
+  padding: 6px 14px;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  border-radius: 24px;               /* 更圆润 */
+  background: var(--gradient-button);
+  color: var(--text-light);
+  font-weight: 600;
+  backdrop-filter: blur(8px);        /* 轻微玻璃感 */
+  transition: all 0.3s ease;
+}
+
+.new-chat-btn:hover {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+}
+
+.history-search {
+  margin: 12px 12px 2px 12px;
+  width: 90%;
+  display: flex;
+}
+
+.search-input {
+  outline: none;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid rgba(136, 94, 140, 0.2);
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.25s ease;
+}
+
+.history-panel {
+  width: 250px;
+  border-left: 0.3px solid ;
+  border-right: 0.3px solid #d3baba;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.history-panel {
+  width: 250px;
+  border-left: 0.3px solid #d3baba;
+  border-right: 0.3px solid #d3baba;
+  padding: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.history-item {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px 20px;
+  background-color: var(--color-light);
+  color: var(--text-primary);
+  border: 0.5px solid var(--color-mid);
+  border-bottom: none;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+.history-item:first-child {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
+.history-item:last-child {
+  border-bottom: 0.5px solid #ccc;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.history-item:hover {
+  background-color: var(--color-secondary);
+}
+
+.chat-panel {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.chat-top {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1;
+  padding-top: 15%;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.chat-greeting {
+  color: var(--text-primary);
+  font-size: 40px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.chat-subtitle {
+  font-size: 25px;
+  color: var(--text-secondary);
+  margin: 4px 0 0 0;
+}
+
+.chat-panel {
+  flex: 1;
+  position: relative;
+  padding: 10px 10px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.chat-input-area {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(86%, 1100px);
+  height: 60px;
+  padding: 0 14px;
+  border-radius: 20px;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  background: var(--color-light);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  z-index: 10;
+}
+
+.chat-input {
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  border: none;
+  flex: 1;
+  font-size: 16px;
+  height: 100%;
+  padding: 0;
+  pointer-events: auto;
+   z-index: 11;
+}
+
+.send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary);
+  color: var(--text-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Chat messages container */
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(100vh - 160px); /* leaves room for greeting & input */
+  padding-bottom: 100px;
+}
+
+/* Base bubble style */
+.chat-bubble {
+  padding: 10px 16px;
+  border-radius: 18px;
+  max-width: 75%;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+/* User messages – align right */
+.chat-bubble.user {
+  background: var(--gradient-user-bubble);
+  color: var(--text-light);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+/* Bot messages – align left */
+.chat-bubble.bot {
+  background: var(--gradient-bot-bubble);
+  color: var(--text-primary);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+* {
+  color: var(--text-primary);
+}

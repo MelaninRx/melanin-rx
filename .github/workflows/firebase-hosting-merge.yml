@@ -1,0 +1,44 @@
+# Deploy to Firebase Hosting + Cloud Functions on merge
+
+name: Deploy to Firebase Hosting and Functions on merge
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Build your Ionic app
+      - name: Install dependencies and build app
+        working-directory: myApp
+        run: |
+          npm ci
+          npm run build
+
+      # Install dependencies for Cloud Functions
+      - name: Install dependencies for Cloud Functions
+        working-directory: myApp/functions
+        run: |
+          npm ci
+
+      # Build TypeScript functions (optional, safe even if JS)
+      - name: Build Cloud Functions (if using TypeScript)
+        working-directory: myApp/functions
+        run: |
+          npm run build
+
+      # Deploy everything
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MELANINRX_4842C }}
+          channelId: live
+          projectId: melaninrx-4842c
+          entryPoint: myApp
