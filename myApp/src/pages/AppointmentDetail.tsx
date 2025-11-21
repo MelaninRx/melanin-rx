@@ -17,7 +17,7 @@ import {
 } from "@ionic/react";
 import { useParams, useHistory } from "react-router-dom";
 import { db } from "../firebaseConfig";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import CalendarIcon from "../icons/calendar-days.svg";
 import homeIcon from '../icons/house.svg';
 import addIcon from '../icons/Vector.svg';
@@ -26,10 +26,7 @@ import chatbotIcon from '../icons/message-square.svg';
 import communityIcon from '../icons/users.svg';
 import timelineIcon from '../icons/calendar-days.svg';
 import AppointmentIcon from '../icons/Frame 112.svg';
-import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
-import profileIcon from '../icons/circle-user-round.svg';
-import { logoutUser } from '../services/authService';
 import './Appointments.css';
 import './AppointmentDetail.css';
 
@@ -77,6 +74,33 @@ const AppointmentDetail: React.FC = () => {
     setSaving(false);
   };
 
+  const deleteAppointment = async () => {
+    if (!window.confirm('Are you sure you want to delete this appointment?')) return;
+    try {
+      const docRef = doc(db, "users", uid, "appointments", id);
+      await deleteDoc(docRef);
+      history.push('/appointments');
+    } catch (err) {
+      alert('Failed to delete appointment.');
+    }
+  };
+
+  const saveAppointment = async () => {
+    setSaving(true);
+    try {
+      await updateDoc(doc(db, "users", uid, "appointments", id), {
+        provider: appointment.provider,
+        location: appointment.location,
+        notes: notes.filter(n => n.trim() !== ""),
+        dateTime: appointment.dateTime,
+      });
+      alert('Appointment updated!');
+    } catch (err) {
+      alert('Failed to update appointment.');
+    }
+    setSaving(false);
+  };
+
   if (loading) return <IonSpinner />;
   if (!appointment) return <p>Appointment not found.</p>;
 
@@ -115,17 +139,9 @@ const AppointmentDetail: React.FC = () => {
             </IonButton>
           </div>
           <div className="nav-bottom">
-            <IonButton fill='clear' onClick={logoutUser}>
-              <IonIcon icon={LogoutIcon} />
-              <span className="menu-text">Log out</span>
-            </IonButton>
             <IonButton fill="clear" routerLink="/settings">
               <IonIcon icon={settingsIcon} />
-              <span className="menu-text">Setting</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/profile">
-              <IonIcon icon={profileIcon} />
-              <span className="menu-text">Profile</span>
+              <span className="menu-text">Settings</span>
             </IonButton>
           </div>
         </aside>
@@ -166,8 +182,12 @@ const AppointmentDetail: React.FC = () => {
                     <IonTextarea value={notes[0] || ''} onIonChange={e => handleNoteChange(0, e.detail.value!)} placeholder="Discuss recent fatigue and nutrition plan" />
                   </IonItem>
                 </IonList>
-                <IonButton expand="block" className="save-btn" style={{marginTop: '1.2rem'}}>Save Changes</IonButton>
-                <IonButton color="danger" className="delete-btn" expand="block" style={{marginTop: '1rem'}}>Delete Appointment</IonButton>
+                <IonButton expand="block" className="save-btn" style={{marginTop: '1.2rem'}} onClick={saveAppointment} disabled={saving}>
+                  {saving ? <IonSpinner name="crescent" /> : 'Save Changes'}
+                </IonButton>
+                <IonButton color="danger" className="delete-btn" expand="block" style={{marginTop: '1rem'}} onClick={deleteAppointment}>
+                  Delete Appointment
+                </IonButton>
               </IonCard>
             </div>
           </div>
