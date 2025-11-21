@@ -13,6 +13,7 @@ import CommunityChannels from './pages/CommunityChannels';
 import ChannelDetail from './pages/ChannelDetail';
 import AppointmentsPage from './pages/Appointments';
 import AppointmentDetail from './pages/AppointmentDetail';
+import Settings from './pages/Settings';
 
 // Ionic setup
 import { defineCustomElements } from "@ionic/core/loader";
@@ -121,6 +122,11 @@ const App: React.FC = () => {
             exact
           />
           <Route path="/appointments/:uid/:id" component={AppointmentDetail} exact />
+          <Route
+            path="/settings"
+            render={() => (user ? <Settings key="settings" /> : <Redirect to="/auth" />)}
+            exact
+          />
 
           {/* Default redirect */}
           <Redirect exact from="/" to={user ? "/home" : "/landing"} />
