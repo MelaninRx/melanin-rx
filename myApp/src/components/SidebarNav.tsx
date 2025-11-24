@@ -13,7 +13,7 @@ import './SidebarNav.css';
 const SidebarNav: React.FC = () => (
   <aside className="side-panel">
     <div className="nav-top">
-      <IonButton fill="clear" routerLink="/menu">
+      <IonButton fill="clear">
         <IonIcon icon={menuIcon} />
         <span className="menu-text">Menu</span>
       </IonButton>
@@ -45,7 +45,7 @@ const SidebarNav: React.FC = () => (
     <div className="nav-bottom">
       <IonButton fill="clear" routerLink="/settings">
         <IonIcon icon={settingsIcon} />
-        <span className="menu-text">Setting</span>
+        <span className="menu-text">Settings</span>
       </IonButton>
     </div>
   </aside>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonPage,
   IonHeader,
@@ -23,133 +23,160 @@ import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
+import SidebarNav from "../components/SidebarNav";
+import { getFirestore, doc, collection, addDoc, getDocs, updateDoc, query, orderBy } from "firebase/firestore";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 // Use your Firebase project ID here
 const FIREBASE_PROJECT_ID = "melaninrx-4842c";
-const FIREBASE_REGION = "us-central1"; // Change if your functions are in a different region
+const FIREBASE_REGION = "us-central1";
 
 // Construct the Firebase Function URL
 const LANGFLOW_PROXY_URL = `https://${FIREBASE_REGION}-${FIREBASE_PROJECT_ID}.cloudfunctions.net/chatWithLangFlow`;
 
+// Type for chat message
+interface ChatMessage {
+  sender: string;
+  text: string;
+}
+
 const ChatbotPage: React.FC = () => {
   const [message, setMessage] = useState('');
-  const [chatHistory, setChatHistory] = useState<{ sender: string; text: string }[]>([]);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [savedConversations, setSavedConversations] = useState<any[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const user = useCurrentUser();
 
-const handleSend = async () => {
-  if (!message.trim()) return;
-  await handleSendWithText(message);
-};
+  // Fetch previous conversations on mount or when user changes
+  useEffect(() => {
+    const fetchConversations = async () => {
+      if (user?.uid) {
+        const db = getFirestore();
+        const convRef = collection(db, "users", user.uid, "chatHistory");
+        const q = query(convRef, orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        const convs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setSavedConversations(convs);
+      }
+    };
+    fetchConversations();
+  }, [user]);
 
-const handleSendWithText = async (text: string) => {
-  const newUserMsg = { sender: 'user', text };
-  setChatHistory((prev) => [...prev, newUserMsg]);
-  setLoading(true);
+  // Save or update conversation in Firestore
+  const saveOrUpdateConversation = async (messages: ChatMessage[]) => {
+    if (!user?.uid || messages.length === 0) return;
 
-  try {
-    console.log("Sending message to Firebase Function:", LANGFLOW_PROXY_URL);
-    const res = await fetch(LANGFLOW_PROXY_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text, user: { name: "Guest", id: "anon" } }),
-    });
+    const db = getFirestore();
+    const convRef = collection(db, "users", user.uid, "chatHistory");
 
-    console.log("Response status:", res.status);
-    
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
-      console.error("Error response from Firebase Function:", errorData);
-      throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
+    try {
+      if (currentConversationId) {
+        // Update existing conversation
+        const docRef = doc(db, "users", user.uid, "chatHistory", currentConversationId);
+        await updateDoc(docRef, {
+          messages: messages,
+          timestamp: new Date().toISOString(),
+        });
+      } else {
+        // Create new conversation
+        const docRef = await addDoc(convRef, {
+          messages: messages,
+          timestamp: new Date().toISOString(),
+        });
+        setCurrentConversationId(docRef.id);
+      }
+
+      // Refresh conversations list
+      const q = query(convRef, orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
+      const convs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setSavedConversations(convs);
+    } catch (error) {
+      console.error("Error saving conversation:", error);
+    }
+  };
+
+  // Start a new chat
+  const handleNewChat = () => {
+    setChatHistory([]);
+    setCurrentConversationId(null);
+  };
+
+  // Load a saved conversation
+  const handleLoadConversation = (conv: any) => {
+    setChatHistory(conv.messages || []);
+    setCurrentConversationId(conv.id || null);
+  };
+
+  const handleSend = async () => {
+    if (!message.trim()) return;
+    await handleSendWithText(message);
+  };
+
+  const handleSendWithText = async (text: string) => {
+    const newUserMsg = { sender: 'user', text };
+    const updatedHistory = [...chatHistory, newUserMsg];
+    setChatHistory(updatedHistory);
+    setLoading(true);
+
+    try {
+      console.log("Sending message to Firebase Function:", LANGFLOW_PROXY_URL);
+      const res = await fetch(LANGFLOW_PROXY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, user: { name: "Guest", id: "anon" } }),
+      });
+
+      console.log("Response status:", res.status);
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
+        console.error("Error response from Firebase Function:", errorData);
+        throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log("LangFlow response:", data);
+
+      const botReply =
+        data.outputs?.[0]?.outputs?.[0]?.results?.message?.text ||
+        "No response from LangFlow.";
+
+      const finalHistory = [...updatedHistory, { sender: 'bot', text: botReply }];
+      setChatHistory(finalHistory);
+      
+      // Save to Firestore after bot responds
+      await saveOrUpdateConversation(finalHistory);
+
+    } catch (error) {
+      console.error("LangFlow error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Error connecting to LangFlow.";
+      const errorHistory = [
+        ...updatedHistory,
+        { sender: 'bot', text: `Error: ${errorMessage}` },
+      ];
+      setChatHistory(errorHistory);
+      
+      // Save error state too
+      await saveOrUpdateConversation(errorHistory);
     }
 
-    const data = await res.json();
-    console.log("LangFlow response:", data);
+    setMessage('');
+    setLoading(false);
+  };
 
-    const botReply =
-      data.outputs?.[0]?.outputs?.[0]?.results?.message?.text ||
-      "No response from LangFlow.";
-
-    setChatHistory((prev) => [...prev, { sender: 'bot', text: botReply }]);
-  } catch (error) {
-    console.error("LangFlow error:", error);
-    const errorMessage = error instanceof Error ? error.message : "Error connecting to LangFlow.";
-    setChatHistory((prev) => [
-      ...prev,
-      { sender: 'bot', text: `Error: ${errorMessage}` },
-    ]);
-  }
-
-  setMessage('');
-  setLoading(false);
-};
-/*comment for redeploy*/
-
-const handleQuickQuestion = async (question: string) => {
-  setMessage(question);
-  await handleSendWithText(question);
-};
+  const handleQuickQuestion = async (question: string) => {
+    setMessage(question);
+    await handleSendWithText(question);
+  };
 
   const isChatStarted = chatHistory.length > 0;
 
   return (
     <IonPage className="chatbot-page">
-      {/* Header */}
-      <IonHeader className="chatbot-header">
-        <IonButtons slot="start">
-          <IonBackButton defaultHref="/home" />
-        </IonButtons>
-      </IonHeader>
-
-      {/* Content */}
       <IonContent fullscreen>
-        {/* Side Panel */}
-        <aside className="side-panel">
-          <div className="nav-top">
-            <IonButton fill="clear" routerLink="/menu">
-              <IonIcon icon={menuIcon} />
-              <span className="menu-text">Menu</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/home">
-              <IonIcon icon={homeIcon} />
-              <span className="menu-text">Home</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/add">
-              <IonIcon icon={addIcon} />
-              <span className="menu-text">New Chat</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/chatbot">
-              <IonIcon icon={chatbotIcon} />
-              <span className="menu-text">Chats</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/community">
-              <IonIcon icon={communityIcon} />
-              <span className="menu-text">Communities</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/timeline">
-              <IonIcon icon={timelineIcon} />
-              <span className="menu-text">Timeline</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/appointments">
-              <IonIcon icon={AppointmentIcon} />
-              <span className="menu-text">Appointments</span>
-            </IonButton>
-          </div>
-
-          <div className="nav-bottom">
-            <IonButton fill='clear' onClick={logoutUser}>
-              <IonIcon icon={LogoutIcon} />
-              <span className="menu-text">Log out</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/settings">
-              <IonIcon icon={settingsIcon} />
-              <span className="menu-text">Setting</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/profile">
-              <IonIcon icon={profileIcon} />
-              <span className="menu-text">Profile</span>
-            </IonButton>
-          </div>
-        </aside>
+        <SidebarNav/>
 
         {/* Main container: History + Chat */}
         <div className="chatbot-wrapper main-content">
@@ -159,7 +186,7 @@ const handleQuickQuestion = async (question: string) => {
               <h3 className="history-title">Chat</h3>
               <button
                 className="new-chat-btn"
-                onClick={() => setChatHistory([])}
+                onClick={handleNewChat}
               >
                 New Chat
               </button>
@@ -174,18 +201,39 @@ const handleQuickQuestion = async (question: string) => {
             </div>
 
             <div className="history-items">
-              {chatHistory.map((msg, i) => (
-                <div key={i} className="history-item">
-                  {msg.sender === 'user' ? '💬 ' : '🤖 '}
-                  {msg.text}
+              {savedConversations.map((conv, i) => {
+                // Find the first user message in the conversation
+                const firstUserMsg = Array.isArray(conv.messages)
+                  ? conv.messages.find((msg: any) => msg.sender === 'user')
+                  : null;
+                const previewText = firstUserMsg?.text || `Conversation ${i + 1}`;
+                // Truncate preview text if too long
+                const truncatedPreview = previewText.length > 50 
+                  ? previewText.substring(0, 50) + "..." 
+                  : previewText;
+                
+                const isActive = conv.id === currentConversationId;
+                
+                return (
+                  <div 
+                    key={conv.id || i} 
+                    className={`history-item ${isActive ? 'active' : ''}`}
+                    onClick={() => handleLoadConversation(conv)}
+                  >
+                    <div className="history-item-text">{truncatedPreview}</div>
+                    {conv.timestamp && (
+                      <div className="history-item-time">
+                        {new Date(conv.timestamp).toLocaleDateString()}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              {savedConversations.length === 0 && (
+                <div className="history-empty">
+                  <p>No previous conversations</p>
+                  <p className="history-empty-subtitle">Start a new chat to begin</p>
                 </div>
-              ))}
-              {chatHistory.length === 0 && (
-                <>
-                  <div className="history-item">“Pregnancy Q&A”</div>
-                  <div className="history-item">“Nutrition Support”</div>
-                  <div className="history-item">“Postpartum Tips”</div>
-                </>
               )}
             </div>
           </div>
@@ -228,7 +276,6 @@ const handleQuickQuestion = async (question: string) => {
               </div>
             )}
 
-
             <div className="chat-messages">
               {chatHistory.map((msg, i) => (
                 <div
@@ -238,7 +285,7 @@ const handleQuickQuestion = async (question: string) => {
                   {msg.text}
                 </div>
               ))}
-              {loading && <p> Thinking...</p>}
+              {loading && <p className="thinking-indicator">Thinking...</p>}
             </div>
 
             <div className="chat-input-area">
@@ -248,7 +295,7 @@ const handleQuickQuestion = async (question: string) => {
                 placeholder="What's on your mind?"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                onKeyDown={(e) => e.key === 'Enter' && !loading && handleSend()}
               />
               <button
                 className="send-btn"
@@ -277,6 +324,4 @@ const handleQuickQuestion = async (question: string) => {
   );
 };
 
-
 export default ChatbotPage;
-

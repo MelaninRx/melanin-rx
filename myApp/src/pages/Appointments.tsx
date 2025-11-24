@@ -28,6 +28,7 @@ import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
 import './Appointments.css';
+import SidebarNav from "../components/SidebarNav";
 
 const AppointmentsPage: React.FC = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -128,52 +129,7 @@ const AppointmentsPage: React.FC = () => {
     <IonPage className="appointments-page">
       <IonContent fullscreen>
         <div className="appointments-main-layout">
-          <aside className="side-panel">
-            <div className="nav-top">
-              <IonButton fill="clear" routerLink="/menu">
-                <IonIcon icon={menuIcon} />
-                <span className="menu-text">Menu</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/home">
-                <IonIcon icon={homeIcon} />
-                <span className="menu-text">Home</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/add">
-                <IonIcon icon={addIcon} />
-                <span className="menu-text">New Chat</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/chatbot">
-                <IonIcon icon={chatbotIcon} />
-                <span className="menu-text">Chats</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/community">
-                <IonIcon icon={communityIcon} />
-                <span className="menu-text">Communities</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/timeline">
-                <IonIcon icon={timelineIcon} />
-                <span className="menu-text">Timeline</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/appointments">
-                <IonIcon icon={AppointmentIcon} />
-                <span className="menu-text">Appointments</span>
-              </IonButton>
-            </div>
-            <div className="nav-bottom">
-              <IonButton fill='clear' onClick={logoutUser}>
-                <IonIcon icon={LogoutIcon} />
-                <span className="menu-text">Log out</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/settings">
-                <IonIcon icon={settingsIcon} />
-                <span className="menu-text">Setting</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/profile">
-                <IonIcon icon={profileIcon} />
-                <span className="menu-text">Profile</span>
-              </IonButton>
-            </div>
-          </aside>
+          <SidebarNav />
           <main className="appointments-content">
             <header className="appointments-header">
               <h1>Appointment Planner</h1>
@@ -201,7 +157,7 @@ const AppointmentsPage: React.FC = () => {
                   ))}
                 </div>
               </section>
-              <section className="calendar-section card" style={{ height: '100%', minHeight: '420px' }}>
+              <section className="calendar-section card">
                 <div className="calendar-widget">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                     <button
