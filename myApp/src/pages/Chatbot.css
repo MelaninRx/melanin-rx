@@ -2,10 +2,10 @@
 
 :root {
   /* Brand palette */
-  --color-primary: #f1ebf3;     /* Muted deep mauve (anchor tone) */
-  --color-secondary: #885e87;   /* Gentle lavender-gray */
-  --color-accent: #642d56;      /* Elegant mid-tone accent purple */
-  --color-light: #f7f5f8;       /* Clean soft white background */
+  --color-primary: #7f5d8c;        /* Rich reddish-purple - main brand color */
+  --color-secondary: #d8cbe1;     /* Gentle lavender-gray */
+  --color-accent: #a98bb3;        /* Mid-tone accent purple */
+  --color-light: #f7f5f8;         /* Clean soft white background */
   --color-mid: #e2d9e8;         /* Neutral divider/panel tone */
 
   /* Text palette */
@@ -15,7 +15,7 @@
   --text-muted: #7d6c87;        /* Muted support text */
 
   /* Gradients */
-  --gradient-bg: linear-gradient(to top left, #642d5653, #885e8c29);
+  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
   --gradient-panel: linear-gradient(180deg, #faf8fc, #ece5f2);
   --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
   --gradient-user-bubble: linear-gradient(135deg, #9272a2, #c2a9ce);

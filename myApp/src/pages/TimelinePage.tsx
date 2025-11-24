@@ -90,13 +90,13 @@ function CalendarView({ appointments = [] }: { appointments?: any[] }) {
   };
 
   return (
-    <div style={{ background: '#FFF', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', border: '1px solid #E0D7F7', padding: '24px', minWidth: '280px', maxWidth: '400px', width: '100%', display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
+    <div style={{ background: '#FFF', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', border: '1px solid var(--color-border-purple)', padding: '24px', minWidth: '280px', maxWidth: '400px', width: '100%', display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-        <button onClick={handlePrevMonth} style={{ background: 'none', border: 'none', color: '#6C4AB6', fontSize: '20px', cursor: 'pointer' }}>{'<'}</button>
-        <h2 style={{ color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, fontSize: '1.25rem', margin: 0 }}>{monthNames[month]} {year}</h2>
-        <button onClick={handleNextMonth} style={{ background: 'none', border: 'none', color: '#6C4AB6', fontSize: '20px', cursor: 'pointer' }}>{'>'}</button>
+        <button onClick={handlePrevMonth} style={{ background: 'none', border: 'none', color: 'var(--color-primary)', fontSize: '20px', cursor: 'pointer' }}>{'<'}</button>
+        <h2 style={{ color: 'var(--color-primary)', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, fontSize: '1.25rem', margin: 0 }}>{monthNames[month]} {year}</h2>
+        <button onClick={handleNextMonth} style={{ background: 'none', border: 'none', color: 'var(--color-primary)', fontSize: '20px', cursor: 'pointer' }}>{'>'}</button>
       </div>
-      <table style={{ width: '100%', textAlign: 'center', borderCollapse: 'collapse', fontSize: '15px', color: '#3D246C', marginTop: '8px', marginBottom: '8px' }}>
+      <table style={{ width: '100%', textAlign: 'center', borderCollapse: 'collapse', fontSize: '15px', color: 'var(--color-dark-purple)', marginTop: '8px', marginBottom: '8px' }}>
         <thead>
           <tr>
             <th style={{ paddingBottom: '10px' }}>Sun</th><th style={{ paddingBottom: '10px' }}>Mon</th><th style={{ paddingBottom: '10px' }}>Tue</th><th style={{ paddingBottom: '10px' }}>Wed</th><th style={{ paddingBottom: '10px' }}>Thu</th><th style={{ paddingBottom: '10px' }}>Fri</th><th style={{ paddingBottom: '10px' }}>Sat</th>
@@ -110,10 +110,10 @@ function CalendarView({ appointments = [] }: { appointments?: any[] }) {
                 const hasAppt = apptDates.includes(d);
                 return (
                   <td key={j} style={{
-                    background: isToday ? '#F3E8FF' : 'none',
+                    background: isToday ? 'var(--color-light-purple)' : 'none',
                     borderRadius: isToday ? '50%' : '0',
                     fontWeight: isToday ? 700 : 400,
-                    color: isToday ? '#6C4AB6' : undefined,
+                    color: isToday ? 'var(--color-primary)' : undefined,
                     padding: '10px 0 16px 0',
                     position: 'relative',
                     minWidth: '36px',
@@ -127,7 +127,7 @@ function CalendarView({ appointments = [] }: { appointments?: any[] }) {
                         width: '6px',
                         height: '6px',
                         borderRadius: '50%',
-                        background: '#6C4AB6',
+                        background: 'var(--color-primary)',
                         position: 'absolute',
                         left: '50%',
                         bottom: '6px',
@@ -300,12 +300,12 @@ const TimelinePage: React.FC = () => {
 
   const active = data.find(t => t.id === activeId) ?? null;
 
-  // Progress to the CENTER of the current node (T1=0, T2=0.5, T3=1 for 3 nodes)
-  // If you prefer "fill to end of trimester", use: idx / n instead.
-  const n = data.length || 1;
-  const idx = currentTrimesterIndex ?? null;
-  const progressToNodeCenter =
-    idx != null && n > 1 ? (idx - 1) / (n - 1) : 0;
+  // Calculate progress based on current week of pregnancy (0-40 weeks)
+  // Progress should reflect actual pregnancy progress, not just trimester
+  const totalWeeks = 40;
+  const progressToNodeCenter = currentWeek > 0 
+    ? Math.min(1, Math.max(0, currentWeek / totalWeeks))
+    : 0;
 
   const handleQuestionClick = (question: string) => {
     setSelectedQuestion(question);
@@ -446,21 +446,21 @@ const TimelinePage: React.FC = () => {
             <div style={{ display: 'flex', gap: '24px', marginTop: '32px', paddingLeft: '32px', paddingRight: '32px', paddingBottom: '32px' }}>
               {/* Upcoming Appointments - first slot */}
               <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%' }}>
-                <div style={{ background: '#F3E8FF', borderRadius: '32px', boxShadow: '0 2px 16px rgba(108,74,182,0.16)', border: '2px solid #6C4AB6', padding: '32px 32px 24px 32px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
-                  <h2 style={{ color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, marginBottom: '18px', textAlign: 'center', fontSize: '1.5rem' }}>Upcoming Appointments</h2>
+                <div style={{ background: 'var(--color-light-purple)', borderRadius: '32px', boxShadow: '0 2px 16px rgba(108,74,182,0.16)', border: '2px solid var(--color-primary)', padding: '32px 32px 24px 32px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
+                  <h2 style={{ color: 'var(--color-primary)', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, marginBottom: '18px', textAlign: 'center', fontSize: '1.5rem' }}>Upcoming Appointments</h2>
                   {soonAppointments.length === 0 ? (
-                    <div style={{ textAlign: 'center', color: '#3D246C', fontFamily: 'Source Serif Pro, serif', fontSize: '18px', margin: '16px 0' }}>
+                    <div style={{ textAlign: 'center', color: 'var(--color-dark-purple)', fontFamily: 'Source Serif Pro, serif', fontSize: '18px', margin: '16px 0' }}>
                       No upcoming appointments.
                     </div>
                   ) : (
                     soonAppointments.map(appt => (
                       <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ width: '100%', textDecoration: 'none' }}>
-                        <div style={{ background: '#FFF', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', padding: '20px', width: '100%', marginBottom: '18px', color: '#3D246C', fontFamily: 'Source Serif Pro, serif', fontSize: '18px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', cursor: 'pointer', transition: 'box-shadow 0.2s', border: 'none' }}>
+                        <div style={{ background: '#FFF', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', padding: '20px', width: '100%', marginBottom: '18px', color: 'var(--color-dark-purple)', fontFamily: 'Source Serif Pro, serif', fontSize: '18px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', cursor: 'pointer', transition: 'box-shadow 0.2s', border: 'none' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                            <IonIcon icon={AppointmentIcon} style={{ color: '#6C4AB6', fontSize: '24px' }} />
-                            <span style={{ fontWeight: 700, color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontSize: '20px' }}>{appt.provider} @ {appt.location}</span>
+                            <IonIcon icon={AppointmentIcon} style={{ color: 'var(--color-primary)', fontSize: '24px' }} />
+                            <span style={{ fontWeight: 700, color: 'var(--color-primary)', fontFamily: 'Source Serif Pro, serif', fontSize: '20px' }}>{appt.provider} @ {appt.location}</span>
                           </div>
-                          <div style={{ color: '#3D246C', fontFamily: 'Source Serif Pro, serif', marginBottom: '8px' }}>{
+                          <div style={{ color: 'var(--color-dark-purple)', fontFamily: 'Source Serif Pro, serif', marginBottom: '8px' }}>{
                             appt.dateTime instanceof Timestamp
                               ? appt.dateTime.toDate().toLocaleString()
                               : appt.dateTime?.toDate?.()
@@ -471,8 +471,8 @@ const TimelinePage: React.FC = () => {
                           }</div>
                           {appt.notes && appt.notes.length > 0 && (
                             <div style={{ marginTop: '8px', width: '100%' }}>
-                              <span style={{ color: '#6C4AB6', fontWeight: 600, fontSize: '16px' }}>Notes/Questions:</span>
-                              <ul style={{ margin: 0, paddingLeft: '18px', color: '#3D246C', fontSize: '16px' }}>
+                              <span style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '16px' }}>Notes/Questions:</span>
+                              <ul style={{ margin: 0, paddingLeft: '18px', color: 'var(--color-dark-purple)', fontSize: '16px' }}>
                                 {appt.notes.map((note: string, idx: number) => (
                                   <li key={idx} style={{ fontFamily: 'Source Serif Pro, serif', marginBottom: '4px' }}>{note}</li>
                                 ))}
@@ -496,8 +496,8 @@ const TimelinePage: React.FC = () => {
                   alt="Fetal Development"
                   style={{ maxWidth: '100%', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', marginBottom: '8px' }}
                 />
-                <div style={{ fontSize: '0.95rem', color: '#6C4AB6', textAlign: 'center' }}>
-                  Image credit: <a href="https://www.omumsie.com/cdn/shop/articles/321724216128_520x500_667689fa-025d-47c6-96bf-c648f6c59565_1080x.jpg?v=1740480111" target="_blank" rel="noopener noreferrer" style={{ color: '#6C4AB6', textDecoration: 'underline' }}>Omumsie</a>
+                <div style={{ fontSize: '0.95rem', color: 'var(--color-primary)', textAlign: 'center' }}>
+                  Image credit: <a href="https://www.omumsie.com/cdn/shop/articles/321724216128_520x500_667689fa-025d-47c6-96bf-c648f6c59565_1080x.jpg?v=1740480111" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}>Omumsie</a>
                 </div>
               </div>
             </div>

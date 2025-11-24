@@ -21,7 +21,7 @@ ion-content .inner-scroll {
   font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
   font-weight: 700;
   font-size: 2.2rem;
-  color: #8c3a7a;
+  color: var(--color-primary);
   margin-bottom: 1.2rem;
 }
 .detail-card {
@@ -71,7 +71,7 @@ ion-content .inner-scroll {
   padding: 0;
 }
 .save-btn {
-  background: linear-gradient(90deg, #8c3a7a 0%, #6C4AB6 100%) !important;
+  background: linear-gradient(90deg, #7f5d8c 0%, #a98bb3 100%) !important;
   color: #fff !important;
   border-radius: 10px !important;
   font-weight: 600 !important;

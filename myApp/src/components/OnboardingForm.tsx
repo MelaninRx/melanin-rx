@@ -362,8 +362,8 @@ ${readableResources}`;
                   '--background': '#fff',
                   '--color': '#2a1d31',
                   '--border-radius': '12px',
-                  '--border-color': '#73587e',
-                  border: '1px solid #73587e',
+                  '--border-color': 'var(--color-primary)',
+                  border: '1px solid var(--color-primary)',
                   marginBottom: '12px'
                 }}>
                   <IonInput
@@ -390,8 +390,8 @@ ${readableResources}`;
                   '--background': '#fff',
                   '--color': '#2a1d31',
                   '--border-radius': '12px',
-                  '--border-color': '#73587e',
-                  border: '1px solid #73587e',
+                  '--border-color': 'var(--color-primary)',
+                  border: '1px solid var(--color-primary)',
                   marginBottom: '12px'
                 }}>
                   <IonInput
@@ -419,8 +419,8 @@ ${readableResources}`;
                   '--background': '#fff',
                   '--color': '#2a1d31',
                   '--border-radius': '12px',
-                  '--border-color': '#73587e',
-                  border: '1px solid #73587e',
+                  '--border-color': 'var(--color-primary)',
+                  border: '1px solid var(--color-primary)',
                   marginBottom: '12px'
                 }}>
                   <IonInput

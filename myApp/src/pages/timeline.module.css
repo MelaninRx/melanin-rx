@@ -5,11 +5,14 @@ body, html, *, *:before, *:after {
 }
 
 :root {
-  --color-primary: #73587e;
-  --color-secondary: #d8cbe1;
-  --color-accent: #a98bb3;
-  --color-light: #f7f5f8;
-  --color-mid: #e2d9e8;
+  --color-primary: #7f5d8c;        /* Rich reddish-purple - main brand color */
+  --color-secondary: #d8cbe1;     /* Gentle lavender-gray */
+  --color-accent: #a98bb3;        /* Mid-tone accent purple */
+  --color-light: #f7f5f8;         /* Soft white background */
+  --color-mid: #e2d9e8;           /* Neutral divider/panel */
+  --color-light-purple: #F3E8FF;  /* Light purple background */
+  --color-border-purple: #E0D7F7; /* Light purple border */
+  --color-dark-purple: #3D246C;   /* Dark purple text */
   --text-primary: #2a1d31;
   --text-secondary: #55405e;
   --text-light: #ffffff;

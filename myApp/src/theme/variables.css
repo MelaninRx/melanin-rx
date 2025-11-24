@@ -3,11 +3,14 @@ http://ionicframework.com/docs/theming/ */
 
 :root {
   /* ----------- BRAND COLORS ----------- */
-  --color-primary: #73587e;
-  --color-secondary: #d8cbe1;
-  --color-accent: #a98bb3;
-  --color-light: #f7f5f8;
-  --color-mid: #e2d9e8;
+  --color-primary: #7f5d8c;        /* Rich reddish-purple - main brand color */
+  --color-secondary: #d8cbe1;     /* Gentle lavender-gray */
+  --color-accent: #a98bb3;        /* Mid-tone accent purple */
+  --color-light: #f7f5f8;         /* Soft white background */
+  --color-mid: #e2d9e8;           /* Neutral divider/panel */
+  --color-light-purple: #F3E8FF;  /* Light purple background */
+  --color-border-purple: #E0D7F7; /* Light purple border */
+  --color-dark-purple: #3D246C;   /* Dark purple text */
 
   /* ----------- TEXT COLORS ----------- */
   --text-primary: #2a1d31;
@@ -23,12 +26,12 @@ http://ionicframework.com/docs/theming/ */
   --gradient-bot-bubble: linear-gradient(135deg, #ede6f2, #ffffff);
 
   /* ----------- IONIC CORE COLORS ----------- */
-  --ion-color-primary: #73587e;
-  --ion-color-primary-rgb: 115, 88, 126;
+  --ion-color-primary: #7f5d8c;
+  --ion-color-primary-rgb: 127, 93, 140;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #60476a;
-  --ion-color-primary-tint: #846a8f;
+  --ion-color-primary-shade: #6f5079;
+  --ion-color-primary-tint: #8c6d98;
 
   --ion-color-secondary: #a98bb3;
   --ion-color-secondary-rgb: 169, 139, 179;

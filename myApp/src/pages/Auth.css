@@ -6,7 +6,7 @@ body, html, *, *:before, *:after {
 
 :root {
   /* Brand palette */
-  --color-primary: #73587e;
+  --color-primary: #7f5d8c;     /* Rich reddish-purple - main brand color */
   --color-secondary: #d8cbe1;
   --color-accent: #a98bb3;
   --color-light: #f7f5f8;
