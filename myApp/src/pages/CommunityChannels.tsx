@@ -5,12 +5,10 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
   IonButton,
   IonButtons,
   IonIcon,
+  IonRouterLink,
 } from '@ionic/react';
 import './CommunityChannels.css';
 import { useCurrentUser } from '../hooks/useCurrentUser';
@@ -220,31 +218,54 @@ const CommunityChannels: React.FC = () => {
 
         <section className="community-hero">
           <h2 className="community-welcome">
-            {user?.email ? `Welcome, ${user.email}` : 'Welcome to MelaninRX Community'}
+            {user?.name 
+              ? `Welcome, ${user.name.split(' ')[0]}` 
+              : user?.email
+                ? `Welcome, ${user.email.split('@')[0]}`
+                : 'Welcome to MelaninRX Community'}
           </h2>
           <p className="community-sub">
             Join conversations, ask questions, and share resources with others who understand your journey.
           </p>
         </section>
 
-        <main>
-          <IonList>
+        <main style={{ 
+          padding: '24px',
+          paddingLeft: `calc(var(--side-panel-width) + 24px)`,
+          paddingRight: '24px',
+          maxWidth: '1400px'
+        }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+            gap: '20px',
+            marginBottom: '32px'
+          }}>
             {availableChannels.map((c) => (
-              <IonItem key={c.id} className="channel-item">
-                <IonLabel>
-                  <h3>{c.name}</h3>
-                  <p className="channel-desc">{c.description || 'Open discussion and peer support'}</p>
-                </IonLabel>
-                <IonButton routerLink={`/community/${c.id}`} size="small" fill="outline">
-                  View
-                </IonButton>
-              </IonItem>
+              <IonRouterLink 
+                key={c.id} 
+                routerLink={`/community/${c.id}`}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <div className="channel-card">
+                  <h3 className="channel-card-title">{c.name}</h3>
+                  <p className="channel-card-desc">
+                    {c.description || 'Open discussion and peer support'}
+                  </p>
+                  <div className="channel-card-footer">
+                    <span className="channel-card-link">View Channel →</span>
+                  </div>
+                </div>
+              </IonRouterLink>
             ))}
-          </IonList>
+          </div>
 
-          <div className="community-footer">
+          <div className="community-footer" style={{ 
+            paddingLeft: `calc(var(--side-panel-width) + 24px)`,
+            paddingRight: '24px'
+          }}>
             <p>
-              Can’t find a channel you need? Use the chatbot or resources page to get one-on-one guidance.
+              Can't find a channel you need? Use the chatbot or resources page to get one-on-one guidance.
             </p>
             <IonButton routerLink="/chatbot" className="btn-outline">Ask the Chatbot</IonButton>
           </div>
