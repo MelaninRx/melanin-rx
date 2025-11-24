@@ -166,9 +166,18 @@ const TimelinePage: React.FC = () => {
   React.useEffect(() => {
     document.title = 'Pregnancy Timeline — MelaninRX';
     getTrimesters().then(setData);
-    setCurrentTrimesterIndex(2); // TEMP for testing
-    setCurrentTrimesterId('trimester-2');
   }, []);
+
+  // Set current trimester from user's database info
+  React.useEffect(() => {
+    if (user?.trimester) {
+      const trimesterNum = parseInt(user.trimester, 10);
+      if (trimesterNum >= 1 && trimesterNum <= 3) {
+        setCurrentTrimesterIndex(trimesterNum);
+        setCurrentTrimesterId(`trimester-${trimesterNum}`);
+      }
+    }
+  }, [user]);
 
   React.useEffect(() => {
     async function fetchSoonAppointments() {
