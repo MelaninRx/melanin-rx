@@ -42,11 +42,30 @@ body, html, *, *:before, *:after {
 .card {
   border: 1px solid var(--color-mid); background: var(--color-light); border-radius: 20px;
   padding: 18px; transition: transform .22s, box-shadow .22s, border-color .22s; cursor: pointer;
+  display: flex; flex-direction: column;
 }
 .card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: var(--color-secondary); }
 .cardTitle { font-size: 18px; font-weight: 800; }
-.cardSub { font-size: 14px; color: var(--text-muted); }
-.cardBody { margin-top: 10px; font-size: 15px; }
+.cardSub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+.cardBody { margin-top: 10px; font-size: 15px; line-height: 1.5; }
+.cardHighlights {
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-mid);
+}
+.highlightsLabel {
+  font-size: 12px; font-weight: 700; color: var(--color-primary); text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 6px;
+}
+.highlightsList {
+  list-style: none; padding: 0; margin: 0;
+}
+.highlightsList li {
+  font-size: 13px; color: var(--text-secondary); margin: 4px 0;
+  padding-left: 16px; position: relative; line-height: 1.4;
+}
+.highlightsList li:before {
+  content: '•'; color: var(--color-accent); font-weight: bold;
+  position: absolute; left: 0;
+}
 
 .expandedWrap { margin-top: 24px; }
 
@@ -65,7 +84,41 @@ body, html, *, *:before, *:after {
 }
 
 .sectionTitle { margin-top: 14px; font-weight: 800; }
-.list { margin: 10px 0 0; padding-left: 18px; }
+.list { 
+  margin: 10px 0 0; 
+  padding-left: 0; 
+  list-style: none; 
+}
+.listItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.listItem.clickable:hover {
+  color: var(--color-primary);
+}
+.listItem .bullet {
+  color: var(--color-accent);
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.listItem .text {
+  flex: 1;
+  line-height: 1.5;
+}
+.listItem .chatIcon {
+  flex-shrink: 0;
+  margin-left: auto;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+.listItem.clickable:hover .chatIcon {
+  opacity: 1;
+}
 
 .rail {
   /* keep your panel vibe */
@@ -211,9 +264,10 @@ body, html, *, *:before, *:after {
 /* --- Trimester info card --- */
 .infoCard {
   border: 1px solid var(--color-mid);
-  background: var(--color-light);
+  background: var(--gradient-panel);
   border-radius: 20px;
-  padding: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
 }
 
 /* --- Checklist card --- */

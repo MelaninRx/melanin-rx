@@ -404,29 +404,41 @@ const TimelinePage: React.FC = () => {
                   ))}
                 </section>
               ) : (
-                <>
+                <div style={{ paddingLeft: '32px', paddingRight: '32px' }}>
+                  {/* Overview Section */}
                   <section className={styles.expandedWrap}>
                     <div className={styles.infoCard}>
-                      <div className={styles.cardTitle}>{active.title}</div>
-                      <div className={styles.cardSub}>{active.weeksRange}</div>
-                      <p className={styles.cardBody} style={{ marginTop: 10 }}>{active.summary}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                        <div className={styles.cardTitle}>{active.title}</div>
+                        <div className={styles.badge}>{active.weeksRange}</div>
+                      </div>
+                      <p className={styles.cardBody} style={{ marginTop: 0, fontSize: '16px', lineHeight: '1.6' }}>{active.summary}</p>
                     </div>
                   </section>
 
-                  <section className={styles.expandedWrap}>
-                    <ChecklistCard
-                      items={active.checklist}
-                      storageKey={`chk_${active.id}_demoUser`}
-                    />
-                  </section>
+                  {/* Two Column Layout for Checklist and Questions */}
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
+                    gap: '24px',
+                    marginTop: '24px'
+                  }}>
+                    <section>
+                      <ChecklistCard
+                        items={active.checklist}
+                        storageKey={`chk_${active.id}_${user?.uid || 'demoUser'}`}
+                        title={`${active.title} Checklist`}
+                      />
+                    </section>
 
-                  <section className={styles.expandedWrap}>
-                    <QuestionsCard
-                  items={active.doctorTips}
-                  onQuestionClick={handleQuestionClick}
-                  />
-                  </section>
-                </>
+                    <section>
+                      <QuestionsCard
+                        items={active.doctorTips}
+                        onQuestionClick={handleQuestionClick}
+                      />
+                    </section>
+                  </div>
+                </div>
               )}
             </div>
 
