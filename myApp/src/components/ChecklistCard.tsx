@@ -15,7 +15,7 @@ interface DeletedItem {
 export default function ChecklistCard({
   items, storageKey, title = "This week's checklist",
 }: { items: string[]; storageKey: string; title?: string; }) {
-  // Store original items for restoration
+  // Store original items for restoration - update when items prop changes
   const originalItems = React.useRef<string[]>(items);
   
   const [checklistData, setChecklistData] = React.useState<ChecklistData>(() => {
@@ -25,7 +25,13 @@ export default function ChecklistCard({
         const parsed = JSON.parse(raw);
         // Ensure we have both items and done arrays
         if (parsed.items && parsed.done) {
-          return parsed;
+          // Check if stored items match current items (in case trimester changed)
+          const itemsMatch = parsed.items.length === items.length && 
+            parsed.items.every((item: string, i: number) => item === items[i]);
+          if (itemsMatch) {
+            return parsed;
+          }
+          // If items don't match, reset to new items
         }
       } catch (e) {
         // If parsing fails, fall through to default
@@ -38,9 +44,82 @@ export default function ChecklistCard({
     };
   });
 
+  // Update originalItems and checklistData when items prop or storageKey changes
+  React.useEffect(() => {
+    originalItems.current = items;
+    // Reload from localStorage with the new storageKey
+    const raw = localStorage.getItem(storageKey);
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.items && parsed.done) {
+          // Check if stored items match current items
+          const itemsMatch = parsed.items.length === items.length && 
+            parsed.items.every((item: string, i: number) => item === items[i]);
+          if (itemsMatch) {
+            // Items match, use stored data
+            setChecklistData(parsed);
+            setDeletedItems([]);
+            return;
+          }
+        }
+      } catch (e) {
+        // If parsing fails, fall through to reset
+      }
+    }
+    // No stored data or items don't match, reset to new items
+    setChecklistData({
+      items: [...items],
+      done: Array(items.length).fill(false)
+    });
+    setDeletedItems([]);
+  }, [items, storageKey]);
+
   const [newItemText, setNewItemText] = React.useState('');
   const [isAddingItem, setIsAddingItem] = React.useState(false);
   const [deletedItems, setDeletedItems] = React.useState<DeletedItem[]>([]);
+
+  // Update originalItems when items prop changes (e.g., switching trimesters)
+  React.useEffect(() => {
+    originalItems.current = items;
+    
+    // Check if stored data matches the new items
+    const raw = localStorage.getItem(storageKey);
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.items && parsed.done) {
+          // Check if stored items match current items
+          const itemsMatch = parsed.items.length === items.length && 
+            parsed.items.every((item: string, i: number) => item === items[i]);
+          if (!itemsMatch) {
+            // Items changed (different trimester), reset to new items
+            setChecklistData({
+              items: [...items],
+              done: Array(items.length).fill(false)
+            });
+            setDeletedItems([]);
+            return;
+          }
+        }
+      } catch (e) {
+        // If parsing fails, reset to new items
+        setChecklistData({
+          items: [...items],
+          done: Array(items.length).fill(false)
+        });
+        setDeletedItems([]);
+        return;
+      }
+    } else {
+      // No stored data, initialize with new items
+      setChecklistData({
+        items: [...items],
+        done: Array(items.length).fill(false)
+      });
+      setDeletedItems([]);
+    }
+  }, [items, storageKey]);
 
   React.useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(checklistData));
