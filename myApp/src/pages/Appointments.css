@@ -227,7 +227,7 @@ h1, h2 {
 }
 .appointments-header h1 {
   font-size: 2.2rem;
-  color: #8c3a7a;
+  color: var(--color-primary);
   font-family: 'Source Serif Pro', serif;
   font-weight: 700;
   margin-left: 50px;
@@ -315,7 +315,7 @@ h1, h2 {
 }
 .scheduled-count {
   background: #e9dff6;
-  color: #8c3a7a;
+  color: var(--color-primary);
   border-radius: 12px;
   padding: 0.2rem 0.7rem;
   font-size: 0.95rem;
@@ -336,7 +336,7 @@ h1, h2 {
   gap: 1.2rem;
 }
 .appointment-date {
-  background: #8c3a7a;
+  background: var(--color-primary);
   color: #fff;
   font-weight: 700;
   font-size: 1.1rem;
@@ -356,7 +356,7 @@ h1, h2 {
   margin: 0.2rem 0 0.5rem 0;
 }
 .appointment-notes {
-  color: #8c3a7a;
+  color: var(--color-primary);
   font-size: 0.97rem;
 }
 .appointment-actions {
@@ -369,7 +369,7 @@ h1, h2 {
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  color: #8c3a7a;
+  color: var(--color-primary);
   transition: color 0.2s;
 }
 .edit-btn:hover, .delete-btn:hover {
@@ -446,7 +446,7 @@ h1, h2 {
 
 .add-appointment-section input:focus,
 .add-appointment-section textarea:focus {
-  border-color: #8c3a7a !important;
+  border-color: var(--color-primary) !important;
 }
 
 /* Ionic component overrides */
@@ -464,7 +464,7 @@ h1, h2 {
   font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
   font-weight: 700;
   font-size: 2.2rem;
-  color: #8c3a7a;
+  color: var(--color-primary);
   margin-bottom: 1.2rem;
 }
 .detail-card {
@@ -503,7 +503,7 @@ h1, h2 {
   padding: 0;
 }
 .save-btn {
-  background: linear-gradient(90deg, #8c3a7a 0%, #6C4AB6 100%) !important;
+  background: linear-gradient(90deg, #7f5d8c 0%, #a98bb3 100%) !important;
   color: #fff !important;
   border-radius: 10px !important;
   font-weight: 600 !important;

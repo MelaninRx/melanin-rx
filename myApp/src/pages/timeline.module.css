@@ -5,11 +5,14 @@ body, html, *, *:before, *:after {
 }
 
 :root {
-  --color-primary: #73587e;
-  --color-secondary: #d8cbe1;
-  --color-accent: #a98bb3;
-  --color-light: #f7f5f8;
-  --color-mid: #e2d9e8;
+  --color-primary: #7f5d8c;        /* Rich reddish-purple - main brand color */
+  --color-secondary: #d8cbe1;     /* Gentle lavender-gray */
+  --color-accent: #a98bb3;        /* Mid-tone accent purple */
+  --color-light: #f7f5f8;         /* Soft white background */
+  --color-mid: #e2d9e8;           /* Neutral divider/panel */
+  --color-light-purple: #F3E8FF;  /* Light purple background */
+  --color-border-purple: #E0D7F7; /* Light purple border */
+  --color-dark-purple: #3D246C;   /* Dark purple text */
   --text-primary: #2a1d31;
   --text-secondary: #55405e;
   --text-light: #ffffff;
@@ -42,11 +45,30 @@ body, html, *, *:before, *:after {
 .card {
   border: 1px solid var(--color-mid); background: var(--color-light); border-radius: 20px;
   padding: 18px; transition: transform .22s, box-shadow .22s, border-color .22s; cursor: pointer;
+  display: flex; flex-direction: column;
 }
 .card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: var(--color-secondary); }
-.cardTitle { font-size: 18px; font-weight: 800; }
-.cardSub { font-size: 14px; color: var(--text-muted); }
-.cardBody { margin-top: 10px; font-size: 15px; }
+.cardTitle { font-size: 18px; font-weight: 800; color: var(--text-primary); margin: 0; }
+.cardSub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+.cardBody { margin-top: 10px; font-size: 15px; line-height: 1.5; }
+.cardHighlights {
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-mid);
+}
+.highlightsLabel {
+  font-size: 12px; font-weight: 700; color: var(--color-primary); text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 6px;
+}
+.highlightsList {
+  list-style: none; padding: 0; margin: 0;
+}
+.highlightsList li {
+  font-size: 13px; color: var(--text-secondary); margin: 4px 0;
+  padding-left: 16px; position: relative; line-height: 1.4;
+}
+.highlightsList li:before {
+  content: '•'; color: var(--color-accent); font-weight: bold;
+  position: absolute; left: 0;
+}
 
 .expandedWrap { margin-top: 24px; }
 
@@ -65,7 +87,41 @@ body, html, *, *:before, *:after {
 }
 
 .sectionTitle { margin-top: 14px; font-weight: 800; }
-.list { margin: 10px 0 0; padding-left: 18px; }
+.list { 
+  margin: 10px 0 0; 
+  padding-left: 0; 
+  list-style: none; 
+}
+.listItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.listItem.clickable:hover {
+  color: var(--color-primary);
+}
+.listItem .bullet {
+  color: var(--color-accent);
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.listItem .text {
+  flex: 1;
+  line-height: 1.5;
+}
+.listItem .chatIcon {
+  flex-shrink: 0;
+  margin-left: auto;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+.listItem.clickable:hover .chatIcon {
+  opacity: 1;
+}
 
 .rail {
   /* keep your panel vibe */
@@ -211,9 +267,10 @@ body, html, *, *:before, *:after {
 /* --- Trimester info card --- */
 .infoCard {
   border: 1px solid var(--color-mid);
-  background: var(--color-light);
+  background: var(--gradient-panel);
   border-radius: 20px;
-  padding: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
 }
 
 /* --- Checklist card --- */
@@ -227,15 +284,152 @@ body, html, *, *:before, *:after {
   display: flex; align-items: center; gap: 10px;
   padding: 10px 8px; border-radius: 12px; cursor: pointer;
   transition: background .15s ease;
+  position: relative;
 }
 .checkItem:hover { background: #f4eef8; }
+.checkItem:hover .removeButton { opacity: 1; }
 .checkBox {
   width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--color-accent);
   display: grid; place-items: center; background: #fff;
+  flex-shrink: 0;
+  cursor: pointer;
 }
 .checkBoxChecked { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
-.checkText { color: var(--text-primary); font-size: 14px; }
+.checkText { color: var(--text-primary); font-size: 14px; cursor: pointer; }
 .checkTextDone { text-decoration: line-through; color: var(--text-muted); }
+.removeButton {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 22px;
+  line-height: 1;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity .2s ease, background .2s ease, color .2s ease, transform .2s ease;
+  flex-shrink: 0;
+  padding: 0;
+  margin-left: auto;
+  font-weight: 300;
+}
+.checkItem:hover .removeButton {
+  opacity: 0.7;
+}
+.removeButton:hover {
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  opacity: 1;
+  transform: scale(1.1);
+}
+.addItemTrigger {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: 2px dashed var(--color-accent);
+  background: transparent;
+  border-radius: 12px;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.addItemTrigger:hover {
+  background: var(--color-light);
+  border-color: var(--color-primary);
+  border-style: solid;
+}
+.addItemContainer {
+  margin-top: 8px;
+  padding: 12px;
+  background: var(--color-light);
+  border: 1px solid var(--color-mid);
+  border-radius: 12px;
+}
+.addItemInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--color-mid);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color .2s ease;
+  box-sizing: border-box;
+}
+.addItemInput:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 15%, transparent);
+}
+.addItemActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.addItemButton {
+  padding: 8px 16px;
+  background: var(--gradient-button);
+  color: var(--text-light);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+  flex: 1;
+}
+.addItemButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(115, 88, 126, 0.3);
+}
+.addItemButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.cancelButton {
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--color-mid);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease;
+  flex: 1;
+}
+.cancelButton:hover {
+  background: var(--color-light);
+  border-color: var(--color-accent);
+}
+.restoreButton {
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--color-mid);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s ease;
+  white-space: nowrap;
+}
+.restoreButton:hover {
+  background: var(--color-light);
+  border-color: var(--color-accent);
+  color: var(--color-primary);
+}
 
 /* --- Questions card --- */
 .qaCard {

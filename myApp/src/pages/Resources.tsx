@@ -149,7 +149,7 @@ const Resources: React.FC = () => {
             <div className="resources-category-descriptions" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               {categories.map((cat) => (
                 activeTab === cat && (
-                  <div key={cat} style={{ fontSize: '1.05rem', color: '#6C4AB6', fontWeight: 600, background: '#f3e8ff', borderRadius: '12px', padding: '8px 16px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', textAlign: 'center', maxWidth: '600px', width: '100%' }}>
+                  <div key={cat} style={{ fontSize: '1.05rem', color: 'var(--color-primary)', fontWeight: 600, background: 'var(--color-light-purple)', borderRadius: '12px', padding: '8px 16px', boxShadow: '0 2px 8px rgba(127,93,140,0.10)', textAlign: 'center', maxWidth: '600px', width: '100%' }}>
                     {cat === 'Community and peer support' && 'Connect with support groups and local services for expectant parents.'}
                     {cat === 'Doulas and midwives' && 'Find resources and organizations supporting Black doulas and midwives.'}
                     {cat === 'Educational resources' && 'Learn more about pregnancy, birth, and postpartum care.'}
@@ -200,7 +200,7 @@ const Resources: React.FC = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="visit-website-btn"
-                            style={{ display: 'inline-block', marginTop: '8px', padding: '8px 16px', background: '#6C4AB6', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}
+                            style={{ display: 'inline-block', marginTop: '8px', padding: '8px 16px', background: 'var(--color-primary)', color: 'var(--text-light)', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}
                           >
                             View Website
                           </a>

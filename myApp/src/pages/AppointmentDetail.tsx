@@ -149,7 +149,7 @@ const AppointmentDetail: React.FC = () => {
         <div className="appointments-wrapper" style={{minHeight: '100vh', padding: 0, background: "transparent" }}>
           <div style={{ margin: '1rem auto', maxWidth: 700 }}>
             <div className="appointment-detail-wrapper" style={{ marginTop: '0' }}>
-              <IonButton fill="clear" onClick={() => history.goBack()} style={{ fontSize: '1.6rem', color: '#6C4AB6', marginBottom: '1.5rem', alignSelf: 'flex-start' }}>
+              <IonButton fill="clear" onClick={() => history.goBack()} style={{ fontSize: '1.6rem', color: 'var(--color-primary)', marginBottom: '1.5rem', alignSelf: 'flex-start' }}>
                 <IonIcon icon="arrow-back-outline" slot="icon-only" />
               </IonButton>
               <IonCard className="detail-card">

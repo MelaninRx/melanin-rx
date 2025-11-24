@@ -31,26 +31,77 @@ import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { useEffect, useState } from 'react';
 import { getFirestore, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
+import TimelineRail from '../components/TimelineRail';
+import FetalDevelopment from '../components/FetalDevelopment';
+import QuestionsCard from '../components/QuestionsCard';
+import { getTrimesters, Trimester } from '../services/timelineService';
 import SidebarNav from '../components/SidebarNav';
+
+// Calculate current week from due date
+const calculateCurrentWeek = (dueDateString: string | Date | undefined): number | null => {
+  if (!dueDateString) return null;
+  
+  try {
+    const dueDate = typeof dueDateString === 'string' ? new Date(dueDateString) : dueDateString;
+    if (isNaN(dueDate.getTime())) return null;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+    
+    const daysUntilDue = Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.max(0, Math.min(40, 40 - Math.floor(daysUntilDue / 7)));
+  } catch (e) {
+    console.error('Error calculating current week:', e);
+    return null;
+  }
+};
 
 const Home: React.FC = () => {
   const [soonAppointments, setSoonAppointments] = useState<any[]>([]);
   const [allAppointments, setAllAppointments] = useState<any[]>([]);
   const [rawAppointments, setRawAppointments] = useState<any[]>([]);
+  const [trimesters, setTrimesters] = useState<Trimester[]>([]);
+  const [currentTrimester, setCurrentTrimester] = useState<Trimester | null>(null);
+  const [currentWeek, setCurrentWeek] = useState<number>(0);
   const user = useCurrentUser();
 
   useEffect(() => {
-    async function fetchSoonAppointments() {
+    async function fetchData() {
       if (!user?.uid) return;
+      
+      // Fetch trimesters
+      const trimesterData = await getTrimesters();
+      setTrimesters(trimesterData);
+      
+      // Calculate current week and trimester
+      if (user.dueDate) {
+        const week = calculateCurrentWeek(user.dueDate);
+        if (week !== null) {
+          setCurrentWeek(week);
+          
+          let trimesterNum: number;
+          if (week < 14) {
+            trimesterNum = 1;
+          } else if (week < 28) {
+            trimesterNum = 2;
+          } else {
+            trimesterNum = 3;
+          }
+          
+          const current = trimesterData.find(t => t.index === trimesterNum);
+          setCurrentTrimester(current || null);
+        }
+      }
+      
+      // Fetch appointments
       const db = getFirestore();
-      // Fetch all appointments from subcollection under user
       const allSnapshot = await getDocs(collection(db, 'users', user.uid, 'appointments'));
       const rawAppts = allSnapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
       setRawAppointments(rawAppts);
-      // Use same for filtered query
-      const snapshot = allSnapshot;
+      
       const now = new Date();
-      const allAppts = snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
+      const allAppts = allSnapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
       setAllAppointments(allAppts);
       const appts = allAppts
         .filter(appt => {
@@ -74,7 +125,7 @@ const Home: React.FC = () => {
         .slice(0, 3);
       setSoonAppointments(appts);
     }
-    fetchSoonAppointments();
+    fetchData();
   }, [user]);
 
   return (
@@ -87,15 +138,38 @@ const Home: React.FC = () => {
             {/* hero */}
             <div className="hero-text transparent">
               <h1 className="hero-title">
-                {user?.email
-                  ? `Good afternoon, ${user.email}.`
-                  : 'Personalized tools to navigate each trimester with confidence.'}
+                {user?.name
+                  ? `Good afternoon, ${user.name.split(' ')[0]}.`
+                  : user?.email
+                    ? `Good afternoon, ${user.email.split('@')[0]}.`
+                    : 'Personalized tools to navigate each trimester with confidence.'}
               </h1>
               <p className='hero-subtitle'>
                 This week, you make expect more energy and a growing bump. Continue staying hydrated and nourishing your body, each small step supports both you and your baby’s health.
               </p>
             </div>
           </section>
+
+          {/* Timeline Rail */}
+          {trimesters.length > 0 && user?.dueDate && (
+            <section style={{ 
+              paddingLeft: `calc(var(--side-panel-width) + 24px)`, 
+              paddingRight: '24px',
+              paddingTop: '24px',
+              paddingBottom: '16px'
+            }}>
+              <TimelineRail
+                appendBaby
+                progress={currentWeek > 0 ? Math.min(1, Math.max(0, currentWeek / 40)) : 0}
+                nodes={trimesters.map(t => ({
+                  key: t.id,
+                  label: `Trimester ${t.index}`,
+                  onClick: () => window.location.href = '/timeline',
+                  isCurrent: currentTrimester?.id === t.id
+                }))}
+              />
+            </section>
+          )}
 
           <section className="panels">
             <IonRouterLink routerLink="/timeline" className="panel-card-link">
@@ -172,6 +246,90 @@ const Home: React.FC = () => {
                 </div>
               </article>
             </IonRouterLink>
+          </section>
+
+          {/* Info Cards Section */}
+          <section style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '24px',
+            paddingLeft: `calc(var(--side-panel-width) + 24px)`,
+            paddingRight: '24px',
+            paddingTop: '32px',
+            paddingBottom: '32px',
+            maxWidth: '1400px'
+          }}>
+            {/* Fetal Development */}
+            {currentWeek > 0 && (
+              <FetalDevelopment currentWeek={currentWeek} />
+            )}
+
+            {/* Upcoming Appointments */}
+            <div style={{
+              border: '1px solid var(--color-mid)',
+              background: 'var(--gradient-panel)',
+              borderRadius: '20px',
+              padding: '24px'
+            }}>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 16px 0' }}>
+                Upcoming Appointments
+              </div>
+              {soonAppointments.length === 0 ? (
+                <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '15px', margin: '16px 0' }}>
+                  No upcoming appointments.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {soonAppointments.map(appt => (
+                    <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ textDecoration: 'none' }}>
+                      <div style={{ 
+                        background: 'var(--color-light)', 
+                        borderRadius: '16px', 
+                        padding: '16px', 
+                        border: '1px solid var(--color-mid)',
+                        cursor: 'pointer', 
+                        transition: 'all 0.2s ease',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '8px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--color-accent)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(127, 93, 140, 0.15)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--color-mid)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <IonIcon icon={AppointmentIcon} style={{ color: 'var(--color-primary)', fontSize: '20px' }} />
+                          <span style={{ fontWeight: 700, color: 'var(--color-primary)', fontSize: '16px' }}>{appt.provider} @ {appt.location}</span>
+                        </div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{
+                          appt.dateTime instanceof Timestamp
+                            ? appt.dateTime.toDate().toLocaleString()
+                            : appt.dateTime?.toDate?.()
+                              ? appt.dateTime.toDate().toLocaleString()
+                              : typeof appt.dateTime === 'string'
+                                ? new Date(appt.dateTime).toLocaleString()
+                                : ''
+                        }</div>
+                      </div>
+                    </IonRouterLink>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Questions to Ask Your Doctor */}
+            {currentTrimester && currentTrimester.doctorTips && currentTrimester.doctorTips.length > 0 && (
+              <QuestionsCard 
+                items={currentTrimester.doctorTips.slice(0, 5)} 
+                onQuestionClick={(question) => {
+                  window.location.href = `/chatbot?question=${encodeURIComponent(question)}`;
+                }}
+              />
+            )}
           </section>
       </IonContent>
     </IonPage>

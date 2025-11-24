@@ -5,8 +5,6 @@ import {
   IonInput,
   IonItem,
   IonLabel,
-  IonSelect,
-  IonSelectOption,
   IonButton,
   IonList,
   IonSpinner,
@@ -52,8 +50,33 @@ const OnboardingForm: React.FC = () => {
     email: "",
     password: "",
     location: "",
-    trimester: "",
+    dueDate: "",
   });
+
+  // Calculate trimester from due date
+  // Due date is typically 40 weeks from LMP (last menstrual period)
+  // Current week = 40 - (weeks until due date)
+  const calculateTrimester = (dueDateString: string): string => {
+    if (!dueDateString) return "";
+    
+    const dueDate = new Date(dueDateString);
+    const today = new Date();
+    // Set both to midnight for accurate day calculation
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+    
+    // Calculate weeks until due date
+    const daysUntilDue = Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const weeksUntilDue = Math.floor(daysUntilDue / 7);
+    
+    // Current week of pregnancy (assuming 40 week pregnancy)
+    const currentWeek = Math.max(0, 40 - weeksUntilDue);
+    
+    // Determine trimester
+    if (currentWeek < 14) return "1";
+    if (currentWeek < 28) return "2";
+    return "3";
+  };
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -130,10 +153,18 @@ const OnboardingForm: React.FC = () => {
     setError("");
 
     try {
-      const { name, email, password, location, trimester } = formData;
+      const { name, email, password, location, dueDate } = formData;
 
-      if (!name || !email || !location || !trimester) {
+      if (!name || !email || !location || !dueDate) {
         setError("Please fill in all required fields.");
+        setLoading(false);
+        return;
+      }
+
+      // Calculate trimester from due date
+      const trimester = calculateTrimester(dueDate);
+      if (!trimester) {
+        setError("Please enter a valid due date.");
         setLoading(false);
         return;
       }
@@ -231,6 +262,7 @@ ${readableResources}`;
         email,
         location,
         trimester,
+        dueDate: dueDate,
         dashboard: dashboardText,
         resources: formattedResources,
         createdAt: new Date(),
@@ -330,8 +362,8 @@ ${readableResources}`;
                   '--background': '#fff',
                   '--color': '#2a1d31',
                   '--border-radius': '12px',
-                  '--border-color': '#73587e',
-                  border: '1px solid #73587e',
+                  '--border-color': 'var(--color-primary)',
+                  border: '1px solid var(--color-primary)',
                   marginBottom: '12px'
                 }}>
                   <IonInput
@@ -358,8 +390,8 @@ ${readableResources}`;
                   '--background': '#fff',
                   '--color': '#2a1d31',
                   '--border-radius': '12px',
-                  '--border-color': '#73587e',
-                  border: '1px solid #73587e',
+                  '--border-color': 'var(--color-primary)',
+                  border: '1px solid var(--color-primary)',
                   marginBottom: '12px'
                 }}>
                   <IonInput
@@ -387,8 +419,8 @@ ${readableResources}`;
                   '--background': '#fff',
                   '--color': '#2a1d31',
                   '--border-radius': '12px',
-                  '--border-color': '#73587e',
-                  border: '1px solid #73587e',
+                  '--border-color': 'var(--color-primary)',
+                  border: '1px solid var(--color-primary)',
                   marginBottom: '12px'
                 }}>
                   <IonInput
@@ -431,11 +463,11 @@ ${readableResources}`;
                 />
               </IonItem>
             </div>
-            {/* Trimester */}
+            {/* Estimated Due Date */}
             <div className="input-wrapper">
               <div className="label-with-icon">
                 <IonIcon src={PregnancyIcon} slot="start" className="label-icon" />
-                <label className="input-label">Trimester</label>
+                <label className="input-label">Estimated Due Date</label>
               </div>
               <IonItem className="input-item" style={{
                 '--background': '#fff',
@@ -445,21 +477,32 @@ ${readableResources}`;
                 border: '1px solid #73587e',
                 marginBottom: '12px'
               }}>
-                <IonSelect
+                <IonInput
                   style={{
                     '--color': '#2a1d31',
                     '--placeholder-color': '#7d6c87',
                     fontSize: '16px'
                   }}
-                  value={formData.trimester}
-                  placeholder="Select trimester"
-                  onIonChange={(e) => handleChange("trimester", e.detail.value)}
-                >
-                  <IonSelectOption value="1">1st Trimester</IonSelectOption>
-                  <IonSelectOption value="2">2nd Trimester</IonSelectOption>
-                  <IonSelectOption value="3">3rd Trimester</IonSelectOption>
-                </IonSelect>
+                  type="date"
+                  value={formData.dueDate}
+                  placeholder="Select your estimated due date"
+                  onIonChange={(e) => handleChange("dueDate", e.detail.value!)}
+                />
               </IonItem>
+              {formData.dueDate && (
+                <div style={{ 
+                  fontSize: '12px', 
+                  color: '#7d6c87', 
+                  marginTop: '4px',
+                  marginLeft: '32px'
+                }}>
+                  {(() => {
+                    const trimester = calculateTrimester(formData.dueDate);
+                    const trimesterLabels = { "1": "1st Trimester", "2": "2nd Trimester", "3": "3rd Trimester" };
+                    return trimester ? `Currently in ${trimesterLabels[trimester as "1" | "2" | "3"]}` : "";
+                  })()}
+                </div>
+              )}
             </div>
           </IonList>
           {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}

@@ -161,7 +161,7 @@ const AppointmentsPage: React.FC = () => {
                 <div className="calendar-widget">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                     <button
-                      style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#8c3a7a' }}
+                      style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--color-primary)' }}
                       onClick={() => {
                         if (calendarMonth === 0) {
                           setCalendarMonth(11);
@@ -174,11 +174,11 @@ const AppointmentsPage: React.FC = () => {
                     >
                       &#60;
                     </button>
-                    <h3 style={{ color: '#8c3a7a', fontWeight: 700, fontSize: '1.2rem', margin: 0 }}>
+                    <h3 style={{ color: 'var(--color-primary)', fontWeight: 700, fontSize: '1.2rem', margin: 0 }}>
                       {new Date(calendarYear, calendarMonth).toLocaleString('default', { month: 'long' })} {calendarYear}
                     </h3>
                     <button
-                      style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#8c3a7a' }}
+                      style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--color-primary)' }}
                       onClick={() => {
                         if (calendarMonth === 11) {
                           setCalendarMonth(0);
@@ -217,7 +217,7 @@ const AppointmentsPage: React.FC = () => {
                                       width: '7px',
                                       height: '7px',
                                       borderRadius: '50%',
-                                      background: '#8c3a7a',
+                                      background: 'var(--color-primary)',
                                       margin: '3px auto 0',
                                     }}></span>
                                   )}

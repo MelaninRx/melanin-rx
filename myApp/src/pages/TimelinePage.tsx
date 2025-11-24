@@ -3,6 +3,7 @@ import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBa
 import StatusCard from '../components/StatusCard';
 import ChecklistCard from '../components/ChecklistCard';
 import QuestionsCard from '../components/QuestionsCard';
+import FetalDevelopment from '../components/FetalDevelopment';
 import ChatWidget from '../components/ChatWidget';
 import ChatButton from '../components/ChatButton';
 import styles from './timeline.module.css';
@@ -91,13 +92,13 @@ function CalendarView({ appointments = [] }: { appointments?: any[] }) {
   };
 
   return (
-    <div style={{ background: '#FFF', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', border: '1px solid #E0D7F7', padding: '24px', minWidth: '280px', maxWidth: '400px', width: '100%', display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
+    <div style={{ background: '#FFF', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', border: '1px solid var(--color-border-purple)', padding: '24px', minWidth: '280px', maxWidth: '400px', width: '100%', display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-        <button onClick={handlePrevMonth} style={{ background: 'none', border: 'none', color: '#6C4AB6', fontSize: '20px', cursor: 'pointer' }}>{'<'}</button>
-        <h2 style={{ color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, fontSize: '1.25rem', margin: 0 }}>{monthNames[month]} {year}</h2>
-        <button onClick={handleNextMonth} style={{ background: 'none', border: 'none', color: '#6C4AB6', fontSize: '20px', cursor: 'pointer' }}>{'>'}</button>
+        <button onClick={handlePrevMonth} style={{ background: 'none', border: 'none', color: 'var(--color-primary)', fontSize: '20px', cursor: 'pointer' }}>{'<'}</button>
+        <h2 style={{ color: 'var(--color-primary)', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, fontSize: '1.25rem', margin: 0 }}>{monthNames[month]} {year}</h2>
+        <button onClick={handleNextMonth} style={{ background: 'none', border: 'none', color: 'var(--color-primary)', fontSize: '20px', cursor: 'pointer' }}>{'>'}</button>
       </div>
-      <table style={{ width: '100%', textAlign: 'center', borderCollapse: 'collapse', fontSize: '15px', color: '#3D246C', marginTop: '8px', marginBottom: '8px' }}>
+      <table style={{ width: '100%', textAlign: 'center', borderCollapse: 'collapse', fontSize: '15px', color: 'var(--color-dark-purple)', marginTop: '8px', marginBottom: '8px' }}>
         <thead>
           <tr>
             <th style={{ paddingBottom: '10px' }}>Sun</th><th style={{ paddingBottom: '10px' }}>Mon</th><th style={{ paddingBottom: '10px' }}>Tue</th><th style={{ paddingBottom: '10px' }}>Wed</th><th style={{ paddingBottom: '10px' }}>Thu</th><th style={{ paddingBottom: '10px' }}>Fri</th><th style={{ paddingBottom: '10px' }}>Sat</th>
@@ -111,10 +112,10 @@ function CalendarView({ appointments = [] }: { appointments?: any[] }) {
                 const hasAppt = apptDates.includes(d);
                 return (
                   <td key={j} style={{
-                    background: isToday ? '#F3E8FF' : 'none',
+                    background: isToday ? 'var(--color-light-purple)' : 'none',
                     borderRadius: isToday ? '50%' : '0',
                     fontWeight: isToday ? 700 : 400,
-                    color: isToday ? '#6C4AB6' : undefined,
+                    color: isToday ? 'var(--color-primary)' : undefined,
                     padding: '10px 0 16px 0',
                     position: 'relative',
                     minWidth: '36px',
@@ -128,7 +129,7 @@ function CalendarView({ appointments = [] }: { appointments?: any[] }) {
                         width: '6px',
                         height: '6px',
                         borderRadius: '50%',
-                        background: '#6C4AB6',
+                        background: 'var(--color-primary)',
                         position: 'absolute',
                         left: '50%',
                         bottom: '6px',
@@ -146,12 +147,38 @@ function CalendarView({ appointments = [] }: { appointments?: any[] }) {
   );
 }
 
+// Calculate current week and trimester from user's due date
+const calculateCurrentWeek = (dueDateString: string | Date | undefined): number | null => {
+  if (!dueDateString) return null;
+  
+  try {
+    const dueDate = typeof dueDateString === 'string' ? new Date(dueDateString) : dueDateString;
+    if (isNaN(dueDate.getTime())) return null;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+    
+    // Calculate weeks until due date
+    const daysUntilDue = Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const weeksUntilDue = Math.floor(daysUntilDue / 7);
+    
+    // Current week of pregnancy (assuming 40 week pregnancy)
+    return Math.max(0, Math.min(40, 40 - weeksUntilDue));
+  } catch (e) {
+    console.error('Error calculating current week:', e);
+    return null;
+  }
+};
+
 const TimelinePage: React.FC = () => {
   // All hooks must be called before any return!
   const [data, setData] = React.useState<Trimester[]>([]);
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const [currentTrimesterId, setCurrentTrimesterId] = React.useState<string | null>(null);
   const [currentTrimesterIndex, setCurrentTrimesterIndex] = React.useState<number | null>(null);
+  const [currentWeek, setCurrentWeek] = React.useState<number>(0);
+  const [dueDate, setDueDate] = React.useState<Date>(new Date());
 
   // Chat Widget state
   const [isChatOpen, setIsChatOpen] = React.useState(false);
@@ -167,9 +194,46 @@ const TimelinePage: React.FC = () => {
   React.useEffect(() => {
     document.title = 'Pregnancy Timeline — MelaninRX';
     getTrimesters().then(setData);
-    setCurrentTrimesterIndex(2); // TEMP for testing
-    setCurrentTrimesterId('trimester-2');
   }, []);
+
+  // Set current trimester and week from user's database info
+  React.useEffect(() => {
+    if (user?.dueDate) {
+      try {
+        const calculatedWeek = calculateCurrentWeek(user.dueDate);
+        const parsedDueDate = typeof user.dueDate === 'string' 
+          ? new Date(user.dueDate) 
+          : (user.dueDate instanceof Date ? user.dueDate : new Date(user.dueDate));
+        
+        if (calculatedWeek !== null && !isNaN(parsedDueDate.getTime())) {
+          setCurrentWeek(calculatedWeek);
+          setDueDate(parsedDueDate);
+          
+          // Calculate trimester from current week
+          let trimesterNum: number;
+          if (calculatedWeek < 14) {
+            trimesterNum = 1;
+          } else if (calculatedWeek < 28) {
+            trimesterNum = 2;
+          } else {
+            trimesterNum = 3;
+          }
+          
+          setCurrentTrimesterIndex(trimesterNum);
+          setCurrentTrimesterId(`trimester-${trimesterNum}`);
+        }
+      } catch (e) {
+        console.error('Error processing due date:', e);
+      }
+    } else if (user?.trimester) {
+      // Fallback to trimester if dueDate not available
+      const trimesterNum = parseInt(user.trimester, 10);
+      if (trimesterNum >= 1 && trimesterNum <= 3) {
+        setCurrentTrimesterIndex(trimesterNum);
+        setCurrentTrimesterId(`trimester-${trimesterNum}`);
+      }
+    }
+  }, [user]);
 
   React.useEffect(() => {
     async function fetchSoonAppointments() {
@@ -238,12 +302,12 @@ const TimelinePage: React.FC = () => {
 
   const active = data.find(t => t.id === activeId) ?? null;
 
-  // Progress to the CENTER of the current node (T1=0, T2=0.5, T3=1 for 3 nodes)
-  // If you prefer "fill to end of trimester", use: idx / n instead.
-  const n = data.length || 1;
-  const idx = currentTrimesterIndex ?? null;
-  const progressToNodeCenter =
-    idx != null && n > 1 ? (idx - 1) / (n - 1) : 0;
+  // Calculate progress based on current week of pregnancy (0-40 weeks)
+  // Progress should reflect actual pregnancy progress, not just trimester
+  const totalWeeks = 40;
+  const progressToNodeCenter = currentWeek > 0 
+    ? Math.min(1, Math.max(0, currentWeek / totalWeeks))
+    : 0;
 
   const handleQuestionClick = (question: string) => {
     setSelectedQuestion(question);
@@ -272,9 +336,9 @@ const TimelinePage: React.FC = () => {
           </div>
 
           <React.Suspense fallback={<div>Loading timeline…</div>}>
-            {/* Status card — TODO: wire real values */}
+            {/* Status card */}
             <div style={{ paddingLeft: '32px', paddingRight: '32px' }}>
-              <StatusCard currentWeek={22} dueDate={new Date('2026-03-01')} />
+              <StatusCard currentWeek={currentWeek} dueDate={dueDate} />
               <TimelineRail
                 appendBaby
                 progress={progressToNodeCenter}
@@ -292,29 +356,41 @@ const TimelinePage: React.FC = () => {
                   ))}
                 </section>
               ) : (
-                <>
+                <div style={{ paddingLeft: '32px', paddingRight: '32px' }}>
+                  {/* Overview Section */}
                   <section className={styles.expandedWrap}>
                     <div className={styles.infoCard}>
-                      <div className={styles.cardTitle}>{active.title}</div>
-                      <div className={styles.cardSub}>{active.weeksRange}</div>
-                      <p className={styles.cardBody} style={{ marginTop: 10 }}>{active.summary}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                        <div className={styles.cardTitle}>{active.title}</div>
+                        <div className={styles.badge}>{active.weeksRange}</div>
+                      </div>
+                      <p className={styles.cardBody} style={{ marginTop: 0, fontSize: '16px', lineHeight: '1.6' }}>{active.summary}</p>
                     </div>
                   </section>
 
-                  <section className={styles.expandedWrap}>
-                    <ChecklistCard
-                      items={active.checklist}
-                      storageKey={`chk_${active.id}_demoUser`}
-                    />
-                  </section>
+                  {/* Two Column Layout for Checklist and Questions */}
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
+                    gap: '24px',
+                    marginTop: '24px'
+                  }}>
+                    <section>
+                      <ChecklistCard
+                        items={active.checklist}
+                        storageKey={`chk_${active.id}_${user?.uid || 'demoUser'}`}
+                        title={`${active.title} Checklist`}
+                      />
+                    </section>
 
-                  <section className={styles.expandedWrap}>
-                    <QuestionsCard
-                  items={active.doctorTips}
-                  onQuestionClick={handleQuestionClick}
-                  />
-                  </section>
-                </>
+                    <section>
+                      <QuestionsCard
+                        items={active.doctorTips}
+                        onQuestionClick={handleQuestionClick}
+                      />
+                    </section>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -322,64 +398,72 @@ const TimelinePage: React.FC = () => {
             <div style={{ display: 'flex', gap: '24px', marginTop: '32px', paddingLeft: '32px', paddingRight: '32px', paddingBottom: '32px' }}>
               {/* Upcoming Appointments - first slot */}
               <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%' }}>
-                <div style={{ background: '#FFF', borderRadius: '18px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', border: '1px solid #E0D7F7', padding: '24px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch', marginBottom: '24px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
-                    <h2 style={{ color: '#1A1A1A', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, fontSize: '1.5rem', margin: 0 }}>Upcoming Appointments</h2>
-                  </div>
-                  <div style={{ display: 'flex', gap: '12px', marginBottom: '18px' }}>
-                    <button style={{ background: '#6C4AB6', color: '#FFF', fontWeight: 200, fontSize: '0.90rem', borderRadius: '12px', border: 'none', padding: '10px 24px', cursor: 'pointer', fontFamily: 'Source Serif Pro, serif', boxShadow: '0 2px 8px rgba(108,74,182,0.10)' }}>Add Appointment</button>
-                    <button style={{ background: '#F3E8FF', color: '#3D246C', fontWeight: 200, fontSize: '0.90rem', borderRadius: '12px', border: '1px solid #E0D7F7', padding: '10px 24px', cursor: 'not-allowed', fontFamily: 'Source Serif Pro, serif', boxShadow: '0 2px 8px rgba(108,74,182,0.10)' }} disabled>Edit Appointments</button>
-                  </div>
-                  <div>
-                    {soonAppointments.length === 0 ? (
-                      <div style={{ textAlign: 'center', color: '#3D246C', fontFamily: 'Source Serif Pro, serif', fontSize: '18px', margin: '16px 0' }}>
-                        No upcoming appointments.
-                      </div>
-                    ) : (
-                      soonAppointments.map((appt, idx) => {
-                        // Format date/time
-                        let apptDate;
-                        if (appt.dateTime instanceof Timestamp) {
-                          apptDate = appt.dateTime.toDate();
-                        } else if (typeof appt.dateTime === 'string') {
-                          apptDate = new Date(appt.dateTime);
-                        } else if (appt.dateTime?.toDate) {
-                          apptDate = appt.dateTime.toDate();
-                        }
-                        const dateStr = apptDate ? apptDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-                        const timeStr = apptDate ? apptDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '';
-                        // Type/subtext
-                        const typeStr = appt.type || (appt.location?.toLowerCase().includes('video') ? 'Telehealth' : '');
-                        const subStr = appt.reason || appt.type || '';
-                        return (
-                          <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ width: '100%', textDecoration: 'none' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '8px solid #6C4AB6', paddingLeft: '16px', marginBottom: '18px', background: 'none' }}>
-                              <div style={{ fontWeight: 700, color: '#1A1A1A', fontSize: '1.15rem', marginBottom: '2px', fontFamily: 'Source Serif Pro, serif' }}>{appt.provider || appt.title || 'Appointment'}</div>
-                              <div style={{ color: '#3D246C', fontSize: '1rem', marginBottom: '2px', fontFamily: 'Source Serif Pro, serif' }}>{dateStr} • {timeStr}{appt.location ? ` (${appt.location})` : ''}</div>
-                              {subStr && <div style={{ color: '#6C4AB6', fontSize: '1rem', fontWeight: 500, marginBottom: '2px', fontFamily: 'Source Serif Pro, serif' }}>{subStr}</div>}
-                              {typeStr && !subStr && <div style={{ color: '#6C4AB6', fontSize: '1rem', fontWeight: 500, marginBottom: '2px', fontFamily: 'Source Serif Pro, serif' }}>{typeStr}</div>}
+                <section className={styles.infoCard}>
+                  <div className={styles.cardTitle} style={{ marginBottom: '16px' }}>Upcoming Appointments</div>
+                  {soonAppointments.length === 0 ? (
+                    <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '15px', margin: '16px 0' }}>
+                      No upcoming appointments.
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {soonAppointments.map(appt => (
+                        <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ textDecoration: 'none' }}>
+                          <div style={{ 
+                            background: 'var(--color-light)', 
+                            borderRadius: '16px', 
+                            padding: '16px', 
+                            border: '1px solid var(--color-mid)',
+                            cursor: 'pointer', 
+                            transition: 'all 0.2s ease',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = 'var(--color-accent)';
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(127, 93, 140, 0.15)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = 'var(--color-mid)';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <IonIcon icon={AppointmentIcon} style={{ color: 'var(--color-primary)', fontSize: '20px' }} />
+                              <span style={{ fontWeight: 700, color: 'var(--color-primary)', fontSize: '16px' }}>{appt.provider} @ {appt.location}</span>
                             </div>
-                          </IonRouterLink>
-                        );
-                      })
-                    )}
-                  </div>
-                </div>
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{
+                              appt.dateTime instanceof Timestamp
+                                ? appt.dateTime.toDate().toLocaleString()
+                                : appt.dateTime?.toDate?.()
+                                  ? appt.dateTime.toDate().toLocaleString()
+                                  : typeof appt.dateTime === 'string'
+                                    ? new Date(appt.dateTime).toLocaleString()
+                                    : ''
+                            }</div>
+                            {appt.notes && appt.notes.length > 0 && (
+                              <div style={{ marginTop: '4px' }}>
+                                <span style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '13px' }}>Notes/Questions:</span>
+                                <ul className={styles.list} style={{ marginTop: '4px' }}>
+                                  {appt.notes.map((note: string, idx: number) => (
+                                    <li key={idx} className={styles.listItem} style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{note}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </IonRouterLink>
+                      ))}
+                    </div>
+                  )}
+                </section>
               </div>
               {/* Calendar - middle slot */}
               <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%' }}>
                 <CalendarView appointments={soonAppointments} />
               </div>
-              {/* Fetal Development Image and Credit - third slot */}
-              <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
-                <img
-                  src={'/fetal_development.jpg'}
-                  alt="Fetal Development"
-                  style={{ maxWidth: '100%', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', marginBottom: '8px' }}
-                />
-                <div style={{ fontSize: '0.95rem', color: '#6C4AB6', textAlign: 'center' }}>
-                  Image credit: <a href="https://www.omumsie.com/cdn/shop/articles/321724216128_520x500_667689fa-025d-47c6-96bf-c648f6c59565_1080x.jpg?v=1740480111" target="_blank" rel="noopener noreferrer" style={{ color: '#6C4AB6', textDecoration: 'underline' }}>Omumsie</a>
-                </div>
+              {/* Fetal Development - third slot */}
+              <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%' }}>
+                <FetalDevelopment currentWeek={currentWeek} />
               </div>
             </div>
           </React.Suspense>
