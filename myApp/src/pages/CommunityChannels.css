@@ -4,7 +4,7 @@ body, html, *, *:before, *:after {
   font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif !important;
 }
 
-.community-page { --background: var(--ion-color-light); }
+.community-page { --background: var(--ion-color-light); padding-left: 70px}
 .community-hero { padding: 16px; }
 .community-welcome { margin: 0 0 8px 0; font-size: 1.25rem; }
 .community-sub { color: var(--ion-color-medium); margin: 0 0 12px 0; }

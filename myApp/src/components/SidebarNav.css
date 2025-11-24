@@ -1,0 +1,43 @@
+.side-panel {
+  width: 60px;
+  position: fixed;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  background: var(--color-light) !important;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: start;
+  padding: 12px 0;
+}
+
+.side-panel:hover {
+  width: 200px;
+}
+
+.nav-top, .nav-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.menu-text {
+  opacity: 0;
+  width: 0;
+  transition: opacity 0.3s, width 0.3s;
+  overflow: hidden;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+  color: #6C4AB6;
+  font-weight: 500;
+}
+
+.side-panel:hover .menu-text {
+  opacity: 1;
+  width: auto;
+}

@@ -20,6 +20,7 @@ import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { getFirestore, collection, getDocs, Timestamp } from 'firebase/firestore';
+import SidebarNav from '../components/SidebarNav';
 
 // Lazy-load the timeline parts
 const TimelineRail = React.lazy(() => import('../components/TimelineRail'));
@@ -256,59 +257,9 @@ const TimelinePage: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Pregnancy Timeline</IonTitle>
-        </IonToolbar>
-      </IonHeader>
 
-      <IonContent fullscreen>
-        <aside className="side-panel">
-          <div className="nav-top">
-            <IonButton fill="clear" routerLink="/menu">
-              <IonIcon icon={menuIcon} />
-              <span className="menu-text">Menu</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/home">
-              <IonIcon icon={homeIcon} />
-              <span className="menu-text">Home</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/add">
-              <IonIcon icon={addIcon} />
-              <span className="menu-text">New Chat</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/chatbot">
-              <IonIcon icon={chatbotIcon} />
-              <span className="menu-text">Chats</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/community">
-              <IonIcon icon={communityIcon} />
-              <span className="menu-text">Communities</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/timeline">
-              <IonIcon icon={timelineIcon} />
-              <span className="menu-text">Timeline</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/appointments">
-              <IonIcon icon={AppointmentIcon} />
-              <span className="menu-text">Appointments</span>
-            </IonButton>
-          </div>
-          <div className="nav-bottom">
-            <IonButton fill='clear' onClick={logoutUser}>
-              <IonIcon icon={LogoutIcon} />
-              <span className="menu-text">Log out</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/settings">
-              <IonIcon icon={settingsIcon} />
-              <span className="menu-text">Setting</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/profile">
-              <IonIcon icon={profileIcon} />
-              <span className="menu-text">Profile</span>
-            </IonButton>
-          </div>
-        </aside>
+      <IonContent fullscreen className="timeline-content" style={{ paddingLeft: '80px' }}>
+        <SidebarNav/>
 
         <main className={styles.timelinePage}>
           <div className={styles.timelineHeader} style={{ paddingTop: '32px', paddingLeft: '32px', paddingRight: '32px' }}>
@@ -371,43 +322,48 @@ const TimelinePage: React.FC = () => {
             <div style={{ display: 'flex', gap: '24px', marginTop: '32px', paddingLeft: '32px', paddingRight: '32px', paddingBottom: '32px' }}>
               {/* Upcoming Appointments - first slot */}
               <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%' }}>
-                <div style={{ background: '#F3E8FF', borderRadius: '32px', boxShadow: '0 2px 16px rgba(108,74,182,0.16)', border: '2px solid #6C4AB6', padding: '32px 32px 24px 32px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
-                  <h2 style={{ color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, marginBottom: '18px', textAlign: 'center', fontSize: '1.5rem' }}>Upcoming Appointments</h2>
-                  {soonAppointments.length === 0 ? (
-                    <div style={{ textAlign: 'center', color: '#3D246C', fontFamily: 'Source Serif Pro, serif', fontSize: '18px', margin: '16px 0' }}>
-                      No upcoming appointments.
-                    </div>
-                  ) : (
-                    soonAppointments.map(appt => (
-                      <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ width: '100%', textDecoration: 'none' }}>
-                        <div style={{ background: '#FFF', borderRadius: '24px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', padding: '20px', width: '100%', marginBottom: '18px', color: '#3D246C', fontFamily: 'Source Serif Pro, serif', fontSize: '18px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', cursor: 'pointer', transition: 'box-shadow 0.2s', border: 'none' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                            <IonIcon icon={AppointmentIcon} style={{ color: '#6C4AB6', fontSize: '24px' }} />
-                            <span style={{ fontWeight: 700, color: '#6C4AB6', fontFamily: 'Source Serif Pro, serif', fontSize: '20px' }}>{appt.provider} @ {appt.location}</span>
-                          </div>
-                          <div style={{ color: '#3D246C', fontFamily: 'Source Serif Pro, serif', marginBottom: '8px' }}>{
-                            appt.dateTime instanceof Timestamp
-                              ? appt.dateTime.toDate().toLocaleString()
-                              : appt.dateTime?.toDate?.()
-                                ? appt.dateTime.toDate().toLocaleString()
-                                : typeof appt.dateTime === 'string'
-                                  ? new Date(appt.dateTime).toLocaleString()
-                                  : ''
-                          }</div>
-                          {appt.notes && appt.notes.length > 0 && (
-                            <div style={{ marginTop: '8px', width: '100%' }}>
-                              <span style={{ color: '#6C4AB6', fontWeight: 600, fontSize: '16px' }}>Notes/Questions:</span>
-                              <ul style={{ margin: 0, paddingLeft: '18px', color: '#3D246C', fontSize: '16px' }}>
-                                {appt.notes.map((note: string, idx: number) => (
-                                  <li key={idx} style={{ fontFamily: 'Source Serif Pro, serif', marginBottom: '4px' }}>{note}</li>
-                                ))}
-                              </ul>
+                <div style={{ background: '#FFF', borderRadius: '18px', boxShadow: '0 2px 8px rgba(108,74,182,0.10)', border: '1px solid #E0D7F7', padding: '24px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch', marginBottom: '24px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
+                    <h2 style={{ color: '#1A1A1A', fontFamily: 'Source Serif Pro, serif', fontWeight: 700, fontSize: '1.5rem', margin: 0 }}>Upcoming Appointments</h2>
+                  </div>
+                  <div style={{ display: 'flex', gap: '12px', marginBottom: '18px' }}>
+                    <button style={{ background: '#6C4AB6', color: '#FFF', fontWeight: 200, fontSize: '0.90rem', borderRadius: '12px', border: 'none', padding: '10px 24px', cursor: 'pointer', fontFamily: 'Source Serif Pro, serif', boxShadow: '0 2px 8px rgba(108,74,182,0.10)' }}>Add Appointment</button>
+                    <button style={{ background: '#F3E8FF', color: '#3D246C', fontWeight: 200, fontSize: '0.90rem', borderRadius: '12px', border: '1px solid #E0D7F7', padding: '10px 24px', cursor: 'not-allowed', fontFamily: 'Source Serif Pro, serif', boxShadow: '0 2px 8px rgba(108,74,182,0.10)' }} disabled>Edit Appointments</button>
+                  </div>
+                  <div>
+                    {soonAppointments.length === 0 ? (
+                      <div style={{ textAlign: 'center', color: '#3D246C', fontFamily: 'Source Serif Pro, serif', fontSize: '18px', margin: '16px 0' }}>
+                        No upcoming appointments.
+                      </div>
+                    ) : (
+                      soonAppointments.map((appt, idx) => {
+                        // Format date/time
+                        let apptDate;
+                        if (appt.dateTime instanceof Timestamp) {
+                          apptDate = appt.dateTime.toDate();
+                        } else if (typeof appt.dateTime === 'string') {
+                          apptDate = new Date(appt.dateTime);
+                        } else if (appt.dateTime?.toDate) {
+                          apptDate = appt.dateTime.toDate();
+                        }
+                        const dateStr = apptDate ? apptDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+                        const timeStr = apptDate ? apptDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '';
+                        // Type/subtext
+                        const typeStr = appt.type || (appt.location?.toLowerCase().includes('video') ? 'Telehealth' : '');
+                        const subStr = appt.reason || appt.type || '';
+                        return (
+                          <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ width: '100%', textDecoration: 'none' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '8px solid #6C4AB6', paddingLeft: '16px', marginBottom: '18px', background: 'none' }}>
+                              <div style={{ fontWeight: 700, color: '#1A1A1A', fontSize: '1.15rem', marginBottom: '2px', fontFamily: 'Source Serif Pro, serif' }}>{appt.provider || appt.title || 'Appointment'}</div>
+                              <div style={{ color: '#3D246C', fontSize: '1rem', marginBottom: '2px', fontFamily: 'Source Serif Pro, serif' }}>{dateStr} • {timeStr}{appt.location ? ` (${appt.location})` : ''}</div>
+                              {subStr && <div style={{ color: '#6C4AB6', fontSize: '1rem', fontWeight: 500, marginBottom: '2px', fontFamily: 'Source Serif Pro, serif' }}>{subStr}</div>}
+                              {typeStr && !subStr && <div style={{ color: '#6C4AB6', fontSize: '1rem', fontWeight: 500, marginBottom: '2px', fontFamily: 'Source Serif Pro, serif' }}>{typeStr}</div>}
                             </div>
-                          )}
-                        </div>
-                      </IonRouterLink>
-                    ))
-                  )}
+                          </IonRouterLink>
+                        );
+                      })
+                    )}
+                  </div>
                 </div>
               </div>
               {/* Calendar - middle slot */}
