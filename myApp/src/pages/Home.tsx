@@ -35,6 +35,7 @@ import TimelineRail from '../components/TimelineRail';
 import FetalDevelopment from '../components/FetalDevelopment';
 import QuestionsCard from '../components/QuestionsCard';
 import { getTrimesters, Trimester } from '../services/timelineService';
+import SidebarNav from '../components/SidebarNav';
 
 // Calculate current week from due date
 const calculateCurrentWeek = (dueDateString: string | Date | undefined): number | null => {
