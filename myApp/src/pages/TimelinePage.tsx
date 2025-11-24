@@ -145,12 +145,38 @@ function CalendarView({ appointments = [] }: { appointments?: any[] }) {
   );
 }
 
+// Calculate current week and trimester from user's due date
+const calculateCurrentWeek = (dueDateString: string | Date | undefined): number | null => {
+  if (!dueDateString) return null;
+  
+  try {
+    const dueDate = typeof dueDateString === 'string' ? new Date(dueDateString) : dueDateString;
+    if (isNaN(dueDate.getTime())) return null;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+    
+    // Calculate weeks until due date
+    const daysUntilDue = Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const weeksUntilDue = Math.floor(daysUntilDue / 7);
+    
+    // Current week of pregnancy (assuming 40 week pregnancy)
+    return Math.max(0, Math.min(40, 40 - weeksUntilDue));
+  } catch (e) {
+    console.error('Error calculating current week:', e);
+    return null;
+  }
+};
+
 const TimelinePage: React.FC = () => {
   // All hooks must be called before any return!
   const [data, setData] = React.useState<Trimester[]>([]);
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const [currentTrimesterId, setCurrentTrimesterId] = React.useState<string | null>(null);
   const [currentTrimesterIndex, setCurrentTrimesterIndex] = React.useState<number | null>(null);
+  const [currentWeek, setCurrentWeek] = React.useState<number>(0);
+  const [dueDate, setDueDate] = React.useState<Date>(new Date());
 
   // Chat Widget state
   const [isChatOpen, setIsChatOpen] = React.useState(false);
@@ -168,9 +194,37 @@ const TimelinePage: React.FC = () => {
     getTrimesters().then(setData);
   }, []);
 
-  // Set current trimester from user's database info
+  // Set current trimester and week from user's database info
   React.useEffect(() => {
-    if (user?.trimester) {
+    if (user?.dueDate) {
+      try {
+        const calculatedWeek = calculateCurrentWeek(user.dueDate);
+        const parsedDueDate = typeof user.dueDate === 'string' 
+          ? new Date(user.dueDate) 
+          : (user.dueDate instanceof Date ? user.dueDate : new Date(user.dueDate));
+        
+        if (calculatedWeek !== null && !isNaN(parsedDueDate.getTime())) {
+          setCurrentWeek(calculatedWeek);
+          setDueDate(parsedDueDate);
+          
+          // Calculate trimester from current week
+          let trimesterNum: number;
+          if (calculatedWeek < 14) {
+            trimesterNum = 1;
+          } else if (calculatedWeek < 28) {
+            trimesterNum = 2;
+          } else {
+            trimesterNum = 3;
+          }
+          
+          setCurrentTrimesterIndex(trimesterNum);
+          setCurrentTrimesterId(`trimester-${trimesterNum}`);
+        }
+      } catch (e) {
+        console.error('Error processing due date:', e);
+      }
+    } else if (user?.trimester) {
+      // Fallback to trimester if dueDate not available
       const trimesterNum = parseInt(user.trimester, 10);
       if (trimesterNum >= 1 && trimesterNum <= 3) {
         setCurrentTrimesterIndex(trimesterNum);
@@ -330,9 +384,9 @@ const TimelinePage: React.FC = () => {
           </div>
 
           <React.Suspense fallback={<div>Loading timeline…</div>}>
-            {/* Status card — TODO: wire real values */}
+            {/* Status card */}
             <div style={{ paddingLeft: '32px', paddingRight: '32px' }}>
-              <StatusCard currentWeek={22} dueDate={new Date('2026-03-01')} />
+              <StatusCard currentWeek={currentWeek} dueDate={dueDate} />
               <TimelineRail
                 appendBaby
                 progress={progressToNodeCenter}
