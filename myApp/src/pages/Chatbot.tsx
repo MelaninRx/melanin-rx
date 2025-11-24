@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonPage,
   IonHeader,
@@ -10,6 +10,7 @@ import {
   IonIcon,
   IonButton,
 } from "@ionic/react";
+import { useLocation } from "react-router-dom";
 import "./Chatbot.css";
 import "typeface-source-serif-pro";
 import homeIcon from '../icons/house.svg';
@@ -33,9 +34,11 @@ const FIREBASE_REGION = "us-central1"; // Change if your functions are in a diff
 const LANGFLOW_PROXY_URL = `https://${FIREBASE_REGION}-${FIREBASE_PROJECT_ID}.cloudfunctions.net/chatWithLangFlow`;
 
 const ChatbotPage: React.FC = () => {
+  const location = useLocation();
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState<{ sender: string; text: string }[]>([]);
   const [loading, setLoading] = useState(false);
+  const hasProcessedInitialQuestionRef = React.useRef(false);
 
 const handleSend = async () => {
   if (!message.trim()) return;
@@ -43,6 +46,12 @@ const handleSend = async () => {
 };
 
 const handleSendWithText = async (text: string) => {
+  // Check if this message already exists to prevent duplicates
+  const isDuplicate = chatHistory.some(msg => msg.sender === 'user' && msg.text === text);
+  if (isDuplicate) {
+    return; // Already sent, don't send again
+  }
+  
   const newUserMsg = { sender: 'user', text };
   setChatHistory((prev) => [...prev, newUserMsg]);
   setLoading(true);
@@ -89,6 +98,21 @@ const handleQuickQuestion = async (question: string) => {
   setMessage(question);
   await handleSendWithText(question);
 };
+
+  // Check for question in URL query parameter and auto-send it (only once)
+  useEffect(() => {
+    if (hasProcessedInitialQuestionRef.current || chatHistory.length > 0) return; // Already processed or chat started
+    
+    const searchParams = new URLSearchParams(location.search);
+    const question = searchParams.get('question');
+    
+    if (question) {
+      hasProcessedInitialQuestionRef.current = true; // Mark as processed immediately
+      const decodedQuestion = decodeURIComponent(question);
+      handleSendWithText(decodedQuestion);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]); // Run when location.search changes, but guards prevent duplicates
 
   const isChatStarted = chatHistory.length > 0;
 
