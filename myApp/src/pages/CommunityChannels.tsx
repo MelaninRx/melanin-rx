@@ -162,11 +162,6 @@ const CommunityChannels: React.FC = () => {
 
   return (
     <IonPage className="community-page">
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Community Channels</IonTitle>
-        </IonToolbar>
-      </IonHeader>
 
       <IonContent fullscreen>
         <aside className="side-panel">

@@ -28,6 +28,7 @@ import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
 import './Appointments.css';
+import SidebarNav from "../components/SidebarNav";
 
 const AppointmentsPage: React.FC = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -44,6 +45,7 @@ const AppointmentsPage: React.FC = () => {
   const history = useHistory();
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
+  const [formExpanded, setFormExpanded] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -127,89 +129,32 @@ const AppointmentsPage: React.FC = () => {
     <IonPage className="appointments-page">
       <IonContent fullscreen>
         <div className="appointments-main-layout">
-          <aside className="side-panel">
-            <div className="nav-top">
-              <IonButton fill="clear" routerLink="/menu">
-                <IonIcon icon={menuIcon} />
-                <span className="menu-text">Menu</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/home">
-                <IonIcon icon={homeIcon} />
-                <span className="menu-text">Home</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/add">
-                <IonIcon icon={addIcon} />
-                <span className="menu-text">New Chat</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/chatbot">
-                <IonIcon icon={chatbotIcon} />
-                <span className="menu-text">Chats</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/community">
-                <IonIcon icon={communityIcon} />
-                <span className="menu-text">Communities</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/timeline">
-                <IonIcon icon={timelineIcon} />
-                <span className="menu-text">Timeline</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/appointments">
-                <IonIcon icon={AppointmentIcon} />
-                <span className="menu-text">Appointments</span>
-              </IonButton>
-            </div>
-            <div className="nav-bottom">
-              <IonButton fill='clear' onClick={logoutUser}>
-                <IonIcon icon={LogoutIcon} />
-                <span className="menu-text">Log out</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/settings">
-                <IonIcon icon={settingsIcon} />
-                <span className="menu-text">Setting</span>
-              </IonButton>
-              <IonButton fill="clear" routerLink="/profile">
-                <IonIcon icon={profileIcon} />
-                <span className="menu-text">Profile</span>
-              </IonButton>
-            </div>
-          </aside>
+          <SidebarNav />
           <main className="appointments-content">
             <header className="appointments-header">
               <h1>Appointment Planner</h1>
               <p className="subtitle">Track and manage your upcoming healthcare appointments with ease</p>
             </header>
-            <div className="appointments-flex-row">
-              <section className="add-appointment-section card">
-                <h2>Add a New Appointment</h2>
-                <div className="add-appt-card">
-                  <div className="form-row">
-                    <IonItem className="form-item">
-                      <IonLabel position="stacked">Date</IonLabel>
-                      <IonInput type="date" value={form.date} onIonChange={e => handleFormChange("date", e.detail.value!)} />
-                    </IonItem>
-                    <IonItem className="form-item">
-                      <IonLabel position="stacked">Time</IonLabel>
-                      <IonInput type="time" value={form.time} onIonChange={e => handleFormChange("time", e.detail.value!)} />
-                    </IonItem>
-                  </div>
-                  <div className="form-row">
-                    <IonItem className="form-item">
-                      <IonLabel position="stacked">Provider</IonLabel>
-                      <IonInput value={form.provider} onIonChange={e => handleFormChange("provider", e.detail.value!)} />
-                    </IonItem>
-                  </div>
-                  <IonItem className="form-item">
-                    <IonLabel position="stacked">Location</IonLabel>
-                    <IonInput value={form.location} onIonChange={e => handleFormChange("location", e.detail.value!)} placeholder="Enter Clinic or Hospital Address" />
-                  </IonItem>
-                  <IonItem className="form-item">
-                    <IonLabel position="stacked">Notes/Questions for Provider</IonLabel>
-                    <IonTextarea value={form.notes[0]} onIonChange={e => handleNoteChange(0, e.detail.value!)} placeholder="Enter any symptoms, concerns, or questions you'd like to discuss at your appointment..." />
-                  </IonItem>
-                  {error && <p style={{ color: "red" }}>{error}</p>}
-                  <IonButton expand="block" onClick={handleSubmit} disabled={loading} className="add-appointment-btn">
-                    {loading ? <IonSpinner name="crescent" /> : "Add Appointment"}
-                  </IonButton>
+            <div className="appointments-flex-row" style={{ alignItems: 'flex-start', flexDirection: 'row', display: 'flex' }}>
+              <section className="upcoming-appointments-section card">
+                <h2>Upcoming Appointments <span className="scheduled-count">{appointments.length} Scheduled</span></h2>
+                <div className="appointments-list">
+                  {appointments.length === 0 && <p>No appointments found.</p>}
+                  {appointments.map(appt => (
+                    <div
+                      className="appointment-card"
+                      key={appt.id}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => history.push(`/appointments/${userId}/${appt.id}`)}
+                    >
+                      <div className="appointment-date">{appt.dateTime?.toDate?.().toLocaleDateString('en-US', { month: 'short' }).toUpperCase()}<br/>{appt.dateTime?.toDate?.().getDate()}</div>
+                      <div className="appointment-info">
+                        <strong>{appt.provider}</strong>
+                        <div className="appointment-meta">{appt.dateTime?.toDate?.().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · {appt.location}</div>
+                        <div className="appointment-notes">Notes: {appt.notes?.join(', ')}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </section>
               <section className="calendar-section card">
@@ -292,28 +237,69 @@ const AppointmentsPage: React.FC = () => {
                 </div>
               </section>
             </div>
-            <div className="appointments-flex-bottom">
-              <section className="upcoming-appointments-section card">
-                <h2>Upcoming Appointments <span className="scheduled-count">{appointments.length} Scheduled</span></h2>
-                <div className="appointments-list">
-                  {appointments.length === 0 && <p>No appointments found.</p>}
-                  {appointments.map(appt => (
-                    <div
-                      className="appointment-card"
-                      key={appt.id}
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => history.push(`/appointments/${userId}/${appt.id}`)}
-                    >
-                      <div className="appointment-date">{appt.dateTime?.toDate?.().toLocaleDateString('en-US', { month: 'short' }).toUpperCase()}<br/>{appt.dateTime?.toDate?.().getDate()}</div>
-                      <div className="appointment-info">
-                        <strong>{appt.provider}</strong>
-                        <div className="appointment-meta">{appt.dateTime?.toDate?.().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · {appt.location}</div>
-                        <div className="appointment-notes">Notes: {appt.notes?.join(', ')}</div>
-                      </div>
-                    </div>
-                  ))}
+            <div className="appointments-flex-bottom" style={{ marginTop: formExpanded ? '2.5rem' : '1.5rem', transition: 'margin-top 0.3s cubic-bezier(.4,0,.2,1)' }}>
+              <section
+                className="add-appointment-section card"
+                style={{
+                  width: '890px', // always 900px
+                  minWidth: '900px',
+                  maxWidth: '890px',
+                  height: formExpanded ? 'auto' : '56px',
+                  overflow: 'visible',
+                  boxSizing: 'border-box',
+                  margin: '0 0 0 1.5rem', // always apply margin
+                  alignSelf: 'flex-start',
+                  transition: 'all 0.3s cubic-bezier(.4,0,.2,1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  zIndex: 2
+                }}
+              >
+                <div
+                  className="add-appt-header"
+                  style={{
+                    display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'space-between', width: '100%', height: '56px', padding: '0 1.5rem',
+                  }}
+                  onClick={() => setFormExpanded(exp => !exp)}
+                >
+                  <h2 style={{ margin: 0 }}>Add a New Appointment</h2>
+                  <IonIcon icon={formExpanded ? 'close' : addIcon} style={{ fontSize: '1.7rem', marginLeft: '1rem', color: '#8c3a7a', transition: 'transform 0.2s', transform: formExpanded ? 'rotate(90deg)' : 'none' }} />
                 </div>
+                {formExpanded && (
+                  <div className="add-appt-card">
+                    <div className="form-row">
+                      <IonItem className="form-item">
+                        <IonLabel position="stacked">Date</IonLabel>
+                        <IonInput type="date" value={form.date} onIonChange={e => handleFormChange("date", e.detail.value!)} />
+                      </IonItem>
+                      <IonItem className="form-item">
+                        <IonLabel position="stacked">Time</IonLabel>
+                        <IonInput type="time" value={form.time} onIonChange={e => handleFormChange("time", e.detail.value!)} />
+                      </IonItem>
+                    </div>
+                    <div className="form-row">
+                      <IonItem className="form-item">
+                        <IonLabel position="stacked">Provider</IonLabel>
+                        <IonInput value={form.provider} onIonChange={e => handleFormChange("provider", e.detail.value!)} />
+                      </IonItem>
+                    </div>
+                    <IonItem className="form-item">
+                      <IonLabel position="stacked">Location</IonLabel>
+                      <IonInput value={form.location} onIonChange={e => handleFormChange("location", e.detail.value!)} placeholder="Enter Clinic or Hospital Address" />
+                    </IonItem>
+                    <IonItem className="form-item">
+                      <IonLabel position="stacked">Notes/Questions for Provider</IonLabel>
+                      <IonTextarea value={form.notes[0]} onIonChange={e => handleNoteChange(0, e.detail.value!)} placeholder="Enter any symptoms, concerns, or questions you'd like to discuss at your appointment..." />
+                    </IonItem>
+                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    <IonButton expand="block" onClick={handleSubmit} disabled={loading} className="add-appointment-btn">
+                      {loading ? <IonSpinner name="crescent" /> : "Add Appointment"}
+                    </IonButton>
+                  </div>
+                )}
               </section>
+              
               <section className="quick-actions-section card">
                 <h2>Quick Actions</h2>
                 <div className="quick-actions-list">

@@ -1,0 +1,113 @@
+.settings-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 0;
+}
+
+.settings-card {
+  width: 100%;
+  max-width: 700px;
+  margin: 2rem auto;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(108, 74, 182, 0.08);
+  background: #fff;
+  padding: 2rem 2.5rem;
+}
+
+/* Force white background on all item-native elements and their parts */
+.settings-card ion-item,
+.settings-card .item-native,
+.settings-card ion-item::part(native) {
+  --background: #fff !important;
+  --background-activated: #fff !important;
+  --background-focused: #fff !important;
+  --background-hover: #fff !important;
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.form-row {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+.form-item {
+  flex: 1;
+  margin-bottom: 1.2rem;
+  background: #ffffff !important;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(108, 74, 182, 0.04);
+  padding: 0.5rem 1rem;
+}
+
+.ion-label,
+.form-item label {
+  font-size: 1.1rem;
+  color: #2d1e4d;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-item ion-label,
+.form-item label {
+  margin-bottom: 0.5rem !important;
+  display: block !important;
+  color: #2d1e4d !important;
+  font-size: 1.1rem !important;
+  font-weight: 500 !important;
+}
+
+/* Input field styling */
+.ion-input,
+input,
+.form-item .input,
+.form-item input,
+.form-item .ion-input,
+.item-native .ion-input,
+.item-native input,
+ion-input,
+ion-input input {
+  --background: #fff !important;
+  --background-activated: #fff !important;
+  --background-focused: #fff !important;
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  font-size: 1.1rem;
+  padding: 0.7rem 1rem;
+  box-shadow: none !important;
+}
+
+.save-btn {
+  background: #6C4AB6;
+  color: #fff;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  margin-top: 1.2rem;
+  box-shadow: 0 2px 8px rgba(108, 74, 182, 0.08);
+  letter-spacing: 1px;
+}
+
+.ion-card-title {
+  font-size: 2rem;
+  color: #2d1e4d;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* Button for changing password */
+.ion-button[fill="clear"] {
+  color: #6C4AB6;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
