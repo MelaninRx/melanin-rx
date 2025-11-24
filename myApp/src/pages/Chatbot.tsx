@@ -63,21 +63,69 @@ const handleSendWithText = async (text: string) => {
   setLoading(true);
 
   try {
-    console.log("Sending message to Firebase Function:", LANGFLOW_PROXY_URL);
-    const res = await fetch(LANGFLOW_PROXY_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text, user: { name: "Guest", id: "anon" } }),
-    });
+  console.log("Sending message to Firebase Function:", LANGFLOW_PROXY_URL);
 
-    console.log("Response status:", res.status);
-    
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
-      console.error("Error response from Firebase Function:", errorData);
-      throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
+  const res = await fetch(LANGFLOW_PROXY_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: text,
+      user: { name: "Guest", id: "anon" }, // adjust if needed
+    }),
+  });
+
+  console.log("Response status:", res.status);
+
+  // ---- ERROR HANDLING ----
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
+    console.error("Error response from Firebase Function:", errorData);
+    throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
+  }
+
+  // ---- SUCCESSFUL RESPONSE ----
+  const data = await res.json();
+  console.log("Bot response:", data);
+
+  const botMessage = {
+    sender: "bot",
+    text: data.text ?? "No response received.",
+  };
+
+  setChatHistory((prev) => [...prev, botMessage]);
+
+  // ---- SAVE TO FIRESTORE ----
+  if (user?.uid) {
     const db = getFirestore();
     const convRef = collection(db, "users", user.uid, "chatHistory");
+
+    const conversationData = {
+      messages: [...chatHistory, { sender: "user", text }, botMessage],
+      timestamp: Date.now(),
+    };
+
+    if (currentConversationId) {
+      // Update existing conversation
+      const existingRef = doc(convRef, currentConversationId);
+      await setDoc(existingRef, conversationData, { merge: true });
+    } else {
+      // Create new conversation
+      const newConvRef = doc(convRef);
+      await setDoc(newConvRef, conversationData);
+      setCurrentConversationId(newConvRef.id);
+    }
+  }
+} catch (error) {
+  console.error("Error sending message:", error);
+
+  setChatHistory((prev) => [
+    ...prev,
+    { sender: "bot", text: "Sorry, something went wrong." },
+  ]);
+} finally {
+  setLoading(false);
+}
+
 
     try {
       if (currentConversationId) {
