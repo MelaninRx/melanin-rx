@@ -1,37 +1,221 @@
 import React from 'react';
 import styles from '../pages/timeline.module.css';
 
+interface ChecklistData {
+  items: string[];
+  done: boolean[];
+}
+
+interface DeletedItem {
+  text: string;
+  wasDone: boolean;
+  index: number;
+}
+
 export default function ChecklistCard({
-  items, storageKey, title = 'This week’s checklist',
+  items, storageKey, title = "This week's checklist",
 }: { items: string[]; storageKey: string; title?: string; }) {
-  const [done, setDone] = React.useState<boolean[]>(() => {
+  // Store original items for restoration
+  const originalItems = React.useRef<string[]>(items);
+  
+  const [checklistData, setChecklistData] = React.useState<ChecklistData>(() => {
     const raw = localStorage.getItem(storageKey);
-    return raw ? JSON.parse(raw) : Array(items.length).fill(false);
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        // Ensure we have both items and done arrays
+        if (parsed.items && parsed.done) {
+          return parsed;
+        }
+      } catch (e) {
+        // If parsing fails, fall through to default
+      }
+    }
+    // Initialize with default items
+    return {
+      items: [...items],
+      done: Array(items.length).fill(false)
+    };
   });
+
+  const [newItemText, setNewItemText] = React.useState('');
+  const [isAddingItem, setIsAddingItem] = React.useState(false);
+  const [deletedItems, setDeletedItems] = React.useState<DeletedItem[]>([]);
 
   React.useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(done));
-  }, [done, storageKey]);
+    localStorage.setItem(storageKey, JSON.stringify(checklistData));
+  }, [checklistData, storageKey]);
 
-  const toggle = (i: number) => setDone(d => {
-    const n = [...d]; n[i] = !n[i]; return n;
-  });
+  const toggle = (i: number) => {
+    setChecklistData(prev => {
+      const newDone = [...prev.done];
+      newDone[i] = !newDone[i];
+      return { ...prev, done: newDone };
+    });
+  };
+
+  const addItem = () => {
+    if (newItemText.trim()) {
+      setChecklistData(prev => ({
+        items: [...prev.items, newItemText.trim()],
+        done: [...prev.done, false]
+      }));
+      setNewItemText('');
+      setIsAddingItem(false);
+    }
+  };
+
+  const removeItem = (i: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent toggling when clicking remove
+    const deletedItem: DeletedItem = {
+      text: checklistData.items[i],
+      wasDone: checklistData.done[i],
+      index: i
+    };
+    setDeletedItems(prev => [deletedItem, ...prev]); // Add to history
+    setChecklistData(prev => ({
+      items: prev.items.filter((_, idx) => idx !== i),
+      done: prev.done.filter((_, idx) => idx !== i)
+    }));
+  };
+
+  const undoDelete = React.useCallback(() => {
+    if (deletedItems.length === 0) return;
+    
+    const lastDeleted = deletedItems[0];
+    setChecklistData(prev => {
+      const newItems = [...prev.items];
+      const newDone = [...prev.done];
+      // Insert at original position, or at end if index is out of bounds
+      const insertIndex = lastDeleted.index <= newItems.length ? lastDeleted.index : newItems.length;
+      newItems.splice(insertIndex, 0, lastDeleted.text);
+      newDone.splice(insertIndex, 0, lastDeleted.wasDone);
+      return { items: newItems, done: newDone };
+    });
+    setDeletedItems(prev => prev.slice(1)); // Remove from history
+  }, [deletedItems]);
+
+  const restoreOriginal = () => {
+    if (confirm('Restore original checklist? This will remove all custom items you\'ve added.')) {
+      setChecklistData({
+        items: [...originalItems.current],
+        done: Array(originalItems.current.length).fill(false)
+      });
+      setDeletedItems([]); // Clear undo history
+    }
+  };
+
+  // Listen for Ctrl+Z (Windows/Linux) or Cmd+Z (Mac)
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for Ctrl+Z (Windows/Linux) or Cmd+Z (Mac)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        // Only undo if not typing in an input
+        if (document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          undoDelete();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undoDelete]);
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      addItem();
+    } else if (e.key === 'Escape') {
+      setIsAddingItem(false);
+      setNewItemText('');
+    }
+  };
+
+  const hasCustomItems = checklistData.items.length !== originalItems.current.length ||
+    checklistData.items.some((item, i) => item !== originalItems.current[i]);
 
   return (
     <section className={styles.checklistCard}>
-      <div className={styles.cardTitle}>{title}</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <div className={styles.cardTitle}>{title}</div>
+        {hasCustomItems && (
+          <button
+            className={styles.restoreButton}
+            onClick={restoreOriginal}
+            title="Restore original checklist"
+          >
+            ↶ Restore
+          </button>
+        )}
+      </div>
       <div style={{ marginTop: 8 }}>
-        {items.map((text, i) => {
-          const checked = !!done[i];
+        {checklistData.items.map((text, i) => {
+          const checked = !!checklistData.done[i];
           return (
-            <div key={i} className={styles.checkItem} onClick={() => toggle(i)}>
-              <div className={`${styles.checkBox} ${checked ? styles.checkBoxChecked : ''}`}>
+            <div key={i} className={styles.checkItem}>
+              <div 
+                className={`${styles.checkBox} ${checked ? styles.checkBoxChecked : ''}`}
+                onClick={() => toggle(i)}
+              >
                 {checked ? '✓' : ''}
               </div>
-              <div className={`${styles.checkText} ${checked ? styles.checkTextDone : ''}`}>{text}</div>
+              <div 
+                className={`${styles.checkText} ${checked ? styles.checkTextDone : ''}`}
+                onClick={() => toggle(i)}
+                style={{ flex: 1 }}
+              >
+                {text}
+              </div>
+              <button
+                className={styles.removeButton}
+                onClick={(e) => removeItem(i, e)}
+                aria-label="Remove item"
+                title="Remove item"
+              >
+                ×
+              </button>
             </div>
           );
         })}
+        
+        {isAddingItem ? (
+          <div className={styles.addItemContainer}>
+            <input
+              type="text"
+              className={styles.addItemInput}
+              value={newItemText}
+              onChange={(e) => setNewItemText(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder="Enter new checklist item..."
+              autoFocus
+            />
+            <div className={styles.addItemActions}>
+              <button
+                className={styles.addItemButton}
+                onClick={addItem}
+                disabled={!newItemText.trim()}
+              >
+                Add
+              </button>
+              <button
+                className={styles.cancelButton}
+                onClick={() => {
+                  setIsAddingItem(false);
+                  setNewItemText('');
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            className={styles.addItemTrigger}
+            onClick={() => setIsAddingItem(true)}
+          >
+            + Add item
+          </button>
+        )}
       </div>
     </section>
   );
