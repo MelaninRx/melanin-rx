@@ -48,7 +48,7 @@ body, html, *, *:before, *:after {
   display: flex; flex-direction: column;
 }
 .card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: var(--color-secondary); }
-.cardTitle { font-size: 18px; font-weight: 800; }
+.cardTitle { font-size: 18px; font-weight: 800; color: var(--text-primary); margin: 0; }
 .cardSub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
 .cardBody { margin-top: 10px; font-size: 15px; line-height: 1.5; }
 .cardHighlights {

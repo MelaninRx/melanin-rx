@@ -13,8 +13,10 @@ const QuestionsCard: React.FC<QuestionsCardProps> = ({ items, onQuestionClick })
 
   return (
     <div className={styles.card}>
-      <h2 className={styles.cardTitle}>Questions to Ask Your Doctor</h2>
-      <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <div className={styles.cardTitle}>Questions to Ask Your Doctor</div>
+      </div>
+      <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '0', marginBottom: '12px' }}>
         Click any question to discuss with the chatbot
       </p>
       <ul className={styles.list}>
