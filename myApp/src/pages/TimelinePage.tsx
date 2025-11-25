@@ -1,4 +1,5 @@
 import React from 'react';
+//import SidePanel from '../components/SidePanel';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton, IonButton, IonIcon, IonRouterLink, IonSpinner } from '@ionic/react';
 import StatusCard from '../components/StatusCard';
 import ChecklistCard from '../components/ChecklistCard';

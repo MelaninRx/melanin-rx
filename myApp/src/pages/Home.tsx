@@ -11,6 +11,7 @@ import {
   IonRouterLink,
 } from '@ionic/react';
 import './Home.css';
+//import SidePanel from '../components/SidePanel';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { logoutUser } from '../services/authService';
 import MelaninRxIcon from '../icons/MelaninRX.svg';
