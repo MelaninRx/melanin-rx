@@ -15,13 +15,7 @@ import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import dropdownIcon from "../icons/Group.svg";
 
-
-interface SidebarProps {
-  logoutUser: () => void;
-  onExpandChange?: (expanded: boolean) => void; 
-}
-
-const Sidebar: React.FC<SidebarProps> = ({ logoutUser, onExpandChange }) => {
+const Sidebar: React.FC = () => {
   const [showChatsDropdown, setShowChatsDropdown] = useState(false);
 
   const chatHistory = [
