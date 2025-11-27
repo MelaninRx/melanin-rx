@@ -11,6 +11,7 @@ import {
   IonRouterLink,
 } from '@ionic/react';
 import './Home.css';
+//import SidePanel from '../components/SidePanel';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { logoutUser } from '../services/authService';
 import MelaninRxIcon from '../icons/MelaninRX.svg';
@@ -19,16 +20,6 @@ import PeopleIcon from "../icons/Frame 111.svg";
 import AppointmentIcon from "../icons/Frame 112.svg";
 import DocIcon from "../icons/Frame 113.svg";
 import JumpIcon from "../icons/Frame 120.svg";
-import homeIcon from '../icons/house.svg';
-import addIcon from '../icons/Vector.svg';
-import menuIcon from '../icons/menu.svg';
-import chatbotIcon from '../icons/message-square.svg';
-import communityIcon from '../icons/users.svg';
-import timelineIcon from '../icons/calendar-days.svg';
-import LogoutIcon from "../icons/log-out.svg"
-import aboutIcon from '../icons/book-text.svg';
-import settingsIcon from '../icons/settings.svg';
-import profileIcon from '../icons/circle-user-round.svg';
 import { useEffect, useState } from 'react';
 import { getFirestore, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import TimelineRail from '../components/TimelineRail';
