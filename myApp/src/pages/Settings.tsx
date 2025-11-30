@@ -20,6 +20,7 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import { logoutUser } from '../services/authService';
 import SidebarNav from '../components/SidebarNav';
 import './Settings.css';
+import MobileMenuButton from '../components/MobileMenuButton';
 
 const Settings: React.FC = () => {
   const history = useHistory();
@@ -105,11 +106,12 @@ const Settings: React.FC = () => {
     <IonPage className="settings-page">
       <IonContent fullscreen>
         <div className="settings-wrapper" style={{minHeight: '100vh', padding: 0, background: "transparent", display: 'flex', flexDirection: 'row'}}>
+          <MobileMenuButton />
           <SidebarNav />
           <div style={{ position: 'relative', margin: '1rem auto', maxWidth: 700, flex: 1 }}>
             <IonCard className="settings-card" style={{ position: 'relative' }}>
               <button
-                style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'red', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', zIndex: 1 }}
+                style={{ position: 'absolute', top: 20, right: 20, marginTop: '10px',marginRight: '10px',backgroundColor: 'red', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', zIndex: 1 }}
                 onClick={logoutUser}
               >
                 Log Out

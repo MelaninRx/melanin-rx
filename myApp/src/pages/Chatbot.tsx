@@ -19,6 +19,7 @@ import {
 } from "firebase/firestore";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import SidebarNav from "../components/SidebarNav";
+import MobileMenuButton from '../components/MobileMenuButton';
 
 // Type for chat message
 interface ChatMessage {
@@ -213,6 +214,7 @@ const ChatbotPage: React.FC = () => {
     <IonPage>
       <IonContent fullscreen>
         <div className="container chatbot-wrapper">
+          <MobileMenuButton />
           <SidebarNav />
 
           {/* LEFT: Conversation history */}

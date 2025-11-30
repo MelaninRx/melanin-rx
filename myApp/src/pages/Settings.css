@@ -111,3 +111,18 @@ ion-input input {
   font-weight: 600;
   letter-spacing: 1px;
 }
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+  .settings-wrapper {
+    flex-direction: column;
+  }
+  
+  .settings-card {
+    margin: 16px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+  }
+}

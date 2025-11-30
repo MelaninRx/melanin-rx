@@ -23,6 +23,7 @@ import { logoutUser } from '../services/authService';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { getFirestore, collection, getDocs, Timestamp } from 'firebase/firestore';
 import SidebarNav from '../components/SidebarNav';
+import MobileMenuButton from '../components/MobileMenuButton';
 
 // Lazy-load the timeline parts
 const TimelineRail = React.lazy(() => import('../components/TimelineRail'));
@@ -324,6 +325,7 @@ const TimelinePage: React.FC = () => {
     <IonPage>
 
       <IonContent fullscreen className="timeline-content" style={{ paddingLeft: '80px' }}>
+        <MobileMenuButton />
         <SidebarNav/>
 
         <main className={styles.timelinePage}>
@@ -396,75 +398,84 @@ const TimelinePage: React.FC = () => {
             </div>
 
             {/* Move the 3 cards below timeline and trimester cards */}
-            <div style={{ display: 'flex', gap: '24px', marginTop: '32px', paddingLeft: '32px', paddingRight: '32px', paddingBottom: '32px' }}>
-              {/* Upcoming Appointments - first slot */}
-              <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%' }}>
-                <section className={styles.infoCard}>
-                  <div className={styles.cardTitle} style={{ marginBottom: '16px' }}>Upcoming Appointments</div>
-                  {soonAppointments.length === 0 ? (
-                    <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '15px', margin: '16px 0' }}>
-                      No upcoming appointments.
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      {soonAppointments.map(appt => (
-                        <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ textDecoration: 'none' }}>
-                          <div style={{ 
-                            background: 'var(--color-light)', 
-                            borderRadius: '16px', 
-                            padding: '16px', 
-                            border: '1px solid var(--color-mid)',
-                            cursor: 'pointer', 
-                            transition: 'all 0.2s ease',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '8px'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = 'var(--color-accent)';
-                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(127, 93, 140, 0.15)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = 'var(--color-mid)';
-                            e.currentTarget.style.boxShadow = 'none';
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                              <IonIcon icon={AppointmentIcon} style={{ color: 'var(--color-primary)', fontSize: '20px' }} />
-                              <span style={{ fontWeight: 700, color: 'var(--color-primary)', fontSize: '16px' }}>{appt.provider} @ {appt.location}</span>
-                            </div>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{
-                              appt.dateTime instanceof Timestamp
-                                ? appt.dateTime.toDate().toLocaleString()
-                                : appt.dateTime?.toDate?.()
-                                  ? appt.dateTime.toDate().toLocaleString()
-                                  : typeof appt.dateTime === 'string'
-                                    ? new Date(appt.dateTime).toLocaleString()
-                                    : ''
-                            }</div>
-                            {appt.notes && appt.notes.length > 0 && (
-                              <div style={{ marginTop: '4px' }}>
-                                <span style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '13px' }}>Notes/Questions:</span>
-                                <ul className={styles.list} style={{ marginTop: '4px' }}>
-                                  {appt.notes.map((note: string, idx: number) => (
-                                    <li key={idx} className={styles.listItem} style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{note}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                          </div>
-                        </IonRouterLink>
-                      ))}
-                    </div>
-                  )}
-                </section>
+<div style={{ 
+  display: 'flex', 
+  gap: '24px', 
+  marginTop: '32px', 
+  paddingLeft: '32px', 
+  paddingRight: '32px', 
+  paddingBottom: '100px', // ✅ Extra space for chat button
+  flexDirection: 'row',
+  flexWrap: 'wrap' // ✅ Allow wrapping
+}}>              {/* Upcoming Appointments - first slot */}
+<div style={{ 
+  flex: '1 1 calc(33.333% - 16px)', 
+  maxWidth: '420px', 
+  minWidth: '320px', 
+  width: '100%' 
+}}>                <div className={styles.appointmentsCard}>
+  <div className={styles.appointmentsHeader}>
+    <span className={styles.appointmentsTitle}>Upcoming Appointments</span>
+    <span className={styles.appointmentsEditIcon}></span>
+  </div>
+  <div className={styles.appointmentsBtnGroup}>
+    <IonButton  routerLink="/appointments" style={{ borderRadius: '8px', color: 'white', padding: '2px 16px', fontSize: '13px', minWidth: 'unset', height: '32px' }}>
+      Add Appointment
+    </IonButton>
+  </div>
+  {soonAppointments.length === 0 ? (
+    <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '15px', margin: '16px 0' }}>
+      No upcoming appointments.
+    </div>
+  ) : (
+    soonAppointments.map(appt => (
+      <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ textDecoration: 'none' }}>
+        <div className={styles.appointmentItem}>
+          <div className={styles.appointmentAccent}></div>
+          <div className={styles.appointmentDetails}>
+            <div className={styles.appointmentTitle}>{appt.provider || appt.title}</div>
+            <div className={styles.appointmentSub}>{
+              appt.dateTime instanceof Timestamp
+                ? appt.dateTime.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })
+                : appt.dateTime?.toDate?.()
+                  ? appt.dateTime.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })
+                  : typeof appt.dateTime === 'string'
+                    ? new Date(appt.dateTime).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })
+                    : ''
+            } {appt.location ? `• ${appt.location}` : ''}</div>
+            <div className={styles.appointmentType}>{appt.type || appt.reason}</div>
+            {appt.notes && appt.notes.length > 0 && (
+              <div style={{ marginTop: '4px' }}>
+                <span style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '13px' }}>Notes/Questions:</span>
+                <ul className={styles.list} style={{ marginTop: '4px' }}>
+                  {appt.notes.map((note: string, idx: number) => (
+                    <li key={idx} className={styles.listItem} style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{note}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </IonRouterLink>
+    ))
+  )}
+</div>
               </div>
               {/* Calendar - middle slot */}
-              <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%' }}>
-                <CalendarView appointments={soonAppointments} />
+<div style={{ 
+  flex: '1 1 calc(33.333% - 16px)', 
+  maxWidth: '420px', 
+  minWidth: '320px', 
+  width: '100%' 
+}}>                <CalendarView appointments={soonAppointments} />
               </div>
               {/* Fetal Development - third slot */}
-              <div style={{ flex: '0 0 420px', maxWidth: '420px', minWidth: '320px', width: '100%' }}>
-                <FetalDevelopment currentWeek={currentWeek} />
+<div style={{ 
+  flex: '1 1 calc(33.333% - 16px)', 
+  maxWidth: '420px', 
+  minWidth: '320px', 
+  width: '100%' 
+}}>                <FetalDevelopment currentWeek={currentWeek} />
               </div>
             </div>
           </React.Suspense>

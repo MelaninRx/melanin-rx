@@ -27,6 +27,7 @@ import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
 import Sidebar from "../components/SidebarNav";
+import MobileMenuButton from '../components/MobileMenuButton';
 
 interface Resource {
   title: string;
@@ -90,6 +91,7 @@ const Resources: React.FC = () => {
     <IonPage className="resources-page">
       
       <IonContent fullscreen>
+        <MobileMenuButton />
         <Sidebar/>
 
         {loading ? (

@@ -26,6 +26,7 @@ import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
+import MobileMenuButton from '../components/MobileMenuButton';
 
 type UserProfile = {
   name?: string;
@@ -165,6 +166,7 @@ const CommunityChannels: React.FC = () => {
     <IonPage className="community-page">
 
       <IonContent fullscreen>
+        <MobileMenuButton />
         <Sidebar/>
 
         <section className="community-hero">

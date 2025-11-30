@@ -29,6 +29,7 @@ import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
 import './Appointments.css';
 import SidebarNav from "../components/SidebarNav";
+import MobileMenuButton from '../components/MobileMenuButton';
 
 const AppointmentsPage: React.FC = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -129,7 +130,10 @@ const AppointmentsPage: React.FC = () => {
     <IonPage className="appointments-page">
       <IonContent fullscreen>
         <div className="appointments-main-layout">
-          <SidebarNav />
+          <MobileMenuButton />
+          <div className="side-panel">
+            <SidebarNav />
+          </div>
           <main className="appointments-content">
             <header className="appointments-header">
               <h1>Appointment Planner</h1>

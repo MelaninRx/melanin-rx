@@ -539,3 +539,36 @@ h1, h2 {
     margin-left: 180px;
   }
 }
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 1024px) {
+  .appointments-content {
+    margin-left: 0;
+    padding: 16px;
+  }
+  
+  .appointments-flex-row,
+  .appointments-flex-bottom {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .add-appointment-section,
+  .calendar-section,
+  .quick-actions-section {
+    max-width: 100%;
+    min-width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .appointment-card {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+  }
+}

@@ -18,11 +18,7 @@ import Settings from './pages/Settings';
 // Ionic setup
 import { defineCustomElements } from "@ionic/core/loader";
 
-
-
-
 defineCustomElements(window);
-
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -40,7 +36,6 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
-
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
@@ -54,7 +49,10 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import './App.css'
+import './App.css';
+
+/* 🎨 RESPONSIVE DESIGN - Import global responsive styles */
+import './Responsive.css';
 
 setupIonicReact();
 
@@ -135,6 +133,5 @@ const App: React.FC = () => {
     </IonApp>
   );
 };
-
 
 export default App;

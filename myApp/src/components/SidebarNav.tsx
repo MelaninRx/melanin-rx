@@ -33,7 +33,7 @@ const Sidebar: React.FC = () => {
         </div>
 
 
-        <Link to="/chat" className="menu-button">
+        <Link to="/chatbot" className="menu-button">
           <img src={addIcon} className="icon" alt="New chat" />
           <span className="menu-text">New chat</span>
         </Link>
