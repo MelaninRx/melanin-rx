@@ -25,6 +25,15 @@ body, html, *, *:before, *:after {
   width: 150px;
 }
 
+.side-panel.collapsed {
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+}
+.side-panel.collapsed .menu-text {
+  display: none;
+}
+
 /* ===== MOBILE RESPONSIVE STYLES ===== */
 @media (max-width: 768px) {
   .side-panel {

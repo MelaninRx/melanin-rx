@@ -522,6 +522,17 @@ h1, h2 {
 }
 */
 
+.sidebar-overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 60px; /* Adjust to your sidebar width */
+  background: #f8f6fa; /* Match sidebar background */
+  z-index: 100;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+}
+
 @media (max-width: 700px) {
   .appointments-wrapper {
     padding: 1rem 0.5rem;

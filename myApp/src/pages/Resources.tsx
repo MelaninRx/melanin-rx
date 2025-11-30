@@ -26,7 +26,7 @@ import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
-import Sidebar from "../components/SidebarNav";
+import SidebarNav from "../components/SidebarNav";
 import MobileMenuButton from '../components/MobileMenuButton';
 
 interface Resource {
@@ -42,6 +42,11 @@ const Resources: React.FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>("");
+  const [savedConversations, setSavedConversations] = useState<any[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const handleLoadConversation = (conv: any) => {
+    setCurrentConversationId(conv.id || null);
+  };
 
   const fetchResources = async () => {
     console.log("🔹 Starting resource fetch...");
@@ -92,7 +97,7 @@ const Resources: React.FC = () => {
       
       <IonContent fullscreen>
         <MobileMenuButton />
-        <Sidebar/>
+        <SidebarNav />
 
         {loading ? (
           <div className="loading-container">

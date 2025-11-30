@@ -109,7 +109,7 @@ const AppointmentDetail: React.FC = () => {
   return (
     <IonPage className="appointments-page">
       <IonContent fullscreen>
-       <SidebarNav />
+        <SidebarNav />
         
         <div className="appointments-wrapper" style={{minHeight: '100vh', padding: 0, background: "transparent" }}>
           <div style={{ margin: '1rem auto', maxWidth: 700 }}>

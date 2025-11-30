@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import './SidebarNav.css';
+import { useChat } from "../context/ChatContext";
 
 import MelaninRxIcon from '../icons/MelaninRX.svg';
 import menuIcon from '../icons/menu.svg';
@@ -15,16 +16,47 @@ import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import dropdownIcon from "../icons/Group.svg";
 
-const Sidebar: React.FC = () => {
-  const [showChatsDropdown, setShowChatsDropdown] = useState(false);
+const SidebarNav: React.FC = () => {
+  const {
+    savedConversations,
+    handleLoadConversation,
+    currentConversationId,
+    handleNewChat,
+  } = useChat();
+  const history = useHistory();
 
-  const chatHistory = [
-    { id: 1, title: "placeholder 1" },
-    { id: 2, title: "placeholder 2" },
-    { id: 3, title: "placeholder 3" }
-  ];
+  const [showChatsDropdown, setShowChatsDropdown] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  const handleNewChatClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowChatsDropdown(false);
+    handleNewChat();
+    history.push('/chatbot');
+  };
+
+  const handleLoadConversationClick = (chat: any) => {
+    console.log('[SidebarNav] handleLoadConversationClick chat:', chat);
+    console.log('[SidebarNav] chat.id:', chat.id);
+    console.log('[SidebarNav] chat.messages:', chat.messages);
+    handleLoadConversation(chat);
+    setShowChatsDropdown(false);
+    history.push('/chatbot');
+  };
+
   return (
-    <aside className="side-panel">
+    <aside
+      className={`side-panel${isSidebarCollapsed ? ' collapsed' : ''}`}
+      onMouseLeave={() => {
+        console.log('Sidebar mouse leave');
+        setIsSidebarCollapsed(true);
+      }}
+      onMouseEnter={() => {
+        console.log('Sidebar mouse enter');
+        setIsSidebarCollapsed(false);
+      }}
+    >
+      {/* Make sure your CSS sets a smaller width for .side-panel.collapsed */}
       <div className="nav-top">
 
         <div className="menu-button logo-button">
@@ -33,7 +65,7 @@ const Sidebar: React.FC = () => {
         </div>
 
 
-        <Link to="/chatbot" className="menu-button">
+        <Link to="/chatbot" className="menu-button" onClick={handleNewChatClick}>
           <img src={addIcon} className="icon" alt="New chat" />
           <span className="menu-text">New chat</span>
         </Link>
@@ -81,16 +113,35 @@ const Sidebar: React.FC = () => {
         </div>
 
         {showChatsDropdown && (
-          <div className="dropdown-menu">
-            {chatHistory.map(chat => (
-              <Link
-                key={chat.id}
-                to={`/chat/${chat.id}`}
-                className="dropdown-item"
-              >
-                {chat.title}
-              </Link>
-            ))}
+          <div className="dropdown-menu" style={{ maxHeight: '320px', overflowY: 'auto' }}>
+            {savedConversations.length === 0 ? (
+              <div className="dropdown-item">No chat history</div>
+            ) : (
+              savedConversations.map(chat => (
+                <button
+                  key={chat.id}
+                  className={`dropdown-item${currentConversationId === chat.id ? ' active' : ''}`}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    whiteSpace: 'normal',
+                    wordBreak: 'break-word',
+                    textAlign: 'left',
+                    padding: '8px 12px',
+                    fontSize: '1rem',
+                    background: currentConversationId === chat.id ? '#f3e8ff' : 'transparent',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    marginBottom: '2px',
+                    transition: 'background 0.2s'
+                  }}
+                  onClick={() => handleLoadConversationClick(chat)}
+                >
+                  {chat.messages?.[0]?.text || 'Untitled Chat'}
+                </button>
+              ))
+            )}
           </div>
         )}
 
@@ -108,4 +159,4 @@ const Sidebar: React.FC = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarNav;

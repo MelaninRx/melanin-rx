@@ -56,6 +56,11 @@ const Home: React.FC = () => {
   const [trimesters, setTrimesters] = useState<Trimester[]>([]);
   const [currentTrimester, setCurrentTrimester] = useState<Trimester | null>(null);
   const [currentWeek, setCurrentWeek] = useState<number>(0);
+  const [savedConversations, setSavedConversations] = useState<any[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const handleLoadConversation = (conv: any) => {
+    setCurrentConversationId(conv.id || null);
+  };
   const user = useCurrentUser();
 
   useEffect(() => {
@@ -125,7 +130,7 @@ const Home: React.FC = () => {
       <IonContent fullscreen className="home-content" style={{ paddingLeft: '80px' }}>
         <MobileMenuButton />
         {/* side panel */}
-        <SidebarNav/>
+        <SidebarNav />
 
           <section className="hero">
             {/* hero */}

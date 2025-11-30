@@ -11,7 +11,7 @@ import {
   IonRouterLink,
 } from '@ionic/react';
 import './CommunityChannels.css';
-import Sidebar from "../components/SidebarNav";
+import SidebarNav from "../components/SidebarNav";
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { db } from '../firebaseConfig';
 import { doc, getDoc, collection, getDocs, onSnapshot } from 'firebase/firestore';
@@ -167,7 +167,7 @@ const CommunityChannels: React.FC = () => {
 
       <IonContent fullscreen>
         <MobileMenuButton />
-        <Sidebar/>
+        <SidebarNav />
 
         <section className="community-hero">
           <h2 className="community-welcome">

@@ -189,6 +189,12 @@ const TimelinePage: React.FC = () => {
   const [error, setError] = React.useState<string | null>(null);
   const user = useCurrentUser();
 
+  const [savedConversations, setSavedConversations] = React.useState<any[]>([]);
+  const [currentConversationId, setCurrentConversationId] = React.useState<string | null>(null);
+  const handleLoadConversation = (conv: any) => {
+    setCurrentConversationId(conv.id || null);
+  };
+
   // Debug: log user object and onboardingComplete
   console.log('[TimelinePage] user:', user);
   console.log('[TimelinePage] onboardingComplete:', user?.onboardingComplete);
@@ -326,7 +332,7 @@ const TimelinePage: React.FC = () => {
 
       <IonContent fullscreen className="timeline-content" style={{ paddingLeft: '80px' }}>
         <MobileMenuButton />
-        <SidebarNav/>
+        <SidebarNav />
 
         <main className={styles.timelinePage}>
           <div className={styles.timelineHeader} style={{ paddingTop: '32px', paddingLeft: '32px', paddingRight: '32px' }}>
