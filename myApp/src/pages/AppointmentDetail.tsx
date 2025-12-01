@@ -29,6 +29,8 @@ import AppointmentIcon from '../icons/Frame 112.svg';
 import settingsIcon from '../icons/settings.svg';
 import './Appointments.css';
 import './AppointmentDetail.css';
+import Sidebar from "../components/SidebarNav";
+import SidebarNav from "../components/SidebarNav";
 
 const AppointmentDetail: React.FC = () => {
   const { id, uid } = useParams<{ id: string; uid: string }>();
@@ -107,44 +109,7 @@ const AppointmentDetail: React.FC = () => {
   return (
     <IonPage className="appointments-page">
       <IonContent fullscreen>
-        <aside className="side-panel">
-          <div className="nav-top">
-            <IonButton fill="clear" routerLink="/menu">
-              <IonIcon icon={menuIcon} />
-              <span className="menu-text">Menu</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/home">
-              <IonIcon icon={homeIcon} />
-              <span className="menu-text">Home</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/add">
-              <IonIcon icon={addIcon} />
-              <span className="menu-text">New Chat</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/chatbot">
-              <IonIcon icon={chatbotIcon} />
-              <span className="menu-text">Chats</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/community">
-              <IonIcon icon={communityIcon} />
-              <span className="menu-text">Communities</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/timeline">
-              <IonIcon icon={timelineIcon} />
-              <span className="menu-text">Timeline</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/appointments">
-              <IonIcon icon={AppointmentIcon} />
-              <span className="menu-text">Appointments</span>
-            </IonButton>
-          </div>
-          <div className="nav-bottom">
-            <IonButton fill="clear" routerLink="/settings">
-              <IonIcon icon={settingsIcon} />
-              <span className="menu-text">Settings</span>
-            </IonButton>
-          </div>
-        </aside>
+        <SidebarNav />
         
         <div className="appointments-wrapper" style={{minHeight: '100vh', padding: 0, background: "transparent" }}>
           <div style={{ margin: '1rem auto', maxWidth: 700 }}>

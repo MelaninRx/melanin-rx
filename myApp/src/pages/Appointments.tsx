@@ -29,6 +29,7 @@ import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
 import './Appointments.css';
 import SidebarNav from "../components/SidebarNav";
+import MobileMenuButton from '../components/MobileMenuButton';
 
 const AppointmentsPage: React.FC = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -46,6 +47,11 @@ const AppointmentsPage: React.FC = () => {
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
   const [formExpanded, setFormExpanded] = useState(false);
+  const [savedConversations, setSavedConversations] = useState<any[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const handleLoadConversation = (conv: any) => {
+    setCurrentConversationId(conv.id || null);
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -127,9 +133,12 @@ const AppointmentsPage: React.FC = () => {
 
   return (
     <IonPage className="appointments-page">
-      <IonContent fullscreen>
-        <div className="appointments-main-layout">
-          <SidebarNav />
+      <IonContent fullscreen style={{ background: 'linear-gradient(90deg, #f5eafd 0%, #f5eafd 100%)', minHeight: '100vh', width: '100vw', position: 'absolute', left: 0, top: 0 }}>
+        <div className="appointments-main-layout" style={{ maxWidth: '1400px', margin: '0 auto', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <MobileMenuButton />
+          <div className="sidebar-overlay">
+            <SidebarNav />
+          </div>
           <main className="appointments-content">
             <header className="appointments-header">
               <h1>Appointment Planner</h1>

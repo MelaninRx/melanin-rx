@@ -19,6 +19,8 @@ import {
 } from "firebase/firestore";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import SidebarNav from "../components/SidebarNav";
+import MobileMenuButton from '../components/MobileMenuButton';
+import { ChatProvider, useChat } from "../context/ChatContext";
 
 // Type for chat message
 interface ChatMessage {
@@ -29,102 +31,29 @@ interface ChatMessage {
 const ChatbotPage: React.FC = () => {
   const location = useLocation();
   const [message, setMessage] = useState("");
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
-  const [savedConversations, setSavedConversations] = useState<any[]>([]);
-  const [currentConversationId, setCurrentConversationId] =
-    useState<string | null>(null);
-
   const user = useCurrentUser();
   const hasProcessedInitialQuestionRef = React.useRef(false);
+  const CHATBOT_API_URL = "https://chatwithlangflow-bz35xt5xna-uc.a.run.app/";
 
-  const CHATBOT_API_URL =
-    "https://chatwithlangflow-bz35xt5xna-uc.a.run.app/";
+  // Use context for chat state/handlers
+  const {
+    chatHistory,
+    setChatHistory,
+    savedConversations,
+    currentConversationId,
+    handleNewChat,
+    handleLoadConversation,
+    saveOrUpdateConversation,
+  } = useChat();
 
-  // ------------------------------------------------------------
-  // Fetch saved conversations on mount or user change
-  // ------------------------------------------------------------
-  useEffect(() => {
-    const fetchConversations = async () => {
-      if (!user?.uid) return;
+  // Always get the current conversation from context
+  const currentConversation = savedConversations.find(c => c.id === currentConversationId);
+  const displayedHistory = currentConversation?.messages || [];
 
-      const db = getFirestore();
-      const convRef = collection(db, "users", user.uid, "chatHistory");
-      const q = query(convRef, orderBy("timestamp", "desc"));
-      const snapshot = await getDocs(q);
-
-      const convs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setSavedConversations(convs);
-    };
-
-    fetchConversations();
-  }, [user]);
-
-  // ------------------------------------------------------------
-  // Save or update conversation in Firestore
-  // ------------------------------------------------------------
-  const saveOrUpdateConversation = async (messages: ChatMessage[]) => {
-    if (!user?.uid || messages.length === 0) return;
-
-    const db = getFirestore();
-    const convRef = collection(db, "users", user.uid, "chatHistory");
-
-    try {
-      if (currentConversationId) {
-        const docRef = doc(
-          db,
-          "users",
-          user.uid,
-          "chatHistory",
-          currentConversationId
-        );
-
-        await updateDoc(docRef, {
-          messages,
-          timestamp: new Date().toISOString(),
-        });
-      } else {
-        const docRef = await addDoc(convRef, {
-          messages,
-          timestamp: new Date().toISOString(),
-        });
-
-        setCurrentConversationId(docRef.id);
-      }
-
-      // refresh conversation list
-      const q = query(convRef, orderBy("timestamp", "desc"));
-      const snapshot = await getDocs(q);
-      const convs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setSavedConversations(convs);
-    } catch (error) {
-      console.error("Error saving conversation:", error);
-    }
-  };
-
-  // ------------------------------------------------------------
-  // Start a new chat
-  // ------------------------------------------------------------
-  const handleNewChat = () => {
-    setChatHistory([]);
-    setCurrentConversationId(null);
-  };
-
-  // ------------------------------------------------------------
-  // Load a saved conversation
-  // ------------------------------------------------------------
-  const handleLoadConversation = (conv: any) => {
-    setChatHistory(conv.messages || []);
-    setCurrentConversationId(conv.id || null);
-  };
+  console.log("[ChatbotPage] currentConversationId:", currentConversationId);
+  console.log("[ChatbotPage] savedConversations:", savedConversations);
+  console.log("[ChatbotPage] currentConversation:", currentConversation);
 
   // ------------------------------------------------------------
   // Suggested question handler
@@ -143,12 +72,11 @@ const ChatbotPage: React.FC = () => {
   };
 
   const handleSendWithText = async (text: string) => {
+    console.log('[ChatbotPage] handleSendWithText called, currentConversationId:', currentConversationId);
     const newUserMsg = { sender: "user", text };
-    const updatedHistory = [...chatHistory, newUserMsg];
-
+    const updatedHistory = [...displayedHistory, newUserMsg];
     setChatHistory(updatedHistory);
     setLoading(true);
-
     try {
       const res = await fetch(CHATBOT_API_URL, {
         method: "POST",
@@ -158,32 +86,25 @@ const ChatbotPage: React.FC = () => {
           user: { name: "Guest", id: "anon" },
         }),
       });
-
       const data = await res.json();
-
       const botReply =
         data.outputs?.[0]?.outputs?.[0]?.results?.message?.text ??
         "No response from LangFlow.";
-
       const finalHistory = [
         ...updatedHistory,
         { sender: "bot", text: botReply },
       ];
-
       setChatHistory(finalHistory);
       await saveOrUpdateConversation(finalHistory);
     } catch (error) {
       console.error("LangFlow error:", error);
-
       const errorHistory = [
         ...updatedHistory,
         { sender: "bot", text: "Error connecting to LangFlow." },
       ];
-
       setChatHistory(errorHistory);
       await saveOrUpdateConversation(errorHistory);
     }
-
     setMessage("");
     setLoading(false);
   };
@@ -194,17 +115,26 @@ const ChatbotPage: React.FC = () => {
   useEffect(() => {
     if (hasProcessedInitialQuestionRef.current) return;
     if (chatHistory.length > 0) return;
-
     const searchParams = new URLSearchParams(location.search);
     const question = searchParams.get("question");
-
     if (question) {
       hasProcessedInitialQuestionRef.current = true;
       handleSendWithText(decodeURIComponent(question));
     }
-  }, [location.search]);
+  }, [location.search, chatHistory]);
 
-  const isChatStarted = chatHistory.length > 0;
+  // ------------------------------------------------------------
+  // Ensure correct chat loads when currentConversationId changes
+  // ------------------------------------------------------------
+  useEffect(() => {
+    if (!currentConversationId) return;
+    if (currentConversation && currentConversation.messages) {
+      console.log("[ChatbotPage] useEffect: Setting chatHistory to messages of convo:", currentConversationId, currentConversation.messages);
+      setChatHistory(currentConversation.messages);
+    }
+  }, [currentConversationId, savedConversations]);
+
+  const isChatStarted = displayedHistory.length > 0;
 
   // ------------------------------------------------------------
   // UI
@@ -213,67 +143,10 @@ const ChatbotPage: React.FC = () => {
     <IonPage>
       <IonContent fullscreen>
         <div className="container chatbot-wrapper">
+          <MobileMenuButton />
           <SidebarNav />
 
-          {/* LEFT: Conversation history */}
-          <div className="history-panel">
-            <div className="history-top">
-              <h3 className="history-title">Chat</h3>
-              <button className="new-chat-btn" onClick={handleNewChat}>
-                New Chat
-              </button>
-            </div>
-
-            <div className="history-search">
-              <input
-                type="text"
-                placeholder="Search"
-                className="search-input"
-              />
-            </div>
-
-            <div className="history-items">
-              {savedConversations.map((conv, i) => {
-                const firstUserMsg = Array.isArray(conv.messages)
-                  ? conv.messages.find((msg: any) => msg.sender === "user")
-                  : null;
-
-                const previewText =
-                  firstUserMsg?.text || `Conversation ${i + 1}`;
-
-                const truncatedPreview =
-                  previewText.length > 50
-                    ? previewText.substring(0, 50) + "..."
-                    : previewText;
-
-                const isActive = conv.id === currentConversationId;
-
-                return (
-                  <div
-                    key={conv.id || i}
-                    className={`history-item ${isActive ? "active" : ""}`}
-                    onClick={() => handleLoadConversation(conv)}
-                  >
-                    💬 {truncatedPreview}
-                    {conv.timestamp && (
-                      <div className="history-item-time">
-                        {new Date(conv.timestamp).toLocaleDateString()}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-
-              {savedConversations.length === 0 && (
-                <>
-                  <div className="history-item">💬 "Pregnancy Q&A"</div>
-                  <div className="history-item">💬 "Nutrition Support"</div>
-                  <div className="history-item">💬 "Postpartum Tips"</div>
-                </>
-              )}
-            </div>
-          </div>
-
+          
           {/* RIGHT: Chat panel */}
           <div className="chat-panel">
             {!isChatStarted && (
@@ -320,7 +193,7 @@ const ChatbotPage: React.FC = () => {
 
             {/* Messages */}
             <div className="chat-messages">
-              {chatHistory.map((msg, i) => (
+              {displayedHistory.map((msg, i) => (
                 <div
                   key={i}
                   className={`chat-bubble ${

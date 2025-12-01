@@ -278,3 +278,14 @@ body, html, *, *:before, *:after {
     max-width: 100%;
   }
 }
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 1024px) {
+  .auth-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  .auth-left {
+    display: none;
+  }
+}

@@ -119,10 +119,19 @@ h1, h2 {
   padding: 0.3rem 1rem;
 }
 
-.appointments-main-layout {
-  display: flex;
+.appointments-page {
   min-height: 100vh;
+  width: 100vw;
   background: linear-gradient(135deg, #f7f3ff 0%, #e9dff6 100%);
+}
+
+.appointments-main-layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: none;
 }
 
 .side-panel {
@@ -177,7 +186,7 @@ h1, h2 {
   flex: 1;
   padding: 2.5rem 2.5rem 2.5rem 2rem;
   margin-left: 70px;
-  background: linear-gradient(135deg, #f7f3ff 0%, #e9dff6 100%);
+  /* background: linear-gradient(135deg, #f7f3ff 0%, #e9dff6 100%); */
   min-height: 100vh;
   padding: 2rem 2rem 2rem 0;
   display: flex;
@@ -522,6 +531,17 @@ h1, h2 {
 }
 */
 
+.sidebar-overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 60px; /* Adjust to your sidebar width */
+  background: #f8f6fa; /* Match sidebar background */
+  z-index: 100;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+}
+
 @media (max-width: 700px) {
   .appointments-wrapper {
     padding: 1rem 0.5rem;
@@ -537,5 +557,39 @@ h1, h2 {
   .side-panel:hover ~ .appointments-wrapper,
   .side-panel:focus-within ~ .appointments-wrapper {
     margin-left: 180px;
+  }
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 1024px) {
+  .appointments-content {
+    margin-left: 0;
+    padding: 16px;
+    width: 100%;
+  }
+  
+  .appointments-flex-row,
+  .appointments-flex-bottom {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .add-appointment-section,
+  .calendar-section,
+  .quick-actions-section {
+    max-width: 100%;
+    min-width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .appointment-card {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .form-row {
+    flex-direction: column;
   }
 }

@@ -203,3 +203,19 @@ ion-header {
 ion-content.resources-content::part(scroll) {
   padding-bottom: 60px !important;
 }
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+  .resources-tabs {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .tab {
+    width: 100%;
+  }
+  
+  .resources-grid {
+    grid-template-columns: 1fr;
+  }
+}

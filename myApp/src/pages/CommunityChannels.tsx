@@ -11,7 +11,7 @@ import {
   IonRouterLink,
 } from '@ionic/react';
 import './CommunityChannels.css';
-import Sidebar from "../components/SidebarNav";
+import SidebarNav from "../components/SidebarNav";
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { db } from '../firebaseConfig';
 import { doc, getDoc, collection, getDocs, onSnapshot } from 'firebase/firestore';
@@ -26,6 +26,7 @@ import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
+import MobileMenuButton from '../components/MobileMenuButton';
 
 type UserProfile = {
   name?: string;
@@ -165,9 +166,10 @@ const CommunityChannels: React.FC = () => {
     <IonPage className="community-page">
 
       <IonContent fullscreen>
-        <Sidebar/>
+        <MobileMenuButton />
+        <SidebarNav />
 
-        <section className="community-hero">
+        <section className="community-hero" style={{ maxWidth: '1100px', margin: '0 auto', paddingLeft: `calc(var(--side-panel-width) + 24px)`, paddingRight: '24px' }}>
           <h2 className="community-welcome">
             {user?.name 
               ? `Welcome, ${user.name.split(' ')[0]}` 
@@ -184,7 +186,8 @@ const CommunityChannels: React.FC = () => {
           padding: '24px',
           paddingLeft: `calc(var(--side-panel-width) + 24px)`,
           paddingRight: '24px',
-          maxWidth: '1400px'
+          maxWidth: '1100px',
+          margin: '0 auto',
         }}>
           <div style={{
             display: 'grid',

@@ -280,3 +280,38 @@ ion-header.home-header {
   background: var(--gradient-bg);
   color: var(--text-primary);
 }
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 1024px) {
+  .hero {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  
+  .panels {
+    flex-direction: column;
+    gap: 16px;
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-left: 0;
+  }
+  
+  .panel-card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 80px;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .hero-buttons ion-button:first-child {
+    margin-right: 0;
+  }
+}

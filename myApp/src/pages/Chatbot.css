@@ -82,13 +82,15 @@ body, html, #root, ion-app, ion-page, ion-content {
 .chatbot-wrapper {
   display: flex;
   flex-direction: row;
-  height: 100%;
-  width: 100%;
-  min-height: 0;
+  height: 100vh;
+  width: 100vw;
+  min-height: 100vh;
   overflow: hidden;
   gap: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
+  /* Add left margin to account for sidebar width */
+  margin-left: var(--side-panel-width);
 }
 
 .main-content {
@@ -183,9 +185,10 @@ ion-header.chatbot-header {
 
 /* History Panel */
 .history-panel {
-  flex: 0 0 250px; 
+  flex: 0 0 300px; 
   min-height: 0; 
-  min-width: 250px;
+  min-width: 300px;
+  max-width: 340px;
   border-left: none !important;
   border-right: 0.3px solid #d3baba;
   overflow-y: auto;
@@ -328,6 +331,10 @@ ion-header.chatbot-header {
   flex-direction: column;
   background: var(--gradient-panel);
   background-repeat: no-repeat;
+  min-height: 100vh;
+  height: 100vh;
+  max-width: 100vw;
+  min-width: 0;
 }
 
 .chat-panel.has-messages {
@@ -422,7 +429,7 @@ ion-header.chatbot-header {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 20px;
+  padding: 20px 20px 20px 80px;
   overflow-y: auto;
   max-height: calc(100vh - 160px);
   padding-bottom: 165px;
@@ -448,6 +455,7 @@ ion-header.chatbot-header {
   color: var(--text-primary);
   align-self: flex-start;
   border-bottom-left-radius: 4px;
+  padding: 40px;
 }
 
 .thinking-indicator {
@@ -467,7 +475,7 @@ ion-header.chatbot-header {
   padding: 0 14px;
   border-radius: 20px;
   border: 0.5px solid rgba(0,0,0,0.1);
-  background: var(--color-light);
+  background: white;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -518,4 +526,61 @@ ion-header.chatbot-header {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 1024px) {
+  .chatbot-wrapper {
+    flex-direction: column;
+    margin-left: 0;
+    width: 100vw;
+    min-height: 100vh;
+  }
+  .history-panel {
+    flex: 0 0 auto;
+    min-width: 100%;
+    max-width: 100%;
+    border-right: none;
+    border-bottom: 0.3px solid #d3baba;
+  }
+  .chat-panel {
+    min-height: 100vh;
+    height: 100vh;
+    max-width: 100vw;
+  }
+}
+
+@media (max-width: 768px) {
+  ion-content {
+    --padding-start: 0 !important;
+    padding-left: 0 !important;
+  }
+  .chatbot-wrapper {
+    margin-left: 0;
+    width: 100vw;
+    min-height: 100vh;
+  }
+  .chat-greeting {
+    font-size: clamp(24px, 6vw, 40px);
+  }
+  .chat-subtitle {
+    font-size: clamp(16px, 4vw, 25px);
+  }
+  .suggested-questions-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .question-box {
+    min-width: 100%;
+    max-width: 100%;
+  }
+  .chat-input-area {
+    width: calc(100% - 32px);
+    bottom: 10px;
+  }
+  .chat-panel {
+    min-height: 100vh;
+    height: 100vh;
+    max-width: 100vw;
+  }
 }
