@@ -83,33 +83,37 @@ export default function FetalDevelopment({ currentWeek }: FetalDevelopmentProps)
         padding: '20px 0'
       }}>
         {/* Visual representation */}
-        <div style={{
-          width: `${visualSize}px`,
-          height: `${visualSize}px`,
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 8px 24px rgba(127, 93, 140, 0.25)',
-          position: 'relative',
-          transition: 'all 0.3s ease'
-        }}>
-          <div style={{
-            width: `${visualSize * 0.7}px`,
-            height: `${visualSize * 0.7}px`,
-            borderRadius: '50%',
-            background: 'var(--color-light)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: `${Math.max(12, visualSize * 0.15)}px`,
-            color: 'var(--color-primary)',
-            fontWeight: 700
-          }}>
-            {currentWeek}w
-          </div>
-        </div>
+<div style={{
+  width: '120px',
+  height: '120px',
+  maxWidth: '30vw',
+  maxHeight: '30vw',
+  aspectRatio: '1 / 1',
+  borderRadius: '50%',
+  background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  boxShadow: '0 8px 24px rgba(127, 93, 140, 0.25)',
+  position: 'relative',
+  transition: 'all 0.3s ease'
+}}>
+  <div style={{
+    width: '70%',
+    height: '70%',
+    aspectRatio: '1 / 1',
+    borderRadius: '50%',
+    background: 'var(--color-light)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 'clamp(12px, 3vw, 18px)',
+    color: 'var(--color-primary)',
+    fontWeight: 700
+  }}>
+    {currentWeek}w
+  </div>
+</div>
         
         {/* Size comparison text */}
         <div style={{ textAlign: 'center' }}>
