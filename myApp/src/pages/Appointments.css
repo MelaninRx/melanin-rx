@@ -584,12 +584,56 @@ h1, h2 {
 }
 
 @media (max-width: 768px) {
-  .appointment-card {
-    flex-direction: column;
-    gap: 12px;
+  .side-panel,
+  .sidebar-overlay {
+    display: none !important;
   }
-  
+  .appointments-content,
+  .appointments-main-layout,
+  .card,
+  .add-appointment-section,
+  .calendar-section,
+  .quick-actions-section,
+  .upcoming-appointments-section {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .appointments-content,
+  .appointments-main-layout,
+  .card,
+  .add-appointment-section,
+  .calendar-section,
+  .quick-actions-section,
+  .upcoming-appointments-section {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .appointments-flex-row,
+  .appointments-flex-bottom {
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+  .appointment-card {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+  }
+  .appointment-date {
+    align-self: flex-start;
+    margin-bottom: 8px;
+  }
   .form-row {
-    flex-direction: column;
+    flex-direction: column !important;
+    gap: 0 !important;
   }
 }
