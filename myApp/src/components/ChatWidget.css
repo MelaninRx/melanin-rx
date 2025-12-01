@@ -332,3 +332,30 @@
     height: 300px;
   }
 }
+
+@media (min-width: 1200px) {
+  .chat-widget {
+    max-width: 480px;
+    border-radius: 28px;
+    box-shadow: 0 24px 64px rgba(115, 88, 126, 0.25);
+  }
+  .chat-widget-messages {
+    height: 600px;
+    max-height: 70vh;
+    padding: 32px;
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .chat-widget {
+    max-width: 540px;
+    border-radius: 36px;
+  }
+  .chat-widget-messages {
+    height: 700px;
+    max-height: 80vh;
+    padding: 40px;
+    gap: 32px;
+  }
+}

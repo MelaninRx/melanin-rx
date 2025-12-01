@@ -133,8 +133,8 @@ const AppointmentsPage: React.FC = () => {
 
   return (
     <IonPage className="appointments-page">
-      <IonContent fullscreen>
-        <div className="appointments-main-layout">
+      <IonContent fullscreen style={{ background: 'linear-gradient(90deg, #f5eafd 0%, #f5eafd 100%)', minHeight: '100vh', width: '100vw', position: 'absolute', left: 0, top: 0 }}>
+        <div className="appointments-main-layout" style={{ maxWidth: '1400px', margin: '0 auto', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <MobileMenuButton />
           <div className="sidebar-overlay">
             <SidebarNav />

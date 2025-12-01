@@ -248,86 +248,98 @@ const Home: React.FC = () => {
 
           {/* Info Cards Section */}
           <section style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '24px',
             paddingLeft: `calc(var(--side-panel-width) + 24px)`,
             paddingRight: '24px',
             paddingTop: '32px',
             paddingBottom: '32px',
-            maxWidth: '1400px'
           }}>
-            {/* Fetal Development */}
-            {currentWeek > 0 && (
-              <FetalDevelopment currentWeek={currentWeek} />
-            )}
-
-            {/* Upcoming Appointments */}
             <div style={{
-              border: '1px solid var(--color-mid)',
-              background: 'var(--gradient-panel)',
-              borderRadius: '20px',
-              padding: '24px'
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '24px',
+              maxWidth: '1100px',
+              margin: '0 auto',
+              width: '100%',
             }}>
-              <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 16px 0' }}>
-                Upcoming Appointments
-              </div>
-              {soonAppointments.length === 0 ? (
-                <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '15px', margin: '16px 0' }}>
-                  No upcoming appointments.
+              {/* Fetal Development */}
+              {currentWeek > 0 && (
+                <div style={{ minWidth: '340px', maxWidth: '370px', flex: '1 1 340px' }}>
+                  <FetalDevelopment currentWeek={currentWeek} />
                 </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {soonAppointments.map(appt => (
-                    <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ textDecoration: 'none' }}>
-                      <div style={{ 
-                        background: 'var(--color-light)', 
-                        borderRadius: '16px', 
-                        padding: '16px', 
-                        border: '1px solid var(--color-mid)',
-                        cursor: 'pointer', 
-                        transition: 'all 0.2s ease',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '8px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = 'var(--color-accent)';
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(127, 93, 140, 0.15)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = 'var(--color-mid)';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <IonIcon icon={AppointmentIcon} style={{ color: 'var(--color-primary)', fontSize: '20px' }} />
-                          <span style={{ fontWeight: 700, color: 'var(--color-primary)', fontSize: '16px' }}>{appt.provider} @ {appt.location}</span>
-                        </div>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{
-                          appt.dateTime instanceof Timestamp
-                            ? appt.dateTime.toDate().toLocaleString()
-                            : appt.dateTime?.toDate?.()
+              )}
+
+              {/* Upcoming Appointments */}
+              <div style={{
+                border: '1px solid var(--color-mid)',
+                background: 'var(--gradient-panel)',
+                borderRadius: '20px',
+                padding: '24px',
+                minWidth: '340px',
+                maxWidth: '370px',
+                flex: '1 1 340px',
+              }}>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 16px 0' }}>
+                  Upcoming Appointments
+                </div>
+                {soonAppointments.length === 0 ? (
+                  <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '15px', margin: '16px 0' }}>
+                    No upcoming appointments.
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {soonAppointments.map(appt => (
+                      <IonRouterLink key={appt.id} routerLink={`/appointments/${user?.uid}/${appt.id}`} style={{ textDecoration: 'none' }}>
+                        <div style={{ 
+                          background: 'var(--color-light)', 
+                          borderRadius: '16px', 
+                          padding: '16px', 
+                          border: '1px solid var(--color-mid)',
+                          cursor: 'pointer', 
+                          transition: 'all 0.2s ease',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = 'var(--color-accent)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(127, 93, 140, 0.15)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'var(--color-mid)';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <IonIcon icon={AppointmentIcon} style={{ color: 'var(--color-primary)', fontSize: '20px' }} />
+                            <span style={{ fontWeight: 700, color: 'var(--color-primary)', fontSize: '16px' }}>{appt.provider} @ {appt.location}</span>
+                          </div>
+                          <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{
+                            appt.dateTime instanceof Timestamp
                               ? appt.dateTime.toDate().toLocaleString()
-                              : typeof appt.dateTime === 'string'
-                                ? new Date(appt.dateTime).toLocaleString()
-                                : ''
-                        }</div>
-                      </div>
-                    </IonRouterLink>
-                  ))}
+                              : appt.dateTime?.toDate?.()
+                                ? appt.dateTime.toDate().toLocaleString()
+                                : typeof appt.dateTime === 'string'
+                                  ? new Date(appt.dateTime).toLocaleString()
+                                  : ''
+                          }</div>
+                        </div>
+                      </IonRouterLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Questions to Ask Your Doctor */}
+              {currentTrimester && currentTrimester.doctorTips && currentTrimester.doctorTips.length > 0 && (
+                <div style={{ minWidth: '340px', maxWidth: '370px', flex: '1 1 340px' }}>
+                  <QuestionsCard 
+                    items={currentTrimester.doctorTips.slice(0, 5)} 
+                    onQuestionClick={(question) => {
+                      window.location.href = `/chatbot?question=${encodeURIComponent(question)}`;
+                    }}
+                  />
                 </div>
               )}
             </div>
-
-            {/* Questions to Ask Your Doctor */}
-            {currentTrimester && currentTrimester.doctorTips && currentTrimester.doctorTips.length > 0 && (
-              <QuestionsCard 
-                items={currentTrimester.doctorTips.slice(0, 5)} 
-                onQuestionClick={(question) => {
-                  window.location.href = `/chatbot?question=${encodeURIComponent(question)}`;
-                }}
-              />
-            )}
           </section>
       </IonContent>
     </IonPage>

@@ -169,7 +169,7 @@ const CommunityChannels: React.FC = () => {
         <MobileMenuButton />
         <SidebarNav />
 
-        <section className="community-hero">
+        <section className="community-hero" style={{ maxWidth: '1100px', margin: '0 auto', paddingLeft: `calc(var(--side-panel-width) + 24px)`, paddingRight: '24px' }}>
           <h2 className="community-welcome">
             {user?.name 
               ? `Welcome, ${user.name.split(' ')[0]}` 
@@ -186,7 +186,8 @@ const CommunityChannels: React.FC = () => {
           padding: '24px',
           paddingLeft: `calc(var(--side-panel-width) + 24px)`,
           paddingRight: '24px',
-          maxWidth: '1400px'
+          maxWidth: '1100px',
+          margin: '0 auto',
         }}>
           <div style={{
             display: 'grid',

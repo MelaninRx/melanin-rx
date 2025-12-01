@@ -136,7 +136,6 @@ body, html, *, *:before, *:after {
   background: var(--gradient-panel);
   border: 1px solid var(--color-mid);
   box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-  z-index: 1; /* Lower z-index so sidebar overlays rail */
 }
 
 /* Track + progress share identical geometry */
@@ -149,7 +148,7 @@ body, html, *, *:before, *:after {
   height: var(--rail-h);
   border-radius: 999px;
   pointer-events: none;
-  z-index: 1; /* Lower z-index for all rail elements */
+  z-index: 0;
 }
 
 .railTrack {
@@ -172,7 +171,7 @@ body, html, *, *:before, *:after {
   right: var(--rail-pad);
   top: calc(var(--rail-top) + var(--rail-h) / 2 + 8px);
   height: 0;
-  z-index: 1; /* Lower z-index for all rail elements */
+  z-index: 3;
 }
 
 /* Nodes on exact percentage points, centered on the bar */
@@ -186,7 +185,6 @@ body, html, *, *:before, *:after {
   cursor: pointer;
   text-align: center;
   line-height: 1;
-  z-index: 1; /* Lower z-index for all rail elements */
 }
 
 .dot {
@@ -198,7 +196,6 @@ body, html, *, *:before, *:after {
   border: 2px solid transparent;
   box-shadow: 0 6px 16px rgba(115,88,126,0.35);
   transition: transform .2s, box-shadow .2s, background-color .2s, border-color .2s;
-  z-index: 1; /* Lower z-index for all rail elements */
 }
 .nodeAbs:hover .dot { transform: scale(1.08); }
 
@@ -212,7 +209,6 @@ body, html, *, *:before, *:after {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  z-index: 1; /* Lower z-index for all rail elements */
 }
 
 /* Current (glow + bold) */
@@ -597,4 +593,37 @@ body, html, *, *:before, *:after {
     font-size: 11px;
     max-width: 60px;
   }
+}
+
+.chat-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px !important;  /* Changed from 12px */
+  height: 56px !important;  /* Changed from 12px, added !important */
+  min-width: 56px !important;
+  min-height: 56px !important;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f7d5ec, #a98bb3);
+  box-shadow: 0 4px 12px -1px rgba(115, 88, 126, 0.25);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(.68,.55,.25,1.55);
+  font-size: 24px;  /* Changed from 14px */
+  padding: 0;
+}
+
+.chat-button svg,
+.chat-button img,
+.chat-button .icon {
+  width: 28px !important;  /* Changed from 12px */
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  font-size: 28px !important;
+  /* ... */
 }
