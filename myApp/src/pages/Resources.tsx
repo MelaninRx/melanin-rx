@@ -1,31 +1,12 @@
 import {
   IonContent,
-  IonHeader,
   IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonButton,
   IonSpinner,
-  useIonViewWillEnter,
-  IonIcon,
 } from "@ionic/react";
 import { useState, useEffect, useMemo } from "react";
-import { useCurrentUser } from "../hooks/useCurrentUser";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import "./Resources.css";
-import homeIcon from '../icons/house.svg';
-import addIcon from '../icons/Vector.svg';
-import menuIcon from '../icons/menu.svg';
-import chatbotIcon from '../icons/message-square.svg';
-import communityIcon from '../icons/users.svg';
-import timelineIcon from '../icons/calendar-days.svg';
-import AppointmentIcon from '../icons/Frame 112.svg';
-import LogoutIcon from "../icons/log-out.svg";
-import settingsIcon from '../icons/settings.svg';
-import profileIcon from '../icons/circle-user-round.svg';
-import { logoutUser } from '../services/authService';
 import SidebarNav from "../components/SidebarNav";
 import MobileMenuButton from '../components/MobileMenuButton';
 
@@ -38,22 +19,14 @@ interface Resource {
 }
 
 const Resources: React.FC = () => {
-  const user = useCurrentUser();
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>("");
-  const [savedConversations, setSavedConversations] = useState<any[]>([]);
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
-  const handleLoadConversation = (conv: any) => {
-    setCurrentConversationId(conv.id || null);
-  };
 
   const fetchResources = async () => {
     console.log("🔹 Starting resource fetch...");
     try {
-      // Fetch all documents from the top-level resources collection
       const resourcesSnapshot = await getDocs(collection(db, "resources"));
-      // Map Firestore DocumentData to Resource type and add id
       const resourcesList = resourcesSnapshot.docs.map(doc => ({
         id: doc.id,
         ...(doc.data() as Resource)
@@ -72,7 +45,6 @@ const Resources: React.FC = () => {
     fetchResources();
   }, []);
 
-  // ✅ Category logic
   const categories = useMemo(() => {
     const unique = [...new Set(resources.map((r) => r.category))];
     return unique.sort();
@@ -91,10 +63,8 @@ const Resources: React.FC = () => {
     );
   }, [resources, activeTab]);
 
-  // ✅ UI rendering
   return (
     <IonPage className="resources-page">
-      
       <IonContent fullscreen>
         <MobileMenuButton />
         <SidebarNav />
@@ -106,33 +76,31 @@ const Resources: React.FC = () => {
           </div>
         ) : (
           <div className="resources-wrapper">
-            <h1 className="resources-title">Recommended Resources</h1>
+            <h1 className="page-title">Resources</h1>
 
-            {/* Category description - only show for active tab */}
-            <div className="resources-category-descriptions" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="category-description-container">
               {categories.map((cat) => (
                 activeTab === cat && (
-                  <div key={cat} style={{ fontSize: '1.05rem', color: 'var(--color-primary)', fontWeight: 600, background: 'var(--color-light-purple)', borderRadius: '12px', padding: '8px 16px', boxShadow: '0 2px 8px rgba(127,93,140,0.10)', textAlign: 'center', maxWidth: '600px', width: '100%' }}>
+                  <div key={cat} className="category-description">
                     {cat === 'Community and peer support' && 'Connect with support groups and local services for expectant parents.'}
                     {cat === 'Doulas and midwives' && 'Find resources and organizations supporting Black doulas and midwives.'}
                     {cat === 'Educational resources' && 'Learn more about pregnancy, birth, and postpartum care.'}
                     {cat === 'Mental health support' && 'Access resources for emotional well-being during pregnancy.'}
                     {cat === 'National and community organizations' && 'Explore organizations working to improve Black maternal health and support families.'}
-                    {/* Add more category descriptions as needed */}
                   </div>
                 )
               ))}
             </div>
 
             {resources.length === 0 ? (
-              <p>No resources found for your profile.</p>
+              <p className="no-resources">No resources found for your profile.</p>
             ) : (
               <>
-                <div className="resources-tabs">
+                <div className="tab-buttons">
                   {categories.filter(cat => cat && cat.trim() !== '').map((cat) => (
                     <button
                       key={cat}
-                      className={`tab ${activeTab === cat ? "active" : ""}`}
+                      className={`tab-button ${activeTab === cat ? "active" : ""}`}
                       onClick={() => setActiveTab(cat)}
                     >
                       {cat}
@@ -149,10 +117,9 @@ const Resources: React.FC = () => {
                             src={r.image}
                             alt={r.title}
                             className="resource-image"
-                            style={{ width: '100%', maxHeight: '120px', objectFit: 'contain', marginBottom: '12px', borderRadius: '12px', background: '#fff' }}
                           />
                         ) : (
-                          <div className="placeholder-image" style={{ height: '120px', background: '#f3e8ff', borderRadius: '12px', marginBottom: '12px' }}></div>
+                          <div className="resource-image-placeholder"></div>
                         )}
                         {(() => {console.log('Resource image:', r.image, 'Resource url:', r.url); return null;})()}
                         <h3 className="resource-title">{r.title}</h3>
@@ -162,22 +129,23 @@ const Resources: React.FC = () => {
                             href={r.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="visit-website-btn"
-                            style={{ display: 'inline-block', marginTop: '8px', padding: '8px 16px', background: 'var(--color-primary)', color: 'var(--text-light)', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}
+                            className="visit-button"
                           >
-                            View Website
+                            Visit Website
                           </a>
                         )}
                       </div>
                     ))
                   ) : (
-                    <p>No resources available in this category.</p>
+                    <p className="no-resources">No resources available in this category.</p>
                   )}
                 </div>
               </>
             )}
           </div>
         )}
+        
+        <div className="footer"></div>
       </IonContent>
     </IonPage>
   );

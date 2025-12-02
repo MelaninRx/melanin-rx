@@ -86,14 +86,25 @@ ion-input input {
   box-shadow: none !important;
 }
 
+.button-native {
+  display: none !important;
+}
+
+.button-inner {
+  display: flex !important;
+}
+
 .save-btn {
   background: #6C4AB6;
   color: #fff;
   font-size: 1.1rem;
   border-radius: 8px;
   margin-top: 1.2rem;
-  box-shadow: 0 2px 8px rgba(108, 74, 182, 0.08);
   letter-spacing: 1px;
+  padding: 0 !important;
+  height: 42px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
 }
 
 .ion-card-title {

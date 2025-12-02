@@ -113,7 +113,7 @@ const SidebarNav: React.FC = () => {
         </div>
 
         {showChatsDropdown && (
-          <div className="dropdown-menu" style={{ maxHeight: '320px', overflowY: 'auto' }}>
+          <div className="dropdown-menu" style={{ maxHeight: '220px', overflowY: 'auto' }}>
             {savedConversations.length === 0 ? (
               <div className="dropdown-item">No chat history</div>
             ) : (

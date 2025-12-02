@@ -15,10 +15,11 @@ body, html, *, *:before, *:after {
   justify-content: space-between;
   align-items: flex-start;
   padding: 12px 0;
-  background: var(--color-light, #f7f5f8);
+  background: white !important;
   transition: width 0.3s ease, transform 0.3s ease;
   overflow: hidden;
   z-index: 1000;
+  box-shadow: 4px 0 16px rgba(0,0,0,0.10); /* Added shadow */
 }
 
 .side-panel:hover {
@@ -76,30 +77,6 @@ body, html, *, *:before, *:after {
   }
 }
 
-/* Large screens */
-@media (min-width: 1200px) {
-  .side-panel {
-    width: 80px;
-    padding: 24px 0;
-  }
-  .side-panel:hover {
-    width: 240px;
-  }
-  .menu-text {
-    font-size: 18px;
-    margin-left: 18px;
-  }
-}
-@media (min-width: 1400px) {
-  .side-panel {
-    width: 100px;
-    padding: 32px 0;
-  }
-  .side-panel:hover {
-    width: 300px;
-  }
-}
-
 /* ===== NAVIGATION SECTIONS ===== */
 .nav-top,
 .nav-bottom {
@@ -111,10 +88,11 @@ body, html, *, *:before, *:after {
 .menu-button {
   display: flex;
   align-items: center;
-  gap: 5px; 
-  height: 20px;
-  padding: 0 8px;
-  margin: 7px 0; 
+  justify-content: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  margin: 10px 0;
   cursor: pointer;
   transition: background 0.2s;
   text-decoration: none;
@@ -128,14 +106,17 @@ body, html, *, *:before, *:after {
 
 .menu-button .icon,
 .menu-button .logo-icon {
-  width: 25px;
-  height: 25px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .menu-text {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
   text-transform: none;
   white-space: nowrap;
@@ -191,12 +172,14 @@ body, html, *, *:before, *:after {
 
 .dropdown-trigger {
   display: none;
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   right: 8px;
   cursor: pointer;
   opacity: 0.75;
   transition: opacity 0.2s ease;
+  align-items: center;
+  justify-content: center;
 }
 
 .dropdown-trigger:hover {
