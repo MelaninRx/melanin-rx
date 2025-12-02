@@ -49,17 +49,32 @@ const ChatbotPage: React.FC = () => {
 
   // Always get the current conversation from context
   const currentConversation = savedConversations.find(c => c.id === currentConversationId);
-  const displayedHistory = currentConversation?.messages || [];
 
   console.log("[ChatbotPage] currentConversationId:", currentConversationId);
   console.log("[ChatbotPage] savedConversations:", savedConversations);
   console.log("[ChatbotPage] currentConversation:", currentConversation);
 
+  // Get greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
+  // Get user's first name
+  const getUserName = () => {
+    if (user?.displayName) {
+      return user.displayName.split(' ')[0];
+    }
+    return "there";
+  };
+
   // ------------------------------------------------------------
   // Suggested question handler
   // ------------------------------------------------------------
   const handleQuickQuestion = async (question: string) => {
-    setMessage(question);
+    setMessage(""); // Clear input immediately
     await handleSendWithText(question);
   };
 
@@ -68,14 +83,15 @@ const ChatbotPage: React.FC = () => {
   // ------------------------------------------------------------
   const handleSend = async () => {
     if (!message.trim()) return;
+    setMessage(""); // Clear input immediately
     await handleSendWithText(message);
   };
 
   const handleSendWithText = async (text: string) => {
     console.log('[ChatbotPage] handleSendWithText called, currentConversationId:', currentConversationId);
     const newUserMsg = { sender: "user", text };
-    const updatedHistory = [...displayedHistory, newUserMsg];
-    setChatHistory(updatedHistory);
+    const updatedHistory = [...chatHistory, newUserMsg];
+    setChatHistory(updatedHistory); // Update chatHistory immediately so user bubble shows
     setLoading(true);
     try {
       const res = await fetch(CHATBOT_API_URL, {
@@ -105,7 +121,6 @@ const ChatbotPage: React.FC = () => {
       setChatHistory(errorHistory);
       await saveOrUpdateConversation(errorHistory);
     }
-    setMessage("");
     setLoading(false);
   };
 
@@ -134,7 +149,7 @@ const ChatbotPage: React.FC = () => {
     }
   }, [currentConversationId, savedConversations]);
 
-  const isChatStarted = displayedHistory.length > 0;
+  const isChatStarted = chatHistory.length > 0;
 
   // ------------------------------------------------------------
   // UI
@@ -142,50 +157,50 @@ const ChatbotPage: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <div className="container chatbot-wrapper">
+        <div className="chatbot-container">
           <MobileMenuButton />
           <SidebarNav />
 
-          
-          {/* RIGHT: Chat panel */}
           <div className="chat-panel">
             {!isChatStarted && (
-              <div className="chat-top">
-                <p className="chat-greeting">Hello</p>
-                <p className="chat-subtitle">How can we help you today?</p>
+              <div className="welcome-section">
+                <h1 className="greeting-title">
+                  {getGreeting()} {getUserName()}!
+                </h1>
+                <p className="greeting-subtitle">How can I help you today?</p>
 
-                <div className="suggested-questions-row">
+                <div className="suggestion-cards">
                   <button
-                    className="question-box"
+                    className="suggestion-card"
                     onClick={() =>
                       handleQuickQuestion(
-                        "Help me create a script for my upcoming appointments"
+                        "Help me create a script for my upcoming doctor appointment."
                       )
                     }
                   >
-                    Help me create a script for my upcoming appointments
+                    Help me create a script for my upcoming doctor appointment.
                   </button>
 
                   <button
-                    className="question-box"
+                    className="suggestion-card"
                     onClick={() =>
                       handleQuickQuestion(
-                        "What are common postpartum symptoms?"
+                        "Help me describe my pain levels and history accurately."
                       )
                     }
                   >
-                    What are common postpartum symptoms?
+                    Help me describe my pain levels and history accurately.
                   </button>
 
                   <button
-                    className="question-box"
+                    className="suggestion-card"
                     onClick={() =>
                       handleQuickQuestion(
-                        "What should I expect in my second trimester check-up?"
+                        "What should I expect during my second-trimester check-up?"
                       )
                     }
                   >
-                    What should I expect in my second trimester check-up?
+                    What should I expect during my second-trimester check-up?
                   </button>
                 </div>
               </div>
@@ -193,7 +208,7 @@ const ChatbotPage: React.FC = () => {
 
             {/* Messages */}
             <div className="chat-messages">
-              {displayedHistory.map((msg, i) => (
+              {chatHistory.map((msg, i) => (
                 <div
                   key={i}
                   className={`chat-bubble ${
@@ -208,15 +223,15 @@ const ChatbotPage: React.FC = () => {
                 </div>
               ))}
 
-              {loading && <p>🤖 Thinking...</p>}
+              {loading && <p className="thinking-text">🤖 Thinking...</p>}
             </div>
 
             {/* Input */}
-            <div className="chat-input-area">
+            <div className="chat-input-container">
               <input
                 type="text"
-                className="chat-input"
-                placeholder="What's on your mind?"
+                className="chat-input-field"
+                placeholder="How can I help you today?"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) =>
@@ -225,22 +240,24 @@ const ChatbotPage: React.FC = () => {
               />
 
               <button
-                className="send-btn"
+                className="submit-button"
                 onClick={handleSend}
                 disabled={loading}
               >
                 <svg
-                  width="20"
-                  height="20"
+                  width="24"
+                  height="24"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  <path
+                    d="M5 12L12 5M12 5L19 12M12 5V19"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </button>
             </div>

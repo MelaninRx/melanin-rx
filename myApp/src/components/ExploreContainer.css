@@ -22,18 +22,3 @@
 #container a {
   text-decoration: none;
 }
-
-@media (min-width: 1200px) {
-  #container {
-    max-width: 900px;
-    padding: 48px 0;
-    font-size: 22px;
-  }
-}
-@media (min-width: 1400px) {
-  #container {
-    max-width: 1200px;
-    padding: 64px 0;
-    font-size: 24px;
-  }
-}

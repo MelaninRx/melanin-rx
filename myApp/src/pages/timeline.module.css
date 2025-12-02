@@ -1,629 +1,1038 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
-
-body, html, *, *:before, *:after {
-  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif !important;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+ion-button::part(native) {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
+ion-button::part(native):hover,
+ion-button::part(native):focus,
+ion-button::part(native):active {
+  background: transparent !important;
+  background-color: transparent !important;
+}
 :root {
-  --color-primary: #7f5d8c;        /* Rich reddish-purple - main brand color */
-  --color-secondary: #d8cbe1;     /* Gentle lavender-gray */
-  --color-accent: #a98bb3;        /* Mid-tone accent purple */
-  --color-light: #f7f5f8;         /* Soft white background */
-  --color-mid: #e2d9e8;           /* Neutral divider/panel */
-  --color-light-purple: #F3E8FF;  /* Light purple background */
-  --color-border-purple: #E0D7F7; /* Light purple border */
-  --color-dark-purple: #3D246C;   /* Dark purple text */
-  --text-primary: #2a1d31;
-  --text-secondary: #55405e;
-  --text-light: #ffffff;
-  --text-muted: #7d6c87;
-  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
-  --gradient-panel: linear-gradient(180deg, #faf8fc, #ece5f2);
-  --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
+  --color-primary: #642D56;
+  --color-secondary: #863E73;
+  --color-tertiary: #AC477A;
+  --color-light-purple: #953F6F;
+  --color-border: #CBCBCB;
+  --color-text-dark: #222;
+  --color-text-gray: #787878;
+  --color-text-muted: #5F5F5F;
+  --gradient-purple: linear-gradient(90deg, #642D56 0%, #863E73 100%);
+  --gradient-bg: linear-gradient(180deg, #FFF 0%, #F2E7F4 100%);
 }
 
-/* Page */
 .timelinePage {
   min-height: 100vh;
   background: var(--gradient-bg);
-  color: var(--text-primary);
-  padding: 24px clamp(16px, 4vw, 56px);
-  box-sizing: border-box;
+  padding: 61px 139px 100px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
 }
 
-.timelineHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 24px; }
-.h1 { font-size: clamp(22px, 3.2vw, 36px); font-weight: 800; }
-
-.backBtn {
-  border: none; padding: 10px 16px; border-radius: 999px;
-  background: var(--gradient-button); color: var(--text-light); font-weight: 700; cursor: pointer;
+.timelineHeader {
+  margin-bottom: 24px;
 }
 
-/* Card grid */
-.grid { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
-
-.card {
-  border: 1px solid var(--color-mid); background: var(--color-light); border-radius: 20px;
-  padding: 18px; transition: transform .22s, box-shadow .22s, border-color .22s; cursor: pointer;
-  display: flex; flex-direction: column;
-}
-.card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: var(--color-secondary); }
-.cardTitle { font-size: 18px; font-weight: 800; color: var(--text-primary); margin: 0; }
-.cardSub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
-.cardBody { margin-top: 10px; font-size: 15px; line-height: 1.5; }
-.cardHighlights {
-  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-mid);
-}
-.highlightsLabel {
-  font-size: 12px; font-weight: 700; color: var(--color-primary); text-transform: uppercase;
-  letter-spacing: 0.5px; margin-bottom: 6px;
-}
-.highlightsList {
-  list-style: none; padding: 0; margin: 0;
-}
-.highlightsList li {
-  font-size: 13px; color: var(--text-secondary); margin: 4px 0;
-  padding-left: 16px; position: relative; line-height: 1.4;
-}
-.highlightsList li:before {
-  content: '•'; color: var(--color-accent); font-weight: bold;
-  position: absolute; left: 0;
-}
-
-.expandedWrap { margin-top: 24px; }
-
-.expanded {
-  border: 1px solid var(--color-mid); background: var(--gradient-panel); border-radius: 24px;
-  padding: clamp(18px, 2.6vw, 28px); box-shadow: 0 16px 38px rgba(0,0,0,0.10); animation: zoomIn .22s ease;
-}
-@keyframes zoomIn { from { transform: scale(.98); opacity: 0 } to { transform: scale(1); opacity: 1 } }
-
-.expandedHeader { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.expandedTitle { margin: 0; }
-
-.badge {
-  display: inline-block; font-size: 12px; font-weight: 700; padding: 6px 10px;
-  border-radius: 999px; color: var(--text-light); background: var(--color-primary); margin-top: 6px;
-}
-
-.sectionTitle { margin-top: 14px; font-weight: 800; }
-.list { 
-  margin: 10px 0 0; 
-  padding-left: 0; 
-  list-style: none; 
-}
-.listItem {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 8px 0;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-.listItem.clickable:hover {
-  color: var(--color-primary);
-}
-.listItem .bullet {
-  color: var(--color-accent);
-  font-weight: bold;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.listItem .text {
-  flex: 1;
-  line-height: 1.5;
-}
-.listItem .chatIcon {
-  flex-shrink: 0;
-  margin-left: auto;
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
-}
-.listItem.clickable:hover .chatIcon {
-  opacity: 1;
-}
-
-.rail {
-  /* keep your panel vibe */
-  --dot: 24px;
-  --rail-pad: 40px; /* left/right inset so ends don't hit rounded corners */
-  --rail-top: 34px; /* vertical offset of the bar within the panel */
-  --rail-h: 6px;    /* bar thickness */
-
-  position: relative;
-  padding: 28px 28px 64px;   /* ⬅️ was 28px; add bottom room for labels */
-  border-radius: 20px;
-  background: var(--gradient-panel);
-  border: 1px solid var(--color-mid);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-}
-
-/* Track + progress share identical geometry */
-.railTrack,
-.railProgress {
-  position: absolute;
-  left: var(--rail-pad);
-  right: var(--rail-pad);
-  top: var(--rail-top);
-  height: var(--rail-h);
-  border-radius: 999px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.railTrack {
-  background: linear-gradient(to right, var(--color-accent), var(--color-secondary));
-  opacity: 0.55;
-}
-
-.railProgress {
-  left: var(--rail-pad);
-  right: auto;               /* width controls end */
-  width: 0%;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-  transition: width 600ms cubic-bezier(.22,.74,.3,1);
-}
-
-/* Stage for absolute node positioning (same left/right/top as track center) */
-.railStage {
-  position: absolute;
-  left: var(--rail-pad);
-  right: var(--rail-pad);
-  top: calc(var(--rail-top) + var(--rail-h) / 2 + 8px);
-  height: 0;
-  z-index: 3;
-}
-
-/* Nodes on exact percentage points, centered on the bar */
-.nodeAbs {
-  position: absolute;
-  top: 0; /* already on center line via .railStage */
-  transform: translate(calc(var(--dot) / -2), -50%);  /* ⬅️ was -50%, -50% */
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  text-align: center;
-  line-height: 1;
-}
-
-.dot {
-  display: block;
-  width: var(--dot);
-  height: var(--dot);
-  border-radius: 50%;
-  background: var(--color-primary);
-  border: 2px solid transparent;
-  box-shadow: 0 6px 16px rgba(115,88,126,0.35);
-  transition: transform .2s, box-shadow .2s, background-color .2s, border-color .2s;
-}
-.nodeAbs:hover .dot { transform: scale(1.08); }
-
-.nodeLabel {
-  display: block;
-  margin-top: 10px;   /* space below dot */
-  font-size: 14px;
-  color: var(--text-secondary);
-  user-select: none;
-  max-width: 120px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Current (glow + bold) */
-.dotCurrent {
-  background: var(--color-primary);
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 6px color-mix(in oklab, var(--color-accent) 24%, transparent);
-}
-
-.nodeLabelCurrent {
-  font-weight: 800;
-  color: var(--color-primary);
-}
-
-/* Optional: gentle pulse on load */
-@keyframes railThrob {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-  100% { transform: scale(1); }
-}
-.nodeCurrent .dotCurrent { animation: railThrob 1200ms ease-out 1; }
-
-/* --- Baby dot variant (keeps palette) --- */
-.dotBaby {
-  background: var(--color-accent);
-  box-shadow: 0 6px 16px rgba(169,139,179,0.35);
-}
-
-/* --- Status Card --- */
-.statusCard {
-  border: 1px solid var(--color-mid);
-  background: var(--gradient-panel);
-  border-radius: 20px;
-  padding: 18px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  margin-bottom: 16px;
-}
-.statusTitle { font-size: 16px; font-weight: 800; color: var(--text-primary); margin: 0 0 6px; }
-.statusSub { font-size: 14px; color: var(--text-muted); margin: 0; }
-.pills { display: flex; gap: 8px; flex-wrap: wrap; }
-.pill {
-  background: var(--gradient-button);
-  color: var(--text-light);
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 12px;
+.h1 {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 48px;
   font-weight: 700;
-}
-.miniStat { text-align: right; color: var(--text-secondary); font-size: 13px; }
-.miniStat strong { display: block; color: var(--text-primary); font-size: 18px; }
-
-/* --- Trimester info card --- */
-.infoCard {
-  border: 1px solid var(--color-mid);
-  background: var(--gradient-panel);
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  line-height: normal;
+  letter-spacing: -0.48px;
+  background: linear-gradient(90deg, #642D56 0%, #AC477A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 0 0;
 }
 
-/* --- Checklist card --- */
-.checklistCard {
-  border: 1px solid var(--color-mid);
-  background: var(--color-light);
-  border-radius: 20px;
-  padding: 16px;
+.timelineSubtitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--color-text-dark);
+  margin: 0 0 24px 0;
+  line-height: normal;
 }
-.checkItem {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 8px; border-radius: 12px; cursor: pointer;
-  transition: background .15s ease;
+
+.statusHeader {
+  border-radius: 10px;
+  background: var(--gradient-purple);
+  padding: 29px 50px;
+  margin: 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   position: relative;
 }
-.checkItem:hover { background: #f4eef8; }
-.checkItem:hover .removeButton { opacity: 1; }
-.checkBox {
-  width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--color-accent);
-  display: grid; place-items: center; background: #fff;
-  flex-shrink: 0;
-  cursor: pointer;
+
+.statusContent {
+  flex: 1;
 }
-.checkBoxChecked { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
-.checkText { color: var(--text-primary); font-size: 14px; cursor: pointer; }
-.checkTextDone { text-decoration: line-through; color: var(--text-muted); }
-.removeButton {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-size: 22px;
-  line-height: 1;
-  width: 26px;
-  height: 26px;
+
+.statusWeek {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: #FFF;
+  margin: 0 0 12px 0;
+  line-height: normal;
+}
+
+.statusBabySize {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: #FFF;
+  margin: 0 0 16px 0;
+  line-height: normal;
+}
+
+.statusInfo {
+  display: flex;
+  gap: 60px;
+}
+
+.statusInfoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statusInfoLabel {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: #FFF;
+  line-height: normal;
+}
+
+.statusInfoValue {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #FFF;
+  line-height: normal;
+}
+
+.statusIcon {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.40);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  cursor: pointer;
-  opacity: 0.4;
-  transition: opacity .2s ease, background .2s ease, color .2s ease, transform .2s ease;
   flex-shrink: 0;
-  padding: 0;
-  margin-left: auto;
-  font-weight: 300;
 }
-.checkItem:hover .removeButton {
+
+.trimesterProgress {
+  position: relative;
+  padding: 0;
+  margin: 24px 0;
+  height: 71px;
+}
+
+.progressTrack {
+  position: absolute;
+  left: 4px;
+  top: 15px;
+  width: calc(100% - 8px);
+  height: 38px;
+  border-radius: 30px;
+  border: 1px solid var(--color-border);
+  background: #FFF;
+}
+
+.progressFill {
+  position: absolute;
+  left: 21px;
+  top: 12px;
+  height: 14px;
+  border-radius: 30px;
+  background: linear-gradient(90deg, #642D56 0%, #AC477A 100%);
+  transition: width 600ms cubic-bezier(.22,.74,.3,1);
+  max-width: calc(100% - 42px);
+}
+
+.trimesterNodes {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  height: 65px;
+}
+
+.trimesterNode {
+  display: flex;
+  width: 65px;
+  height: 65px;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 50%;
+  border: 1px solid #ADADAD;
+  background: #FFF;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  pointer-events: all;
+  position: relative;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+.trimesterNode:hover {
+  transform: scale(1.05);
+}
+
+.trimesterNode[data-has-passed="true"][data-index="0"] {
+  background: #642D56;
+}
+
+.trimesterNode[data-has-passed="true"][data-index="1"] {
+  background: #953F6F;
+}
+
+.trimesterNode[data-has-passed="true"][data-index="2"] {
+  background: #AC477A;
+}
+
+.trimesterNode[data-has-passed="false"] {
+  background: #FFF;
+}
+
+.trimesterNode[data-has-passed="false"] .trimesterLabel {
+  color: #000;
+}
+
+.trimesterNode[data-has-passed="true"] .trimesterLabel {
+  color: #FFF;
+}
+
+.trimesterNodeBaby {
+  background: #FFF !important;
+  padding: 0;
+  width: 65px;
+  height: 65px;
+  top: 0 !important;
+}
+
+.trimesterNodeBaby svg {
+  width: 65px;
+  height: 65px;
+}
+
+.trimesterLabel {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  color: #FFF;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 116.7%;
+  letter-spacing: -1px;
+}
+
+.grid {
+  margin: 24px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.card {
+  border: 1px solid var(--color-border);
+  background: #FFF;
+  border-radius: 10px;
+  padding: 22px 31px;
+  transition: transform .22s, box-shadow .22s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  min-height: 313px;
+  width: 405px;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+}
+
+.cardTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0 0 4px 0;
+  line-height: normal;
+}
+
+.cardSub {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-primary);
+  margin: 0 0 12px 0;
+  line-height: normal;
+}
+
+.cardDivider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-border);
+  margin: 12px 0;
+}
+
+.cardBody {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-gray);
+  margin: 0 0 12px 0;
+  line-height: normal;
+}
+
+.cardHighlights {
+  margin-top: auto;
+}
+
+.highlightsLabel {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0 0 8px 0;
+  line-height: normal;
+}
+
+.highlightsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.highlightsList li {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-gray);
+  margin: 4px 0;
+  padding-left: 0;
+  line-height: normal;
+}
+
+.appointmentsCard {
+  background: #FFF;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 26px 24px 24px 24px;
+  width: 405px;
+  min-height: 399px;
+  height: auto;
+}
+
+.appointmentsTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 16px 0;
+  line-height: normal;
+}
+
+.appointmentsBtnGroup {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 27px;
+}
+
+.addAppointmentBtn {
+  display: flex;
+  width: 339px;
+  height: 34px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  background: #642D56;
+  color: #FFF;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addAppointmentBtn:hover {
+  background: var(--color-secondary);
+}
+
+.appointmentItem {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 0;
+  text-decoration: none;
+}
+
+.appointmentAccent {
+  width: 6px;
+  background: #642D56;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.appointmentDetails {
+  flex: 1;
+}
+
+.appointmentTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 4px 0;
+  line-height: normal;
+}
+
+.appointmentSub {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 0 4px 0;
+  line-height: normal;
+}
+
+.appointmentType {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #642D56;
+  margin: 0;
+  line-height: normal;
+}
+
+.appointmentNotes {
+  margin-top: 0;
+}
+
+.notesLabel {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 4px 0;
+  line-height: normal;
+}
+
+.notesList {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.appointmentDivider {
+  width: 321px;
+  height: 1px;
+  background: var(--color-border);
+  margin: 6px 0 14px 20px;
+}
+
+.calendarWidget {
+  background: #FFF;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 4px;
+  width: 405px;
+  min-height: 398px;
+}
+
+.calendarHeader {
+  display: flex;
+  padding: 16px 32px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.calendarNavBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendarMonth {
+  flex: 1;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  color: #000;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.calendarDivider {
+  width: 355px;
+  height: 1px;
+  background: #BDBDBD;
+  margin: 0 auto;
+}
+
+.calendarDaysHeader {
+  display: flex;
+  padding: 8px 32px;
+  justify-content: center;
+  align-items: center;
+  gap: 11px;
+}
+
+.calendarDay {
+  display: flex;
+  padding: 2px 8px;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 0;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  color: #000;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 0.36px;
+  text-transform: uppercase;
+}
+
+.calendarGrid {
+  display: flex;
+  flex-direction: column;
+}
+
+.calendarWeek {
+  display: flex;
+  padding: 4px 32px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.calendarDate {
+  display: flex;
+  height: 42px;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex: 1 0 0;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  color: #000;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 22px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.calendarDate:hover {
+  background: #F2E7F4;
+  border-radius: 8px;
+}
+
+.fetalCard {
+  background: #FFF;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 24px;
+  width: 405px;
+  min-height: 399px;
+}
+
+.fetalTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 24px 0;
+  line-height: normal;
+}
+
+.fetalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.fetalCircle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: transparent;
+  border: 25px solid;
+  border-image: linear-gradient(180deg, #642D56 0%, #B369A0 100%) 1;
+  border-image-slice: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.25));
+}
+
+.fetalCircle::before {
+  content: '';
+  position: absolute;
+  inset: -25px;
+  border-radius: 50%;
+  padding: 25px;
+  background: linear-gradient(180deg, #642D56 0%, #B369A0 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.fetalWeek {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  z-index: 1;
+}
+
+.fetalSizeLabel {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: center;
+  margin: 0;
+  line-height: normal;
+}
+
+.fetalSize {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  text-align: center;
+  margin: 0;
+  line-height: normal;
+  text-transform: capitalize;
+}
+
+.fetalDescription {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-align: center;
+  margin: 0;
+  line-height: normal;
+}
+
+.fetalStats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.fetalStat {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 15px;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.fetalStat:first-child {
+  text-align: left;
+}
+
+.fetalStat:last-child {
+  text-align: right;
+}
+
+.fetalStatLabel {
+  font-weight: 700;
+}
+
+.fetalStatValue {
+  font-weight: 400;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.backBtn {
+  border: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--gradient-purple);
+  color: #FFF;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(100, 45, 86, 0.3);
+}
+
+.expandedWrap {
+  margin: 24px 0;
+}
+
+.expanded {
+  background: #FFF;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 32px 40px;
+}
+
+.expandedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 24px;
+}
+
+.expandedTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0 0 8px 0;
+  line-height: normal;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: var(--gradient-purple);
+  color: #FFF;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.sectionTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 32px 0 16px 0;
+  line-height: normal;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.list li {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-gray);
+  margin: 12px 0;
+  padding-left: 24px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.checklistCard {
+  background: #FFF;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 24px;
+  margin: 24px 0;
+}
+
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #F0F0F0;
+  transition: background-color 0.2s ease;
+}
+
+.checkItem:hover {
+  background-color: #FAFAFA;
+}
+
+.checkItem:last-child {
+  border-bottom: none;
+}
+
+.checkBox {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-primary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  color: #FFF;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.checkBox:hover {
+  border-color: var(--color-secondary);
+  transform: scale(1.05);
+}
+
+.checkBoxChecked {
+  background: var(--gradient-purple);
+  border-color: var(--color-primary);
+}
+
+.checkText {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-dark);
+  cursor: pointer;
+  line-height: 1.5;
+  user-select: none;
+}
+
+.checkTextDone {
+  text-decoration: line-through;
+  color: var(--color-text-gray);
   opacity: 0.7;
 }
-.removeButton:hover {
-  background: var(--color-secondary);
-  color: var(--color-primary);
-  opacity: 1;
-  transform: scale(1.1);
+
+.removeButton {
+  background: none;
+  border: none;
+  color: var(--color-text-gray);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  line-height: 1;
+  opacity: 0;
 }
+
+.checkItem:hover .removeButton {
+  opacity: 1;
+}
+
+.removeButton:hover {
+  background-color: #FFE5E5;
+  color: #D32F2F;
+}
+
 .addItemTrigger {
   width: 100%;
   padding: 12px;
-  margin-top: 8px;
-  border: 2px dashed var(--color-accent);
-  background: transparent;
-  border-radius: 12px;
+  margin-top: 12px;
+  background: none;
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
   color: var(--color-primary);
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all .2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  transition: all 0.2s ease;
 }
+
 .addItemTrigger:hover {
-  background: var(--color-light);
   border-color: var(--color-primary);
-  border-style: solid;
+  background-color: #FAFAFA;
 }
+
 .addItemContainer {
-  margin-top: 8px;
+  margin-top: 12px;
   padding: 12px;
-  background: var(--color-light);
-  border: 1px solid var(--color-mid);
-  border-radius: 12px;
+  background-color: #FAFAFA;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
 }
+
 .addItemInput {
   width: 100%;
   padding: 10px 12px;
-  border: 2px solid var(--color-mid);
-  border-radius: 8px;
-  background: #fff;
-  color: var(--text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
   font-size: 14px;
-  font-family: inherit;
-  transition: border-color .2s ease;
-  box-sizing: border-box;
-}
-.addItemInput:focus {
   outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 15%, transparent);
+  transition: border-color 0.2s ease;
 }
+
+.addItemInput:focus {
+  border-color: var(--color-primary);
+}
+
 .addItemActions {
   display: flex;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
+
 .addItemButton {
   padding: 8px 16px;
-  background: var(--gradient-button);
-  color: var(--text-light);
+  background: var(--gradient-purple);
+  color: #FFF;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease;
-  flex: 1;
+  transition: all 0.2s ease;
 }
+
 .addItemButton:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(115, 88, 126, 0.3);
+  box-shadow: 0 4px 12px rgba(100, 45, 86, 0.3);
 }
+
 .addItemButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
 .cancelButton {
   padding: 8px 16px;
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid var(--color-mid);
-  border-radius: 8px;
+  background: #FFF;
+  color: var(--color-text-dark);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background .2s ease, border-color .2s ease;
-  flex: 1;
+  transition: all 0.2s ease;
 }
+
 .cancelButton:hover {
-  background: var(--color-light);
-  border-color: var(--color-accent);
+  background-color: #F5F5F5;
 }
+
 .restoreButton {
   padding: 6px 12px;
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid var(--color-mid);
-  border-radius: 8px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-gray);
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all .2s ease;
-  white-space: nowrap;
+  transition: all 0.2s ease;
 }
+
 .restoreButton:hover {
-  background: var(--color-light);
-  border-color: var(--color-accent);
+  border-color: var(--color-primary);
   color: var(--color-primary);
+  background-color: #FAFAFA;
 }
 
-/* --- Questions card --- */
-.qaCard {
-  border: 1px solid var(--color-mid);
-  background: var(--color-light);
-  border-radius: 20px;
-  padding: 16px;
-}
-.qaItem { margin: 8px 0; font-size: 14px; color: var(--text-primary); }
 
-/* --- Upcoming Appointments Card --- */
-.appointmentsCard {
-  background: var(--color-light);
-  border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(115,88,126,0.08);
-  border: 1px solid var(--color-mid);
-  padding: 28px 24px 18px 24px;
-  max-width: 420px;
-  margin: 0 auto;
-}
-.appointmentsHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-}
-.appointmentsTitle {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--text-primary);
-}
-.appointmentsEditIcon {
-  font-size: 22px;
-  color: var(--color-primary);
-  cursor: pointer;
-  margin-left: 8px;
-}
-.appointmentsBtnGroup {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-.addAppointmentBtn {
-  background: var(--color-primary);
-  color: var(--text-light);
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 13px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(127,93,140,0.10);
-  transition: background .2s;
-}
-.addAppointmentBtn:hover {
-  background: var(--color-accent);
-}
-.editAppointmentBtn {
-  background: #fff;
-  color: var(--color-primary);
-  font-weight: 600;
-  border: 1px solid var(--color-mid);
-  border-radius: 16px;
-  padding: 12px 24px;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(127,93,140,0.06);
-  transition: border-color .2s;
-}
-.editAppointmentBtn:disabled {
-  color: var(--text-muted);
-  border-color: var(--color-mid);
-  background: #fff;
-  cursor: not-allowed;
-}
-/* Appointment entry */
-.appointmentItem {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  margin-bottom: 22px;
-}
-.appointmentAccent {
-  width: 6px;
-  height: 48px;
-  background: var(--color-primary);
-  border-radius: 6px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.appointmentDetails {
-  flex: 1;
-}
-.appointmentTitle {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 2px;
-}
-.appointmentSub {
-  font-size: 15px;
-  color: var(--text-muted);
-  margin-bottom: 2px;
-}
-.appointmentType {
-  font-size: 15px;
-  color: var(--color-primary);
-  margin-bottom: 0;
-}
-/* Responsive tweaks */
-@media (max-width: 600px) {
-  .appointmentsCard {
-    padding: 16px 8px 12px 8px;
-    max-width: 100%;
-  }
-  .appointmentsTitle {
-    font-size: 22px;
-  }
-  .addAppointmentBtn, .editAppointmentBtn {
-    font-size: 14px;
-    padding: 10px 14px;
-  }
-  .appointmentTitle {
-    font-size: 16px;
-  }
-}
 
-/* ===== RESPONSIVE STYLES ===== */
-@media (max-width: 1024px) {
+@media (max-width: 1440px) {
   .timelinePage {
-    padding: 16px clamp(12px, 3vw, 24px);
+    padding: 61px 60px 100px;
   }
   
+  .bottomGrid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+  .timelinePage {
+    padding: 32px 24px 100px;
+  }
+
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .expanded {
+    width: 100%;
+  }
+
+  .statusHeader {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+  }
+  
+  .statusInfo {
+    flex-direction: column;
+    gap: 16px;
   }
 }
 
 @media (max-width: 768px) {
-  .timelineHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  
   .h1 {
-    font-size: clamp(20px, 5vw, 32px);
+    font-size: 32px;
   }
   
-  .statusCard {
-    flex-direction: column;
-    gap: 16px;
+  .timelineSubtitle {
+    font-size: 18px;
   }
   
-  .rail {
-    --rail-pad: 10px;
-    padding: 20px 16px 80px;
+  .trimesterNode {
+    width: 50px;
+    height: 50px;
   }
   
-  .nodeLabel {
-    font-size: 11px;
-    max-width: 60px;
+  .trimesterLabel {
+    font-size: 18px;
   }
-}
-
-.chat-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 56px !important;  /* Changed from 12px */
-  height: 56px !important;  /* Changed from 12px, added !important */
-  min-width: 56px !important;
-  min-height: 56px !important;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f7d5ec, #a98bb3);
-  box-shadow: 0 4px 12px -1px rgba(115, 88, 126, 0.25);
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  cursor: pointer;
-  transition: all 0.35s cubic-bezier(.68,.55,.25,1.55);
-  font-size: 24px;  /* Changed from 14px */
-  padding: 0;
-}
-
-.chat-button svg,
-.chat-button img,
-.chat-button .icon {
-  width: 28px !important;  /* Changed from 12px */
-  height: 28px !important;
-  min-width: 28px !important;
-  min-height: 28px !important;
-  font-size: 28px !important;
-  /* ... */
 }
