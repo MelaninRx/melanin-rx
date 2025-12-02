@@ -606,6 +606,7 @@ ion-button::part(native):active {
   padding: 25px;
   background: linear-gradient(180deg, #642D56 0%, #B369A0 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
