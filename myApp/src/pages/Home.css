@@ -1,27 +1,24 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-/* ===== 🔥 关键修改：Dashboard 容器缩进逻辑 ===== */
 .dashboard-container {
-  margin-left: 60px; /* 侧边栏收起时的宽度 */
-  transition: margin-left 0.3s ease; /* 🔥 添加平滑过渡动画 */
-  width: calc(100% - 60px); /* 🔥 确保总宽度正确 */
+  margin-left: 60px;
+  transition: margin-left 0.3s ease;
+  width: calc(100% - 60px);
   box-sizing: border-box;
 }
 
 .dashboard-container.sidebar-expanded {
-  margin-left: 200px; /* 🔥 侧边栏展开时的宽度 */
-  width: calc(100% - 200px); /* 🔥 展开时的宽度计算 */
+  margin-left: 200px;
+  width: calc(100% - 200px); 
 }
 
-/* 🔥 移动端样式 - 移除强制覆盖 */
 @media (max-width: 768px) {
   .dashboard-container {
     margin-left: 0;
     width: 100%;
   }
   
-  /* 移动端不需要响应侧边栏展开 */
   .dashboard-container.sidebar-expanded {
     margin-left: 0;
     width: 100%;
