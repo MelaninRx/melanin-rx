@@ -16,7 +16,12 @@ import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import dropdownIcon from "../icons/Group.svg";
 
-const SidebarNav: React.FC = () => {
+
+interface SidebarNavProps {
+  onToggle?: (expanded: boolean) => void; // 新增：父组件回调
+}
+
+const SidebarNav: React.FC<SidebarNavProps> = ({ onToggle }) => {
   const {
     savedConversations,
     handleLoadConversation,
@@ -28,6 +33,9 @@ const SidebarNav: React.FC = () => {
   const [showChatsDropdown, setShowChatsDropdown] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+  // =====================================
+  // Chat 功能逻辑（保持原样）
+  // =====================================
   const handleNewChatClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setShowChatsDropdown(false);
@@ -44,18 +52,29 @@ const SidebarNav: React.FC = () => {
     history.push('/chatbot');
   };
 
+  // =====================================
+  // 新增：sidebar 展开/收缩控制
+  // =====================================
+  const handleMouseEnter = () => {
+    console.log('Sidebar mouse enter');
+    setIsSidebarCollapsed(false);
+    onToggle?.(true); // 🔥 通知父组件展开
+  };
+
+  const handleMouseLeave = () => {
+    console.log('Sidebar mouse leave');
+    setIsSidebarCollapsed(true);
+    onToggle?.(false); // 🔥 通知父组件收缩
+  };
+  
+
   return (
     <aside
       className={`side-panel${isSidebarCollapsed ? ' collapsed' : ''}`}
-      onMouseLeave={() => {
-        console.log('Sidebar mouse leave');
-        setIsSidebarCollapsed(true);
-      }}
-      onMouseEnter={() => {
-        console.log('Sidebar mouse enter');
-        setIsSidebarCollapsed(false);
-      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
+      
       {/* Make sure your CSS sets a smaller width for .side-panel.collapsed */}
       <div className="nav-top">
 
