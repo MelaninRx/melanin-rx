@@ -21,6 +21,7 @@ interface Resource {
 const Resources: React.FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("");
 
   const fetchResources = async () => {
@@ -67,7 +68,7 @@ const Resources: React.FC = () => {
     <IonPage className="resources-page">
       <IonContent fullscreen>
         <MobileMenuButton />
-        <SidebarNav />
+        <SidebarNav onToggle={setSidebarExpanded}/>
 
         {loading ? (
           <div className="loading-container">
@@ -75,7 +76,7 @@ const Resources: React.FC = () => {
             <p>Loading your recommended resources...</p>
           </div>
         ) : (
-          <div className="resources-wrapper">
+          <div className={`resources-wrapper ${sidebarExpanded ? 'sidebar-expanded' : ''}`}>
             <h1 className="page-title">Resources</h1>
 
             <div className="category-description-container">
