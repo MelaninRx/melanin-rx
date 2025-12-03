@@ -59,10 +59,10 @@ const SidebarNav: React.FC = () => {
       {/* Make sure your CSS sets a smaller width for .side-panel.collapsed */}
       <div className="nav-top">
 
-        <div className="menu-button logo-button">
+        <Link to="/home" className="menu-button logo-button">
           <img src={MelaninRxIcon} className="logo-icon" alt="Logo" />
           <img src={menuIcon} className="icon" alt="Menu" />
-        </div>
+        </Link>
 
 
         <Link to="/chatbot" className="menu-button" onClick={handleNewChatClick}>
