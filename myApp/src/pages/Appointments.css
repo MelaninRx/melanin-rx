@@ -26,8 +26,8 @@
 }
 
 .appointments-content.sidebar-expanded {
-  margin-left: 80px;
-  width: calc(100% - 80px); 
+  margin-left: 75px;
+  width: calc(100% - 75px); 
 }
 
 @media (max-width: 768px) {
