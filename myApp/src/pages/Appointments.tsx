@@ -24,6 +24,7 @@ import DocIcon from "../icons/Frame 113.svg";
 
 const AppointmentsPage: React.FC = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     date: "",
@@ -120,8 +121,9 @@ const AppointmentsPage: React.FC = () => {
       <IonContent fullscreen>
         <div className="appointments-main-layout">
           <MobileMenuButton />
-          <SidebarNav />
-          <main className="appointments-content">
+          <SidebarNav onToggle={setSidebarExpanded} />
+
+          <main className={`appointments-content ${sidebarExpanded ? 'sidebar-expanded' : ''}`}>
             <header className="appointments-header">
               <h1 className="page-title">Appointment Planner</h1>
               <p className="page-subtitle">Track and manage your upcoming healthcare appointments with ease</p>
