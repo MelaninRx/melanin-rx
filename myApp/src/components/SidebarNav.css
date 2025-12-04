@@ -1,0 +1,263 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+
+body, html, *, *:before, *:after {
+  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif !important;
+}
+
+.side-panel {
+  width: 40px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 0;
+  background: white !important;
+  transition: width 0.3s ease, transform 0.3s ease;
+  overflow: hidden;
+  z-index: 1000;
+  box-shadow: 4px 0 16px rgba(0,0,0,0.10); /* Added shadow */
+}
+
+.side-panel:hover {
+  width: 150px;
+}
+
+.side-panel.collapsed {
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+}
+.side-panel.collapsed .menu-text {
+  display: none;
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+  .side-panel {
+    width: 200px;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Show sidebar when mobile-open class is added */
+  .side-panel.mobile-open {
+    transform: translateX(0);
+  }
+  
+  /* Always show menu text on mobile */
+  .side-panel .menu-text {
+    display: inline !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Tablet - always collapsed */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .side-panel {
+    width: 60px;
+  }
+  
+  .side-panel:hover {
+    width: 180px;
+  }
+}
+
+/* Desktop - normal behavior */
+@media (min-width: 1025px) {
+  .side-panel {
+    width: 60px;
+  }
+  
+  .side-panel:hover {
+    width: 200px;
+  }
+}
+
+/* ===== NAVIGATION SECTIONS ===== */
+.nav-top,
+.nav-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+  color: inherit; 
+}
+
+.menu-button:hover {
+  background: rgba(0,0,0,0.05);
+  border-radius: 6px;
+}
+
+.menu-button .icon,
+.menu-button .logo-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-text {
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: none;
+  white-space: nowrap;
+  display: none;
+}
+
+.side-panel:hover .menu-text {
+  display: inline;
+}
+
+/* Logo button special styling */
+.logo-button .logo-icon {
+  display: none;
+  height: 20px;
+}
+
+.logo-button .logo-icon {
+  order: 2;
+}
+
+.logo-button .icon {
+  order: 1;
+}
+
+.side-panel:hover .logo-button .logo-icon {
+  display: inline-block;
+}
+
+.logo-button .logo-icon {
+  height: 30px;
+  gap: 5px; 
+  width: auto;
+  flex: none;  
+}
+
+/* ===== CHATS DROPDOWN ===== */
+.chats-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  padding-right: 10px;
+  position: relative;
+}
+
+.chats-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.dropdown-trigger {
+  display: none;
+  width: 24px;
+  height: 24px;
+  right: 8px;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-trigger:hover {
+  opacity: 1;
+}
+
+.side-panel:hover .dropdown-trigger {
+  display: block;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  margin-left: 40px;
+  padding-left: 10px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.side-panel:not(:hover) .dropdown-menu {
+  display: none;
+}
+
+.dropdown-item {
+  padding: 5px 0;
+  font-size: 13px;
+  color: #333;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.dropdown-item:hover {
+  text-decoration: underline;
+}
+
+/* ===== MOBILE SPECIFIC OVERRIDES ===== */
+@media (max-width: 768px) {
+  /* Always show dropdown trigger on mobile when sidebar is open */
+  .side-panel.mobile-open .dropdown-trigger {
+    display: block;
+  }
+  
+  /* Always show dropdown on mobile when sidebar is open */
+  .side-panel.mobile-open .dropdown-menu {
+    display: flex;
+  }
+  
+  /* Adjust menu button padding for better touch targets */
+  .menu-button {
+    height: 40px;
+    padding: 8px;
+    margin: 4px 0;
+  }
+  
+  /* Make icons slightly larger for better visibility */
+  .menu-button .icon,
+  .menu-button .logo-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  /* Ensure logo shows on mobile */
+  .side-panel.mobile-open .logo-button .logo-icon {
+    display: inline-block;
+  }
+}
+
+/* ===== BACKDROP OVERLAY (Mobile only) ===== */
+@media (max-width: 768px) {
+  /* Add a backdrop when sidebar is open on mobile */
+  .side-panel.mobile-open::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 200px;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+}

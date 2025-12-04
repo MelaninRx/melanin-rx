@@ -5,14 +5,13 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
   IonButton,
   IonButtons,
   IonIcon,
+  IonRouterLink,
 } from '@ionic/react';
 import './CommunityChannels.css';
+import SidebarNav from "../components/SidebarNav";
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { db } from '../firebaseConfig';
 import { doc, getDoc, collection, getDocs, onSnapshot } from 'firebase/firestore';
@@ -27,6 +26,7 @@ import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import profileIcon from '../icons/circle-user-round.svg';
 import { logoutUser } from '../services/authService';
+import MobileMenuButton from '../components/MobileMenuButton';
 
 type UserProfile = {
   name?: string;
@@ -164,87 +164,62 @@ const CommunityChannels: React.FC = () => {
 
   return (
     <IonPage className="community-page">
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Community Channels</IonTitle>
-        </IonToolbar>
-      </IonHeader>
 
       <IonContent fullscreen>
-        <aside className="side-panel">
-          <div className="nav-top">
-            <IonButton fill="clear" routerLink="/menu">
-              <IonIcon icon={menuIcon} />
-              <span className="menu-text">Menu</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/home">
-              <IonIcon icon={homeIcon} />
-              <span className="menu-text">Home</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/add">
-              <IonIcon icon={addIcon} />
-              <span className="menu-text">New Chat</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/chatbot">
-              <IonIcon icon={chatbotIcon} />
-              <span className="menu-text">Chats</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/community">
-              <IonIcon icon={communityIcon} />
-              <span className="menu-text">Communities</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/timeline">
-              <IonIcon icon={timelineIcon} />
-              <span className="menu-text">Timeline</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/appointments">
-              <IonIcon icon={AppointmentIcon} />
-              <span className="menu-text">Appointments</span>
-            </IonButton>
-          </div>
-          <div className="nav-bottom">
-            <IonButton fill='clear' onClick={logoutUser}>
-              <IonIcon icon={LogoutIcon} />
-              <span className="menu-text">Log out</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/settings">
-              <IonIcon icon={settingsIcon} />
-              <span className="menu-text">Setting</span>
-            </IonButton>
-            <IonButton fill="clear" routerLink="/profile">
-              <IonIcon icon={profileIcon} />
-              <span className="menu-text">Profile</span>
-            </IonButton>
-          </div>
-        </aside>
+        <MobileMenuButton />
+        <SidebarNav />
 
-        <section className="community-hero">
+        <section className="community-hero" style={{ maxWidth: '1100px', margin: '0 auto', paddingLeft: `calc(var(--side-panel-width) + 24px)`, paddingRight: '24px' }}>
           <h2 className="community-welcome">
-            {user?.email ? `Welcome, ${user.email}` : 'Welcome to MelaninRX Community'}
+            {user?.name 
+              ? `Welcome, ${user.name.split(' ')[0]}` 
+              : user?.email
+                ? `Welcome, ${user.email.split('@')[0]}`
+                : 'Welcome to MelaninRX Community'}
           </h2>
           <p className="community-sub">
             Join conversations, ask questions, and share resources with others who understand your journey.
           </p>
         </section>
 
-        <main>
-          <IonList>
+        <main style={{ 
+          padding: '24px',
+          paddingLeft: `calc(var(--side-panel-width) + 24px)`,
+          paddingRight: '24px',
+          maxWidth: '1100px',
+          margin: '0 auto',
+        }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+            gap: '20px',
+            marginBottom: '32px'
+          }}>
             {availableChannels.map((c) => (
-              <IonItem key={c.id} className="channel-item">
-                <IonLabel>
-                  <h3>{c.name}</h3>
-                  <p className="channel-desc">{c.description || 'Open discussion and peer support'}</p>
-                </IonLabel>
-                <IonButton routerLink={`/community/${c.id}`} size="small" fill="outline">
-                  View
-                </IonButton>
-              </IonItem>
+              <IonRouterLink 
+                key={c.id} 
+                routerLink={`/community/${c.id}`}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <div className="channel-card">
+                  <h3 className="channel-card-title">{c.name}</h3>
+                  <p className="channel-card-desc">
+                    {c.description || 'Open discussion and peer support'}
+                  </p>
+                  <div className="channel-card-footer">
+                    <span className="channel-card-link">View Channel →</span>
+                  </div>
+                </div>
+              </IonRouterLink>
             ))}
-          </IonList>
+          </div>
 
-          <div className="community-footer">
+          <div className="community-footer" style={{ 
+            paddingLeft: `calc(var(--side-panel-width) + 24px)`,
+            paddingRight: '24px'
+          }}>
             <p>
-              Can’t find a channel you need? Use the chatbot or resources page to get one-on-one guidance.
+              Can't find a channel you need? Use the chatbot or resources page to get one-on-one guidance.
             </p>
             <IonButton routerLink="/chatbot" className="btn-outline">Ask the Chatbot</IonButton>
           </div>

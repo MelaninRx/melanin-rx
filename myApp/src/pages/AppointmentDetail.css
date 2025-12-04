@@ -1,95 +1,287 @@
-/* Styles specific to AppointmentDetail page */
-ion-content .inner-scroll {
-  top: 0 !important;
-  background: transparent !important;
+.appointment-detail-page {
+  --background: linear-gradient(180deg, #FFF 0%, #F2E7F4 100%);
 }
 
-.appointments-page div.inner-scroll {
-  top: 0 !important;
-  padding-top: 0 !important;
+.appointment-detail-page ion-content {
+  --background: linear-gradient(180deg, #FFF 0%, #F2E7F4 100%);
 }
-.appointment-detail-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 100vh;
-  width: 100vw;
-  padding-top: 0;
-}
-.detail-title {
-  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
-  font-weight: 700;
-  font-size: 2.2rem;
-  color: #8c3a7a;
-  margin-bottom: 1.2rem;
-}
-.detail-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(108,74,182,0.08);
-  border: 1px solid #e0e0e0;
-  padding: 3rem 3.5rem;
-  max-width: 700px;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-.detail-card-header {
+
+.loading-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1.2rem;
-  text-align: center;
-  width: 100%;
-}
-.detail-card-title {
-  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
-  font-weight: 700;
-  font-size: 1.35rem;
-  color: #222;
-  margin: 0 auto;
-  text-align: center;
-  width: 100%;
-}
-.delete-btn {
-  border-radius: 8px;
-  font-weight: 600;
-  min-width: 160px;
-  font-size: 1rem;
-  width: 100%;
-  display: block;
-}
-.detail-list {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin: 0;
-  padding: 0;
-}
-.save-btn {
-  background: linear-gradient(90deg, #8c3a7a 0%, #6C4AB6 100%) !important;
-  color: #fff !important;
-  border-radius: 10px !important;
-  font-weight: 600 !important;
-  font-size: 1.08rem !important;
-  margin-top: 1.2rem !important;
-  width: 100%;
-  display: block;
-}
-.form-row {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  width: 100%;
-  justify-content: flex-start;
-  margin-bottom: 2rem !important;
-}
-.form-item {
-  width: 100%;
-  margin-bottom: 1.2rem !important;
+  min-height: 100vh;
 }
 
+.appointment-detail-container {
+  position: relative;
+  min-height: 100vh;
+  padding: 154px 226px 100px 226px;
+}
+
+.back-arrow {
+  position: absolute;
+  left: 116px;
+  top: 47px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-arrow:hover {
+  opacity: 0.8;
+}
+
+.page-title {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.48px;
+  color: #000;
+  margin: 0 auto 40px auto;
+  text-align: center;
+  max-width: 1083px;
+  width: 100%;
+}
+
+.detail-card {
+  background: #FFF;
+  border-radius: 20px;
+  border: 1px solid #CBCBCB;
+  padding: 0;
+  max-width: 1083px;
+  width: 100%;
+  margin: auto;
+}
+
+.detail-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 27px 55px 0 55px;
+  margin-bottom: 34px;
+}
+
+.detail-card-title {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 150%;
+  letter-spacing: -0.32px;
+  color: #222;
+  margin: 0;
+}
+
+.delete-btn {
+  display: flex;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  background: #BB3B3B;
+  color: #FFF;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.16px;
+  border: none;
+  cursor: pointer;
+  min-width: 201px;
+  height: 40px;
+}
+
+.delete-btn:hover {
+  opacity: 0.9;
+}
+
+.form-content {
+  padding: 0 55px 45px 55px;
+}
+
+.form-row {
+  display: flex;
+  gap: 35px;
+  margin-bottom: 35px;
+}
+
+.form-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.form-field.full-width {
+  width: 100%;
+}
+
+.field-label {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.16px;
+  color: #222;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #CBCBCB;
+  background: #FFF;
+  min-height: 40px;
+}
+
+.input-wrapper.textarea-wrapper {
+  align-items: flex-start;
+  min-height: 104px;
+}
+
+.input-wrapper svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.form-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.14px;
+  color: #222;
+  padding: 0;
+}
+
+.form-input::placeholder {
+  color: #838383;
+}
+
+.form-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+.form-textarea {
+  flex: 1;
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.16px;
+  color: #222;
+  padding: 0;
+  resize: none;
+}
+
+.form-textarea::placeholder {
+  color: #686868;
+}
+
+.save-btn {
+  display: flex;
+  width: 100%;
+  height: 62px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #642D56 0%, #AC477A 100%) !important;
+  color: #FFF;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.16px;
+  border: none;
+  cursor: pointer;
+  margin-top: 35px;
+}
+
+.save-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1440px) {
+  .appointment-detail-container {
+    padding: 100px 80px 80px 80px;
+  }
+
+  .back-arrow {
+    left: 40px;
+    top: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .appointment-detail-container {
+    padding: 80px 20px 40px 20px;
+  }
+
+  .back-arrow {
+    left: 20px;
+    top: 20px;
+  }
+
+  .back-arrow svg {
+    width: 30px;
+    height: 26px;
+  }
+
+  .page-title {
+    font-size: 32px;
+    letter-spacing: -0.32px;
+    margin-bottom: 24px;
+  }
+
+  .detail-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .detail-card-title {
+    font-size: 24px;
+    letter-spacing: -0.24px;
+  }
+
+  .delete-btn {
+    width: 100%;
+  }
+
+  .form-content {
+    padding: 0 20px 30px 20px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+}

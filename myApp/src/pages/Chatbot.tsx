@@ -1,170 +1,268 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonPage,
-  IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonButton,
   IonContent,
-  IonImg,
 } from "@ionic/react";
+import { useLocation } from "react-router-dom";
 import "./Chatbot.css";
-import "typeface-source-serif-pro"
-import ReactMarkdown from 'react-markdown';
+import "typeface-source-serif-pro";
+import ReactMarkdown from "react-markdown";
+import {
+  getFirestore,
+  doc,
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  query,
+  orderBy,
+} from "firebase/firestore";
+import { useCurrentUser } from "../hooks/useCurrentUser";
+import SidebarNav from "../components/SidebarNav";
+import MobileMenuButton from '../components/MobileMenuButton';
+import { ChatProvider, useChat } from "../context/ChatContext";
+
+// Type for chat message
+interface ChatMessage {
+  sender: string;
+  text: string;
+}
 
 const ChatbotPage: React.FC = () => {
-  const [message, setMessage] = useState('');
-  const [chatHistory, setChatHistory] = useState<{ sender: string; text: string }[]>([]);
+  const location = useLocation();
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const user = useCurrentUser();
+  const hasProcessedInitialQuestionRef = React.useRef(false);
+  const CHATBOT_API_URL = "https://chatwithlangflow-bz35xt5xna-uc.a.run.app/";
 
-  // handleSend - when user clicks "Send"
+  // Use context for chat state/handlers
+  const {
+    chatHistory,
+    setChatHistory,
+    savedConversations,
+    currentConversationId,
+    handleNewChat,
+    handleLoadConversation,
+    saveOrUpdateConversation,
+  } = useChat();
+
+  // Always get the current conversation from context
+  const currentConversation = savedConversations.find(c => c.id === currentConversationId);
+
+  console.log("[ChatbotPage] currentConversationId:", currentConversationId);
+  console.log("[ChatbotPage] savedConversations:", savedConversations);
+  console.log("[ChatbotPage] currentConversation:", currentConversation);
+
+  // Get greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
+  // Get user's first name
+  const getUserName = () => {
+    if (user?.displayName) {
+      return user.displayName.split(' ')[0];
+    }
+    return "there";
+  };
+
+  // ------------------------------------------------------------
+  // Suggested question handler
+  // ------------------------------------------------------------
+  const handleQuickQuestion = async (question: string) => {
+    setMessage(""); // Clear input immediately
+    await handleSendWithText(question);
+  };
+
+  // ------------------------------------------------------------
+  // Main send function
+  // ------------------------------------------------------------
   const handleSend = async () => {
     if (!message.trim()) return;
+    setMessage(""); // Clear input immediately
+    await handleSendWithText(message);
+  };
 
-    // add user message to chat history
-    const newUserMsg = { sender: 'user', text: message };
-    setChatHistory((prev) => [...prev, newUserMsg]);
+  const handleSendWithText = async (text: string) => {
+    console.log('[ChatbotPage] handleSendWithText called, currentConversationId:', currentConversationId);
+    const newUserMsg = { sender: "user", text };
+    const updatedHistory = [...chatHistory, newUserMsg];
+    setChatHistory(updatedHistory); // Update chatHistory immediately so user bubble shows
     setLoading(true);
-
     try {
-      const res = await fetch("https://chatwithlangflow-bz35xt5xna-uc.a.run.app/", {
+      const res = await fetch(CHATBOT_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, user : {name: "Guest", id: "anon"} }),
+        body: JSON.stringify({
+          message: text,
+          user: { name: "Guest", id: "anon" },
+        }),
       });
-
-      // parse JSON response from LangFlow
       const data = await res.json();
-
-      // exctract bot's response
       const botReply =
-        data.outputs?.[0]?.outputs?.[0]?.results?.message?.text ||
+        data.outputs?.[0]?.outputs?.[0]?.results?.message?.text ??
         "No response from LangFlow.";
-
-      // add bot's response to chat history
-      setChatHistory((prev) => [...prev, { sender: 'bot', text: botReply }]);
+      const finalHistory = [
+        ...updatedHistory,
+        { sender: "bot", text: botReply },
+      ];
+      setChatHistory(finalHistory);
+      await saveOrUpdateConversation(finalHistory);
     } catch (error) {
       console.error("LangFlow error:", error);
-      setChatHistory((prev) => [...prev, { sender: 'bot', text: "Error connecting to LangFlow." }]);
+      const errorHistory = [
+        ...updatedHistory,
+        { sender: "bot", text: "Error connecting to LangFlow." },
+      ];
+      setChatHistory(errorHistory);
+      await saveOrUpdateConversation(errorHistory);
     }
-
-    setMessage('');
     setLoading(false);
   };
 
+  // ------------------------------------------------------------
+  // Read ?question= from URL ONCE and auto-send it
+  // ------------------------------------------------------------
+  useEffect(() => {
+    if (hasProcessedInitialQuestionRef.current) return;
+    if (chatHistory.length > 0) return;
+    const searchParams = new URLSearchParams(location.search);
+    const question = searchParams.get("question");
+    if (question) {
+      hasProcessedInitialQuestionRef.current = true;
+      handleSendWithText(decodeURIComponent(question));
+    }
+  }, [location.search, chatHistory]);
+
+  // ------------------------------------------------------------
+  // Ensure correct chat loads when currentConversationId changes
+  // ------------------------------------------------------------
+  useEffect(() => {
+    if (!currentConversationId) return;
+    if (currentConversation && currentConversation.messages) {
+      console.log("[ChatbotPage] useEffect: Setting chatHistory to messages of convo:", currentConversationId, currentConversation.messages);
+      setChatHistory(currentConversation.messages);
+    }
+  }, [currentConversationId, savedConversations]);
+
+  const isChatStarted = chatHistory.length > 0;
+
+  // ------------------------------------------------------------
+  // UI
+  // ------------------------------------------------------------
   return (
     <IonPage>
-      {/* ✅ Explore-style header (clean + minimal) */}
-      <IonHeader className="explore-header chatbot-header">
-        <IonButtons slot="start">
-          <IonButton routerLink="/home" routerDirection="root" color="medium">Home</IonButton>
-        </IonButtons>
-      </IonHeader>
-
       <IonContent fullscreen>
-        {/* ✅ added minimal top padding so chat UI doesn’t hide behind header */}
-        <div className="container chatbot-wrapper">
-          {/* Sidebar */}
-          <div className="sidebar">
-            <div className="sidebar-top">
-              <div className="logo" title = 'Logo'></div>
-            </div>
-            <div className="divider"></div>
+        <div className="chatbot-container">
+          <MobileMenuButton />
+          <SidebarNav />
 
-            <div className = "sidebar-middle">
-                <div className="icon" title="Home"></div>
-                <div className="icon" title="Settings"></div>
-                <div className="icon" title="Profile"></div>
-                <div className="icon" title="Analytics"></div>
-            </div>
-
-            <div className = "sidebar-bottom">
-                <div className ="user-pic"> </div>
-            </div>
-          </div>
-
-          {/* left panel */}
-          <div className="history-panel">
-            <div className = "history-top">
-                <h3 className = "history-title">Chat</h3>
-                {/* --- "New Chat" button clears chatHistory --- */}
-                <button
-                  className="new-chat-btn"
-                  onClick={() => setChatHistory([])}
-                >
-                  New Chat
-                </button>
-            </div>
-
-            <div className="history-search">
-                <input
-                type="text"
-                placeholder="Search"
-                className="search-input"
-                />
-            </div>
-
-            <h3 className = "history-subtitle"></h3>
-            <div className="history-items">
-              {/* Placeholder old chat list — not connected to active chat yet */}
-              <div className="history-item">💬 Chat 1 – “Pregnancy Q&A”</div>
-              <div className="history-item">💬 Chat 2 – “Nutrition Support”</div>
-              <div className="history-item">💬 Chat 3 – “Postpartum Tips”</div>
-            </div>
-          </div>
-
-          {/* right panel */}
           <div className="chat-panel">
-            <div className="chat-top">
-                <p className="chat-greeting">Hello</p>
-                <p className="chat-subtitle">How can we help you today?</p>
+            {!isChatStarted && (
+              <div className="welcome-section">
+                <h1 className="greeting-title">
+                  {getGreeting()} {getUserName()}!
+                </h1>
+                <p className="greeting-subtitle">How can I help you today?</p>
+
+                <div className="suggestion-cards">
+                  <button
+                    className="suggestion-card"
+                    onClick={() =>
+                      handleQuickQuestion(
+                        "Help me create a script for my upcoming doctor appointment."
+                      )
+                    }
+                  >
+                    Help me create a script for my upcoming doctor appointment.
+                  </button>
+
+                  <button
+                    className="suggestion-card"
+                    onClick={() =>
+                      handleQuickQuestion(
+                        "Help me describe my pain levels and history accurately."
+                      )
+                    }
+                  >
+                    Help me describe my pain levels and history accurately.
+                  </button>
+
+                  <button
+                    className="suggestion-card"
+                    onClick={() =>
+                      handleQuickQuestion(
+                        "What should I expect during my second-trimester check-up?"
+                      )
+                    }
+                  >
+                    What should I expect during my second-trimester check-up?
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Messages */}
+            <div className="chat-messages">
+              {chatHistory.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`chat-bubble ${
+                    msg.sender === "user" ? "user" : "bot"
+                  }`}
+                >
+                  {msg.sender === "bot" ? (
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  ) : (
+                    msg.text
+                  )}
+                </div>
+              ))}
+
+              {loading && <p className="thinking-text">🤖 Thinking...</p>}
             </div>
 
-            {/* --- Chat conversation area --- */}
-          <div className="chat-messages">
-            {chatHistory.map((msg, i) => (
-              <div
-                key={i}
-                className={
-                  msg.sender === 'user'
-                    ? 'chat-bubble user'
-                    : 'chat-bubble bot'
+            {/* Input */}
+            <div className="chat-input-container">
+              <input
+                type="text"
+                className="chat-input-field"
+                placeholder="How can I help you today?"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) =>
+                  e.key === "Enter" && !loading && handleSend()
                 }
+              />
+
+              <button
+                className="submit-button"
+                onClick={handleSend}
+                disabled={loading}
               >
-                {msg.sender === 'bot' ? (
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
-                ) : (
-                  msg.text
-                )}
-              </div>
-            ))}
-
-            {loading && <p>🤖 Thinking...</p>}
-          </div>
-
-          {/* --- Input box + Send button --- */}
-          <div className="chat-input-area">
-            <input
-              type="text"
-              className="chat-input"
-              placeholder="What's on your mind?"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)} // track input text
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()} // allow Enter key to send
-            />
-
-            <button
-              className="send-btn"
-              onClick={handleSend}
-              disabled={loading} // disable while bot is responding
-            ><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                  </svg>
-            </button>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12L12 5M12 5L19 12M12 5V19"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
       </IonContent>
     </IonPage>
   );
