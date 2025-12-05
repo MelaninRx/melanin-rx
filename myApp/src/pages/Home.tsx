@@ -78,6 +78,7 @@ const Home: React.FC = () => {
   const [currentTrimester, setCurrentTrimester] = useState<Trimester | null>(null);
   const [currentWeek, setCurrentWeek] = useState<number>(0);
   const [daysInWeek, setDaysInWeek] = useState<number>(0);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const user = useCurrentUser();
 
   useEffect(() => {
@@ -161,9 +162,9 @@ const Home: React.FC = () => {
     <IonPage className="home-dashboard-page">
       <IonContent fullscreen className="home-dashboard-content">
         <MobileMenuButton />
-        <SidebarNav />
+        <SidebarNav onToggle={setSidebarExpanded} />
 
-        <div className="dashboard-container">
+        <div className={`dashboard-container ${sidebarExpanded ? 'sidebar-expanded' : ''}`}>
           <section className="dashboard-hero">
             <h1 className="dashboard-greeting">
               {getGreeting()} {getUserName()}!

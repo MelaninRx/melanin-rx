@@ -8,6 +8,27 @@
   --background: linear-gradient(180deg, #FFF 0%, #F2E7F4 100%);
 }
 
+.resources-wrapper {
+  margin-left: 60px;
+  padding: 79px 80px 0 80px; 
+  max-width: 1600px;
+  transition: margin-left 0.3s ease, padding-left 0.3s ease;
+  box-sizing: border-box;
+}
+
+.resources-wrapper.sidebar-expanded {
+  margin-left: 150px;
+  padding-left: 100px;
+}
+
+@media (max-width: 768px) {
+  .resources-wrapper,
+  .resources-wrapper.sidebar-expanded {
+    margin-left: 0;
+    padding: 40px 20px 0;
+  }
+}
+
 .loading-container {
   display: flex;
   flex-direction: column;

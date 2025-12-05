@@ -89,10 +89,10 @@ body, html, *, *:before, *:after {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 5px;
   height: 40px;
   padding: 0 12px;
-  margin: 10px 0;
+  margin: 3px 0;
   cursor: pointer;
   transition: background 0.2s;
   text-decoration: none;
@@ -117,7 +117,7 @@ body, html, *, *:before, *:after {
 
 .menu-text {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: none;
   white-space: nowrap;
   display: none;

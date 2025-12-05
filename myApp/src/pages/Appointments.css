@@ -18,6 +18,31 @@
 }
 
 .appointments-content {
+  margin-left: 60px;
+  padding: 61px 80px 80px 80px;
+  max-width: 1600px;
+  transition: margin-left 0.3s ease;
+  box-sizing: border-box;
+}
+
+.appointments-content.sidebar-expanded {
+  margin-left: 75px;
+  width: calc(100% - 75px); 
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .appointments-content.sidebar-expanded {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.appointments-content {
   padding: 61px 0 80px 183px;
   max-width: 1440px;
   margin: 0 auto;

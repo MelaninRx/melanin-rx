@@ -16,7 +16,12 @@ import LogoutIcon from "../icons/log-out.svg";
 import settingsIcon from '../icons/settings.svg';
 import dropdownIcon from "../icons/Group.svg";
 
-const SidebarNav: React.FC = () => {
+
+interface SidebarNavProps {
+  onToggle?: (expanded: boolean) => void; 
+}
+
+const SidebarNav: React.FC<SidebarNavProps> = ({ onToggle }) => {
   const {
     savedConversations,
     handleLoadConversation,
@@ -44,25 +49,33 @@ const SidebarNav: React.FC = () => {
     history.push('/chatbot');
   };
 
+  const handleMouseEnter = () => {
+    console.log('Sidebar mouse enter');
+    setIsSidebarCollapsed(false);
+    onToggle?.(true); 
+  };
+
+  const handleMouseLeave = () => {
+    console.log('Sidebar mouse leave');
+    setIsSidebarCollapsed(true);
+    onToggle?.(false);
+  };
+  
+
   return (
     <aside
       className={`side-panel${isSidebarCollapsed ? ' collapsed' : ''}`}
-      onMouseLeave={() => {
-        console.log('Sidebar mouse leave');
-        setIsSidebarCollapsed(true);
-      }}
-      onMouseEnter={() => {
-        console.log('Sidebar mouse enter');
-        setIsSidebarCollapsed(false);
-      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
+
       {/* Make sure your CSS sets a smaller width for .side-panel.collapsed */}
       <div className="nav-top">
 
-        <div className="menu-button logo-button">
+        <Link to="/home" className="menu-button logo-button">
           <img src={MelaninRxIcon} className="logo-icon" alt="Logo" />
           <img src={menuIcon} className="icon" alt="Menu" />
-        </div>
+        </Link>
 
 
         <Link to="/chatbot" className="menu-button" onClick={handleNewChatClick}>

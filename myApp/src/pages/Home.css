@@ -1,4 +1,29 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+.dashboard-container {
+  margin-left: 60px;
+  transition: margin-left 0.3s ease;
+  width: calc(100% - 60px);
+  box-sizing: border-box;
+}
+
+.dashboard-container.sidebar-expanded {
+  margin-left: 200px;
+  width: calc(100% - 200px); 
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .dashboard-container.sidebar-expanded {
+    margin-left: 0;
+    width: 100%;
+  }
+}
 
 /* ===== PAGE CONTAINER ===== */
 .home-dashboard-page {
