@@ -39,13 +39,14 @@ exports.chatWithLangFlow = functions.https.onRequest({ secrets: ["LANGFLOW_API_K
         return;
     }
     try {
-        const { message } = req.body;
+        const { message, stylePreference } = req.body;
         const apiKey = process.env.LANGFLOW_API_KEY;
         // Debug logging
         console.log("API Key exists:", !!apiKey);
-        console.log("API Key length:", apiKey === null || apiKey === void 0 ? void 0 : apiKey.length);
+        console.log("API Key length:", apiKey?.length);
         const langflowUrl = "https://langflow.sail.codes/api/v1/run/6d64c638-920e-4156-a6de-54b5a7b69c93";
         console.log("Full URL:", `${langflowUrl}?api_key=${apiKey}`);
+        console.log("Style Preference:", stylePreference);
         const response = await fetch(langflowUrl, {
             method: "POST",
             headers: {
@@ -55,8 +56,13 @@ exports.chatWithLangFlow = functions.https.onRequest({ secrets: ["LANGFLOW_API_K
             body: JSON.stringify({
                 input_value: message,
                 output_type: "chat",
-                input_type: "chat"
-            }),
+                input_type: "chat",
+                tweaks: {
+                    "TextInput-g8vVr": {
+                        "input_value": stylePreference || "standard"
+                    }
+                }
+            })
         });
         const data = await response.json();
         res.status(200).json(data);
@@ -64,9 +70,9 @@ exports.chatWithLangFlow = functions.https.onRequest({ secrets: ["LANGFLOW_API_K
     catch (error) {
         console.error("LangFlow proxy error:", error);
         console.error("Error details:", JSON.stringify(error, null, 2));
-        console.error("Error message:", error === null || error === void 0 ? void 0 : error.message);
-        console.error("Error stack:", error === null || error === void 0 ? void 0 : error.stack);
-        res.status(500).json({ error: (error === null || error === void 0 ? void 0 : error.message) || "Error connecting to LangFlow." });
+        console.error("Error message:", error?.message);
+        console.error("Error stack:", error?.stack);
+        res.status(500).json({ error: error?.message || "Error connecting to LangFlow." });
     }
 });
 //# sourceMappingURL=index.js.map
