@@ -56,6 +56,7 @@ const OnboardingForm: React.FC = () => {
   // Calculate trimester from due date
   // Due date is typically 40 weeks from LMP (last menstrual period)
   // Current week = 40 - (weeks until due date)
+  // Returns "postpartum" if due date has passed
   const calculateTrimester = (dueDateString: string): string => {
     if (!dueDateString) return "";
     
@@ -65,8 +66,14 @@ const OnboardingForm: React.FC = () => {
     today.setHours(0, 0, 0, 0);
     dueDate.setHours(0, 0, 0, 0);
     
-    // Calculate weeks until due date
+    // Calculate weeks until due date (negative if past due)
     const daysUntilDue = Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    
+    // If due date has passed, user is postpartum
+    if (daysUntilDue < 0) {
+      return "postpartum";
+    }
+    
     const weeksUntilDue = Math.floor(daysUntilDue / 7);
     
     // Current week of pregnancy (assuming 40 week pregnancy)
@@ -204,16 +211,22 @@ const OnboardingForm: React.FC = () => {
         return;
       }
 
-      const trimesterLabel = { "1": "first", "2": "second", "3": "third" }[
-        trimester
-      ];
-      const resourceQuery = query(
-        collection(db, "resources"),
-        where("trimester", "array-contains", trimesterLabel),
-        where("location", "in", [location, "national"])
-      );
-      const querySnapshot = await getDocs(resourceQuery);
-      const resources = querySnapshot.docs.map((doc) => doc.data());
+      // For postpartum, use third trimester resources as fallback
+      // You may want to add specific postpartum resources later
+      const trimesterLabel = trimester === "postpartum" 
+        ? "third" // Use third trimester resources for postpartum
+        : { "1": "first", "2": "second", "3": "third" }[trimester];
+      
+      let resources: any[] = [];
+      if (trimesterLabel) {
+        const resourceQuery = query(
+          collection(db, "resources"),
+          where("trimester", "array-contains", trimesterLabel),
+          where("location", "in", [location, "national"])
+        );
+        const querySnapshot = await getDocs(resourceQuery);
+        resources = querySnapshot.docs.map((doc) => doc.data());
+      }
 
       const formattedResources = resources.map((r) => ({
         title: r.title?.trim() || "Untitled",
@@ -221,18 +234,22 @@ const OnboardingForm: React.FC = () => {
         category: r.category || "General",
       }));
 
-      const readableResources = formattedResources
-        .map((r, i) => `${i + 1}. **${r.title}**\n${r.description}`)
-        .join("\n\n");
+      const readableResources = formattedResources.length > 0
+        ? formattedResources
+            .map((r, i) => `${i + 1}. **${r.title}**\n${r.description}`)
+            .join("\n\n")
+        : "";
 
+      // Allow onboarding to continue even if resources are minimal (especially for postpartum)
       if (!readableResources || readableResources.length < 10) {
-        throw new Error("Resources are empty or improperly formatted.");
+        console.warn("Limited resources found, using default message");
+        // Don't throw error - allow onboarding to continue with default dashboard
       }
 
       const fullPrompt = `Location: ${location}
-Trimester: ${trimester}
+Status: ${trimester === "postpartum" ? "Postpartum (post-delivery)" : `Trimester ${trimester}`}
 Resources:
-${readableResources}`;
+${readableResources || "Postpartum care resources and support for new mothers."}`;
 
       // Add timeout to prevent hanging (15 seconds)
       const controller = new AbortController();
@@ -536,8 +553,12 @@ ${readableResources}`;
                 }}>
                   {(() => {
                     const trimester = calculateTrimester(formData.dueDate);
+                    if (!trimester) return "";
+                    if (trimester === "postpartum") {
+                      return "Postpartum - Congratulations! Your baby is here! 🎉";
+                    }
                     const trimesterLabels = { "1": "1st Trimester", "2": "2nd Trimester", "3": "3rd Trimester" };
-                    return trimester ? `Currently in ${trimesterLabels[trimester as "1" | "2" | "3"]}` : "";
+                    return `Currently in ${trimesterLabels[trimester as "1" | "2" | "3"]}`;
                   })()}
                 </div>
               )}

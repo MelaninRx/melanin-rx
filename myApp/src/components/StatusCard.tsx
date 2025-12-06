@@ -4,13 +4,16 @@ import styles from '../pages/timeline.module.css';
 export default function StatusCard({
   currentWeek,
   dueDate,
-}: { currentWeek: number; dueDate: Date; }) {
+  isPostpartum = false,
+}: { currentWeek: number; dueDate: Date; isPostpartum?: boolean; }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dueDateCopy = new Date(dueDate);
   dueDateCopy.setHours(0, 0, 0, 0);
   
   const daysRemaining = Math.floor((dueDateCopy.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  const daysPostpartum = isPostpartum ? Math.abs(daysRemaining) : 0;
+  const weeksPostpartum = isPostpartum ? Math.floor(daysPostpartum / 7) : 0;
   const niceDate = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
   const babylemonSize = currentWeek === 15 ? "apple" : 
@@ -24,18 +27,37 @@ export default function StatusCard({
   return (
     <section className={styles.statusHeader}>
       <div className={styles.statusContent}>
-        <div className={styles.statusWeek}>Week {currentWeek}</div>
-        <div className={styles.statusBabySize}>Your baby is about the size of {babylemonSize === 'apple' ? 'an' : 'a'} {babylemonSize}!</div>
-        <div className={styles.statusInfo}>
-          <div className={styles.statusInfoItem}>
-            <div className={styles.statusInfoLabel}>Estimated Due Date</div>
-            <div className={styles.statusInfoValue}>{niceDate}</div>
-          </div>
-          <div className={styles.statusInfoItem}>
-            <div className={styles.statusInfoLabel}>Days Remaining</div>
-            <div className={styles.statusInfoValue}>~{daysRemaining} Days</div>
-          </div>
-        </div>
+        {isPostpartum ? (
+          <>
+            <div className={styles.statusWeek}>Postpartum</div>
+            <div className={styles.statusBabySize}>Congratulations! Your baby is here! 🎉</div>
+            <div className={styles.statusInfo}>
+              <div className={styles.statusInfoItem}>
+                <div className={styles.statusInfoLabel}>Birth Date</div>
+                <div className={styles.statusInfoValue}>{niceDate}</div>
+              </div>
+              <div className={styles.statusInfoItem}>
+                <div className={styles.statusInfoLabel}>Weeks Postpartum</div>
+                <div className={styles.statusInfoValue}>{weeksPostpartum} Weeks</div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className={styles.statusWeek}>Week {currentWeek}</div>
+            <div className={styles.statusBabySize}>Your baby is about the size of {babylemonSize === 'apple' ? 'an' : 'a'} {babylemonSize}!</div>
+            <div className={styles.statusInfo}>
+              <div className={styles.statusInfoItem}>
+                <div className={styles.statusInfoLabel}>Estimated Due Date</div>
+                <div className={styles.statusInfoValue}>{niceDate}</div>
+              </div>
+              <div className={styles.statusInfoItem}>
+                <div className={styles.statusInfoLabel}>Days Remaining</div>
+                <div className={styles.statusInfoValue}>~{daysRemaining} Days</div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <div className={styles.statusIcon}>
         <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
