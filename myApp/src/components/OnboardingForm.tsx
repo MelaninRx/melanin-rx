@@ -125,7 +125,8 @@ const OnboardingForm: React.FC = () => {
     setIsPolling(true);
     console.log('[OnboardingForm] Starting polling for onboardingComplete');
     const userDocRef = doc(db, "users", uid);
-    for (let i = 0; i < 20; i++) {
+    // Increased timeout to 30 seconds (30 attempts) to allow for slower API responses
+    for (let i = 0; i < 30; i++) {
       const userDoc = await getDoc(userDocRef);
       console.log(`[OnboardingForm] Poll attempt ${i + 1}:`, userDoc.exists() ? userDoc.data().onboardingComplete : 'no user doc');
       if (userDoc.exists() && userDoc.data().onboardingComplete === true) {
@@ -133,16 +134,20 @@ const OnboardingForm: React.FC = () => {
         setWaitingForOnboard(false);
         setIsPolling(false);
         setLoading(false);
+        setSubmitted(false);
+        sessionStorage.removeItem("onboardingSubmitted");
         history.push("/home", { refresh: true });
         return;
       }
       await new Promise(res => setTimeout(res, 1000));
     }
     console.log('[OnboardingForm] Polling timed out, onboardingComplete not true');
-    setError("Onboarding did not complete. Please refresh or contact support.");
+    setError("Onboarding did not complete. The account may have been created but the dashboard is still loading. Please refresh the page.");
     setWaitingForOnboard(false);
     setIsPolling(false);
     setLoading(false);
+    setSubmitted(false);
+    sessionStorage.removeItem("onboardingSubmitted");
   };
 
   const handleSubmit = async () => {
@@ -229,33 +234,51 @@ Trimester: ${trimester}
 Resources:
 ${readableResources}`;
 
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_OPEN_AI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4-turbo",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a culturally-aware health assistant helping pregnant Black women understand their pregnancy journey. Create personalized dashboards using ONLY the exact information provided.",
-            },
-            { role: "user", content: fullPrompt },
-          ],
-          temperature: 0.1,
-        }),
-      });
+      // Add timeout to prevent hanging (15 seconds)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-      const result = await response.json();
-      if (!response.ok)
-        throw new Error(`OpenAI API error: ${result.error?.message || "Unknown error"}`);
+      let dashboardText = "";
+      try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_OPEN_AI_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4-turbo",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are a culturally-aware health assistant helping pregnant Black women understand their pregnancy journey. Create personalized dashboards using ONLY the exact information provided.",
+              },
+              { role: "user", content: fullPrompt },
+            ],
+            temperature: 0.1,
+          }),
+          signal: controller.signal,
+        });
 
-      const dashboardText = result.choices?.[0]?.message?.content;
-      if (!dashboardText)
-        throw new Error("No dashboard text returned from OpenAI.");
+        clearTimeout(timeoutId);
+
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(`OpenAI API error: ${result.error?.message || "Unknown error"}`);
+        }
+
+        dashboardText = result.choices?.[0]?.message?.content;
+        if (!dashboardText) {
+          throw new Error("No dashboard text returned from OpenAI.");
+        }
+      } catch (error: any) {
+        clearTimeout(timeoutId);
+        // If API call fails or times out, continue with empty dashboard
+        // User can still complete onboarding and we'll use a default message
+        console.warn("Dashboard generation failed, continuing with default:", error);
+        dashboardText = "Welcome to your personalized dashboard. We're here to support you through your pregnancy journey.";
+      }
 
       await setDoc(doc(db, "users", user.uid), {
         name,
@@ -278,8 +301,13 @@ ${readableResources}`;
     } catch (error: any) {
       console.error("Error during onboarding:", error);
       setError(error.message || "There was an error creating your account.");
-    } finally {
-      // Do not setLoading(false) here
+      // Reset states on error so user can try again
+      setLoading(false);
+      setSubmitted(false);
+      setWaitingForOnboard(false);
+      setIsPolling(false);
+      sessionStorage.removeItem("onboardingSubmitted");
+      sessionStorage.removeItem("googleSignupInProgress");
     }
   };
 
@@ -325,6 +353,11 @@ ${readableResources}`;
         <IonSpinner name="dots" />
         <h2>✨ Creating your personalized dashboard...</h2>
         <p>Please hang tight. We're tailoring your journey.</p>
+        {error && (
+          <div style={{ marginTop: '20px', color: 'red', fontSize: '14px' }}>
+            {error}
+          </div>
+        )}
       </div>
     );
   }
@@ -335,6 +368,11 @@ ${readableResources}`;
         <IonSpinner name="dots" />
         <h2>✨ Creating your personalized dashboard...</h2>
         <p>Please hang tight. We're tailoring your journey.</p>
+        {error && (
+          <div style={{ marginTop: '20px', color: 'red', fontSize: '14px' }}>
+            {error}
+          </div>
+        )}
       </div>
     );
   }

@@ -46,12 +46,28 @@ const Settings: React.FC = () => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         setUserData(data);
+        
+        // Handle name field - onboarding saves "name" but Settings expects firstName/lastName
+        const name = data.name || "";
+        const nameParts = name.split(" ");
+        const firstName = data.firstName || nameParts[0] || "";
+        const lastName = data.lastName || (nameParts.length > 1 ? nameParts.slice(1).join(" ") : "") || "";
+        
         setForm({
-          firstName: data.firstName || "",
-          lastName: data.lastName || "",
+          firstName: firstName,
+          lastName: lastName,
           email: data.email || currentUser.email || "",
-          password: data.password || "",
+          password: "",
           location: data.location || ""
+        });
+      } else {
+        // If no doc exists, still populate with auth user data
+        setForm({
+          firstName: "",
+          lastName: "",
+          email: currentUser.email || "",
+          password: "",
+          location: ""
         });
       }
       setLoading(false);
@@ -67,11 +83,16 @@ const Settings: React.FC = () => {
     if (!currentUser) return;
     setSaving(true);
     try {
-      // Update Firestore profile fields
+      // Combine firstName and lastName back into name for consistency with onboarding
+      const fullName = `${form.firstName} ${form.lastName}`.trim() || form.firstName || form.lastName;
+      
+      // Update Firestore profile fields - save both name and firstName/lastName for compatibility
       await updateDoc(doc(db, "users", currentUser.uid), {
+        name: fullName,
         firstName: form.firstName,
         lastName: form.lastName,
         location: form.location,
+        email: form.email || currentUser.email, // Ensure email is saved
       });
       // Use the actual Firebase Auth user for password change
       if (form.password && form.password !== "" && auth.currentUser) {

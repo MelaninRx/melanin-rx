@@ -1,4 +1,3 @@
-// Timeline clean-up branch - started work
 import React from 'react';
 import styles from './timeline.module.css';
 import { getTrimesters, Trimester } from '../services/timelineService';
