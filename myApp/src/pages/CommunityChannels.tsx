@@ -76,7 +76,7 @@ type Channel = {
   description?: string;
   category?: string;
   location?: string;
-  trimester?: string; // '1' | '2' | '3' | undefined => all
+  trimester?: string; // '1' | '2' | '3' | '4' (for postpartum) | undefined => all
   tags?: string[];
 };
 
@@ -159,7 +159,17 @@ const CommunityChannels: React.FC = () => {
   const availableChannels = channels.filter((c) => {
     // If a channel document has no trimester field, show it to everyone
     if (!c.trimester) return true;
-    return c.trimester === profile.trimester;
+    
+    // Map user's trimester to channel matching logic
+    const userTrimester = profile.trimester;
+    
+    // If user is postpartum, match channels with trimester "4" (fourth trimester/postpartum)
+    if (userTrimester === 'postpartum') {
+      return c.trimester === '4';
+    }
+    
+    // For regular trimesters (1, 2, 3), match directly
+    return c.trimester === userTrimester;
   });
 
   return (
