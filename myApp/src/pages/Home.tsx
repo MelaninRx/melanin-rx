@@ -173,6 +173,62 @@ const Home: React.FC = () => {
     return 'there';
   };
 
+  const getSubtitle = () => {
+    // Postpartum message
+    if (isPostpartum) {
+      return "Congratulations on your beautiful baby! Take care of yourself during this special time. Remember, self-care is essential for both you and your little one.";
+    }
+    
+    // Week-by-week dynamic messages (prioritized)
+    if (currentWeek === 0) {
+      return "Welcome to your pregnancy journey! We're here to support you every step of the way.";
+    }
+    
+    // First trimester (weeks 1-13)
+    if (currentWeek >= 1 && currentWeek < 5) {
+      return "Your baby is just beginning to develop! Focus on taking your prenatal vitamins and getting plenty of rest during these early weeks.";
+    }
+    if (currentWeek >= 5 && currentWeek < 9) {
+      return "Baby's major organs are forming. Stay hydrated, eat small frequent meals to manage nausea, and prioritize your first prenatal appointment.";
+    }
+    if (currentWeek >= 9 && currentWeek < 14) {
+      return "You're nearing the end of your first trimester! The placenta is taking over, and morning sickness may start to ease. Take care of yourself.";
+    }
+    
+    // Second trimester (weeks 14-27)
+    if (currentWeek >= 14 && currentWeek < 18) {
+      return "Welcome to your second trimester! This is often when energy returns. You might start to feel those first gentle movements soon.";
+    }
+    if (currentWeek >= 18 && currentWeek < 22) {
+      return "You're in the 'honeymoon period' of pregnancy! You may start feeling your baby move. This is a great time to schedule your anatomy scan.";
+    }
+    if (currentWeek >= 22 && currentWeek < 28) {
+      return "Your baby is growing quickly! Movements are becoming more noticeable. Consider starting pelvic floor exercises and exploring childbirth education.";
+    }
+    
+    // Third trimester (weeks 28-40)
+    if (currentWeek >= 28 && currentWeek < 32) {
+      return "You're in the final stretch! Baby is gaining weight rapidly. Start thinking about your birth plan and preparing for your baby's arrival.";
+    }
+    if (currentWeek >= 32 && currentWeek < 36) {
+      return "Almost there! You'll have more frequent checkups now. Focus on rest, hydration, and watching for any warning signs. Your body is doing amazing work.";
+    }
+    if (currentWeek >= 36 && currentWeek < 40) {
+      return "You're in the home stretch! Your baby could arrive any time. Make sure your hospital bag is packed and your support team is ready.";
+    }
+    if (currentWeek >= 40) {
+      return "You've reached your due date! Your baby will arrive when they're ready. Continue to monitor movements and stay in touch with your healthcare provider.";
+    }
+    
+    // Fallback to trimester summary if week-based messages don't cover it
+    if (currentTrimester?.summary) {
+      return currentTrimester.summary;
+    }
+    
+    // Final default fallback
+    return "Continue staying hydrated and nourishing your body. Each small step supports both you and your baby's health.";
+  };
+
   return (
     <IonPage className="home-dashboard-page">
       <IonContent fullscreen className="home-dashboard-content">
@@ -185,8 +241,8 @@ const Home: React.FC = () => {
               {getGreeting()} {getUserName()}!
               </h1>
             <p className="dashboard-subtitle">
-              This week, you may expect more energy and a growing bump. Continue staying hydrated and nourishing your body, each small step supports both you and your baby's health.
-              </p>
+              {getSubtitle()}
+            </p>
           </section>
 
           {/* Timeline Progress */}
