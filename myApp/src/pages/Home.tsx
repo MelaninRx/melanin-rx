@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { getFirestore, collection, getDocs, Timestamp } from 'firebase/firestore';
 import TimelineRail from '../components/TimelineRail';
 import FetalDevelopment from '../components/FetalDevelopment';
+import SelfCareFocus from '../components/SelfCareFocus';
 import QuestionsCard from '../components/QuestionsCard';
 import { getTrimesters, Trimester } from '../services/timelineService';
 import SidebarNav from '../components/SidebarNav';
@@ -383,10 +384,14 @@ const Home: React.FC = () => {
 
           {/* Bottom Cards Section */}
           <section className="bottom-cards-section">
-            {/* Fetal Development - only show when not postpartum */}
-            {currentWeek > 0 && !isPostpartum && (
+            {/* Baby/Fetal Development or Self-Care Focus */}
+            {currentWeek > 0 && (
               <div className="bottom-card">
-                <FetalDevelopment currentWeek={currentWeek} />
+                {isPostpartum ? (
+                  <SelfCareFocus weeksPostpartum={currentWeek - 40} />
+                ) : (
+                  <FetalDevelopment currentWeek={currentWeek} isPostpartum={false} />
+                )}
               </div>
             )}
 

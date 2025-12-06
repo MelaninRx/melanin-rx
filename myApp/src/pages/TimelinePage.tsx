@@ -2,6 +2,7 @@ import React from 'react';
 import { IonPage, IonContent, IonButton, IonRouterLink, IonSpinner } from '@ionic/react';
 import StatusCard from '../components/StatusCard';
 import FetalDevelopment from '../components/FetalDevelopment';
+import SelfCareFocus from '../components/SelfCareFocus';
 import Calendar from '../components/Calendar';
 import ChatWidget from '../components/ChatWidget';
 import ChatButton from '../components/ChatButton';
@@ -293,7 +294,11 @@ const TimelinePage: React.FC = () => {
 
               <Calendar appointments={soonAppointments} />
               
-              {!isPostpartum && <FetalDevelopment currentWeek={currentWeek} />}
+              {isPostpartum ? (
+                <SelfCareFocus weeksPostpartum={currentWeek - 40} />
+              ) : (
+                <FetalDevelopment currentWeek={currentWeek} isPostpartum={false} />
+              )}
             </div>
           </React.Suspense>
         </main>
