@@ -34,23 +34,6 @@ export default function Calendar({ appointments = [] }: CalendarProps) {
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
-  const weeks = [];
-  let day = 1 - firstDay;
-  for (let w = 0; w < 6; w++) {
-    const week = [];
-    for (let d = 0; d < 7; d++, day++) {
-      if (day > 0 && day <= daysInMonth) {
-        week.push(day);
-      } else {
-        const nextMonthDay = day > daysInMonth ? day - daysInMonth : null;
-        const prevMonthLastDay = day <= 0 ? new Date(year, month, 0).getDate() + day : null;
-        week.push(prevMonthLastDay || nextMonthDay || '');
-      }
-    }
-    weeks.push(week);
-    if (day > daysInMonth + 7) break;
-  }
-
   const handlePrevMonth = () => {
     if (month === 0) {
       setMonth(11);
@@ -98,19 +81,25 @@ export default function Calendar({ appointments = [] }: CalendarProps) {
       </div>
       
       <div className={styles.calendarGrid}>
-        {weeks.map((week, i) => (
-          <div key={i} className={styles.calendarWeek}>
-            {week.map((d, j) => {
-              const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-              const hasAppt = apptDates.includes(d);
-              return (
-                <div key={j} className={styles.calendarDate}>
-                  {d || ''}
-                </div>
-              );
-            })}
-          </div>
-        ))}
+        <div className={styles.calendarDates}>
+          {/* Empty cells for days before month starts */}
+          {Array.from({ length: firstDay }).map((_, i) => (
+            <div key={`empty-${i}`} className={`${styles.calendarDate} ${styles.calendarDateEmpty}`}></div>
+          ))}
+          
+          {/* Days of the current month */}
+          {Array.from({ length: daysInMonth }, (_, i) => {
+            const day = i + 1;
+            const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+            const hasAppt = apptDates.includes(day);
+            return (
+              <div key={day} className={styles.calendarDate}>
+                <span className={styles.calendarDateNumber}>{day}</span>
+                {hasAppt && <span className={styles.calendarDateDot}></span>}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
