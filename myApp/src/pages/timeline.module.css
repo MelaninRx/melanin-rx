@@ -300,6 +300,13 @@ ion-button::part(native):active {
   line-height: normal;
 }
 
+.expanded .cardBody {
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+  color: var(--color-text-gray);
+}
+
 .cardHighlights {
   margin-top: auto;
 }
@@ -784,6 +791,41 @@ ion-button::part(native):active {
   color: var(--color-primary);
   font-weight: 700;
   font-size: 20px;
+}
+
+.listItemClickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+  margin-left: -12px;
+  padding-left: 36px;
+}
+
+.listItemClickable:hover {
+  color: var(--color-primary);
+  background-color: #F8F5F9;
+  border-left-color: var(--color-primary);
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(100, 45, 86, 0.15);
+  font-weight: 500;
+  padding-right: 40px;
+}
+
+.listItemClickable::after {
+  content: '💬';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 16px;
+}
+
+.listItemClickable:hover::after {
+  opacity: 1;
 }
 
 .checklistCard {

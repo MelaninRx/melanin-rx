@@ -223,7 +223,14 @@ const TimelinePage: React.FC = () => {
                 </section>
               ) : (
                   <section className={styles.expandedWrap}>
-                <TrimesterExpanded data={active} onBack={() => setActiveId(null)} />
+                <TrimesterExpanded 
+                  data={active} 
+                  onBack={() => setActiveId(null)}
+                  onQuestionClick={(question) => {
+                    setSelectedQuestion(question);
+                    setIsChatOpen(true);
+                  }}
+                />
                   </section>
             )}
 
