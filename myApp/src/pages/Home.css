@@ -591,6 +591,54 @@
   margin: 4px 0 8px 15px;
 }
 
+/* ===== CHECKLIST CARD ===== */
+.bottom-card section[class*="checklistCard"] {
+  background: #FFF;
+  border-radius: 10px;
+  border: 1px solid #CBCBCB;
+  padding: 20px 18px 18px 18px;
+  min-height: 399px;
+  max-height: 399px;
+  height: 399px;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom-card section[class*="checklistCard"] div[class*="cardTitle"] {
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 12px 0;
+}
+
+.bottom-card section[class*="checklistCard"] > div:last-child {
+  overflow-y: auto;
+  flex: 1;
+  margin-top: 8px;
+  padding-right: 4px;
+}
+
+.bottom-card section[class*="checklistCard"] > div:last-child::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bottom-card section[class*="checklistCard"] > div:last-child::-webkit-scrollbar-track {
+  background: #F5F5F5;
+  border-radius: 3px;
+}
+
+.bottom-card section[class*="checklistCard"] > div:last-child::-webkit-scrollbar-thumb {
+  background: #CBCBCB;
+  border-radius: 3px;
+}
+
+.bottom-card section[class*="checklistCard"] > div:last-child::-webkit-scrollbar-thumb:hover {
+  background: #ADADAD;
+}
+
 /* ===== QUESTIONS CARD ===== */
 .questions-card {
   background: #FFF;

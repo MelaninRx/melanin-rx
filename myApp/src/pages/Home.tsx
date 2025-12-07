@@ -12,6 +12,7 @@ import TimelineRail from '../components/TimelineRail';
 import FetalDevelopment from '../components/FetalDevelopment';
 import SelfCareFocus from '../components/SelfCareFocus';
 import QuestionsCard from '../components/QuestionsCard';
+import ChecklistCard from '../components/ChecklistCard';
 import { getTrimesters, Trimester } from '../services/timelineService';
 import SidebarNav from '../components/SidebarNav';
 import MobileMenuButton from '../components/MobileMenuButton';
@@ -90,6 +91,7 @@ const Home: React.FC = () => {
   const [isPostpartum, setIsPostpartum] = useState<boolean>(false);
   const [daysInWeek, setDaysInWeek] = useState<number>(0);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  const [checklistTrimester, setChecklistTrimester] = useState<Trimester | null>(null);
   const user = useCurrentUser();
 
   useEffect(() => {
@@ -110,6 +112,9 @@ const Home: React.FC = () => {
           
           if (postpartum) {
             setCurrentTrimester(null); // No trimester for postpartum
+            // For testing: show trimester 3 checklist for postpartum users
+            const trimester3 = trimesterData.find(t => t.index === 3);
+            setChecklistTrimester(trimester3 || null);
           } else {
             let trimesterNum: number;
             if (week < 14) {
@@ -122,6 +127,7 @@ const Home: React.FC = () => {
             
             const current = trimesterData.find(t => t.index === trimesterNum);
             setCurrentTrimester(current || null);
+            setChecklistTrimester(current || null);
           }
         }
       }
@@ -451,6 +457,18 @@ const Home: React.FC = () => {
                     ))}
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Checklist Card */}
+            {checklistTrimester && checklistTrimester.checklist && checklistTrimester.checklist.length > 0 && (
+              <div className="bottom-card">
+                <ChecklistCard
+                  items={checklistTrimester.checklist}
+                  storageKey={`home-trimester-${checklistTrimester.id}-checklist`}
+                  title={`Trimester ${checklistTrimester.index} Checklist`}
+                  compact={true}
+                />
               </div>
             )}
           </section>

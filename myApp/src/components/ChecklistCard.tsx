@@ -13,8 +13,8 @@ interface DeletedItem {
 }
 
 export default function ChecklistCard({
-  items, storageKey, title = "This week's checklist",
-}: { items: string[]; storageKey: string; title?: string; }) {
+  items, storageKey, title = "This week's checklist", compact = false,
+}: { items: string[]; storageKey: string; title?: string; compact?: boolean; }) {
   // Store original items for restoration - update when items prop changes
   const originalItems = React.useRef<string[]>(items);
   
@@ -244,7 +244,7 @@ export default function ChecklistCard({
             </svg>
           </button>
         </div>
-        {hasCustomItems && (
+        {hasCustomItems && !compact && (
           <button
             className={styles.restoreButton}
             onClick={restoreOriginal}
@@ -254,23 +254,13 @@ export default function ChecklistCard({
           </button>
         )}
       </div>
-      {!isExpanded && (
-        <div style={{ 
-          marginTop: '12px', 
-          padding: '12px', 
-          background: '#F8F8F8', 
-          borderRadius: '8px',
-          fontFamily: "'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif",
-          fontSize: '14px',
-          color: 'var(--color-text-gray)',
-          textAlign: 'center'
-        }}>
-          Click to expand and view {totalCount} checklist items
-        </div>
-      )}
-      {isExpanded && (
-        <div style={{ marginTop: 8 }}>
-          {checklistData.items.map((text, i) => {
+      <div style={{ marginTop: 8 }}>
+        {checklistData.items.map((text, i) => {
+          // Show first 5 items when collapsed (3 for compact), all items when expanded
+          const maxItems = compact ? 3 : 5;
+          if (!isExpanded && i >= maxItems) {
+            return null;
+          }
           const checked = !!checklistData.done[i];
           return (
             <div key={i} className={styles.checkItem}>
@@ -299,46 +289,67 @@ export default function ChecklistCard({
           );
         })}
         
-        {isAddingItem ? (
-          <div className={styles.addItemContainer}>
-            <input
-              type="text"
-              className={styles.addItemInput}
-              value={newItemText}
-              onChange={(e) => setNewItemText(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Enter new checklist item..."
-              autoFocus
-            />
-            <div className={styles.addItemActions}>
+        {!compact && (
+          <>
+            {isAddingItem ? (
+              <div className={styles.addItemContainer}>
+                <input
+                  type="text"
+                  className={styles.addItemInput}
+                  value={newItemText}
+                  onChange={(e) => setNewItemText(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Enter new checklist item..."
+                  autoFocus
+                />
+                <div className={styles.addItemActions}>
+                  <button
+                    className={styles.addItemButton}
+                    onClick={addItem}
+                    disabled={!newItemText.trim()}
+                  >
+                    Add
+                  </button>
+                  <button
+                    className={styles.cancelButton}
+                    onClick={() => {
+                      setIsAddingItem(false);
+                      setNewItemText('');
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
               <button
-                className={styles.addItemButton}
-                onClick={addItem}
-                disabled={!newItemText.trim()}
+                className={styles.addItemTrigger}
+                onClick={() => setIsAddingItem(true)}
               >
-                Add
+                + Add item
               </button>
-              <button
-                className={styles.cancelButton}
-                onClick={() => {
-                  setIsAddingItem(false);
-                  setNewItemText('');
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        ) : (
-          <button
-            className={styles.addItemTrigger}
-            onClick={() => setIsAddingItem(true)}
-          >
-            + Add item
-          </button>
+            )}
+          </>
         )}
-        </div>
-      )}
+        {!isExpanded && totalCount > (compact ? 3 : 5) && (
+          <div style={{ 
+            marginTop: '12px', 
+            padding: '12px', 
+            background: '#F8F8F8', 
+            borderRadius: '8px',
+            fontFamily: "'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif",
+            fontSize: '14px',
+            color: 'var(--color-primary)',
+            textAlign: 'center',
+            cursor: 'pointer',
+            fontWeight: 500
+          }}
+          onClick={() => setIsExpanded(true)}
+          >
+            + Show {totalCount - (compact ? 3 : 5)} more items
+          </div>
+        )}
+      </div>
     </section>
   );
 }
