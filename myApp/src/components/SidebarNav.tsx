@@ -109,11 +109,18 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ onToggle }) => {
         </Link>
 
         <div className="menu-button chats-row">
-          <Link to="/chat" className="chats-link">
+          <button
+            className="chats-link"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowChatsDropdown(prev => !prev);
+            }}
+            style={{ background: 'none', border: 'none', padding: 0, display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+          >
             <img src={chatbotIcon} className="icon" alt="Chats" />
             <span className="menu-text">Chats</span>
-          </Link>
-
+          </button>
           <img
             src={dropdownIcon}
             className="dropdown-trigger"
