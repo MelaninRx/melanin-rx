@@ -13,8 +13,8 @@ interface DeletedItem {
 }
 
 export default function ChecklistCard({
-  items, storageKey, title = "This week's checklist",
-}: { items: string[]; storageKey: string; title?: string; }) {
+  items, storageKey, title = "This week's checklist", compact = false,
+}: { items: string[]; storageKey: string; title?: string; compact?: boolean; }) {
   // Store original items for restoration - update when items prop changes
   const originalItems = React.useRef<string[]>(items);
   
@@ -78,6 +78,7 @@ export default function ChecklistCard({
   const [newItemText, setNewItemText] = React.useState('');
   const [isAddingItem, setIsAddingItem] = React.useState(false);
   const [deletedItems, setDeletedItems] = React.useState<DeletedItem[]>([]);
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   // Update originalItems when items prop changes (e.g., switching trimesters)
   React.useEffect(() => {
@@ -213,11 +214,37 @@ export default function ChecklistCard({
   const hasCustomItems = checklistData.items.length !== originalItems.current.length ||
     checklistData.items.some((item, i) => item !== originalItems.current[i]);
 
+  const completedCount = checklistData.done.filter(Boolean).length;
+  const totalCount = checklistData.items.length;
+  const progressText = `${completedCount} of ${totalCount} completed`;
+
   return (
     <section className={styles.checklistCard}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-        <div className={styles.cardTitle}>{title}</div>
-        {hasCustomItems && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+          <div className={styles.cardTitle}>{title}</div>
+          <button
+            className={styles.checklistToggle}
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-label={isExpanded ? 'Collapse checklist' : 'Expand checklist'}
+          >
+            <span className={styles.checklistProgress}>{progressText}</span>
+            <svg 
+              width="20" 
+              height="20" 
+              viewBox="0 0 20 20" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ 
+                transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.3s ease'
+              }}
+            >
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        {hasCustomItems && !compact && (
           <button
             className={styles.restoreButton}
             onClick={restoreOriginal}
@@ -229,6 +256,11 @@ export default function ChecklistCard({
       </div>
       <div style={{ marginTop: 8 }}>
         {checklistData.items.map((text, i) => {
+          // Show first 5 items when collapsed (3 for compact), all items when expanded
+          const maxItems = compact ? 3 : 5;
+          if (!isExpanded && i >= maxItems) {
+            return null;
+          }
           const checked = !!checklistData.done[i];
           return (
             <div key={i} className={styles.checkItem}>
@@ -257,43 +289,65 @@ export default function ChecklistCard({
           );
         })}
         
-        {isAddingItem ? (
-          <div className={styles.addItemContainer}>
-            <input
-              type="text"
-              className={styles.addItemInput}
-              value={newItemText}
-              onChange={(e) => setNewItemText(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Enter new checklist item..."
-              autoFocus
-            />
-            <div className={styles.addItemActions}>
+        {!compact && (
+          <>
+            {isAddingItem ? (
+              <div className={styles.addItemContainer}>
+                <input
+                  type="text"
+                  className={styles.addItemInput}
+                  value={newItemText}
+                  onChange={(e) => setNewItemText(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Enter new checklist item..."
+                  autoFocus
+                />
+                <div className={styles.addItemActions}>
+                  <button
+                    className={styles.addItemButton}
+                    onClick={addItem}
+                    disabled={!newItemText.trim()}
+                  >
+                    Add
+                  </button>
+                  <button
+                    className={styles.cancelButton}
+                    onClick={() => {
+                      setIsAddingItem(false);
+                      setNewItemText('');
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
               <button
-                className={styles.addItemButton}
-                onClick={addItem}
-                disabled={!newItemText.trim()}
+                className={styles.addItemTrigger}
+                onClick={() => setIsAddingItem(true)}
               >
-                Add
+                + Add item
               </button>
-              <button
-                className={styles.cancelButton}
-                onClick={() => {
-                  setIsAddingItem(false);
-                  setNewItemText('');
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        ) : (
-          <button
-            className={styles.addItemTrigger}
-            onClick={() => setIsAddingItem(true)}
+            )}
+          </>
+        )}
+        {!isExpanded && totalCount > (compact ? 3 : 5) && (
+          <div style={{ 
+            marginTop: '12px', 
+            padding: '12px', 
+            background: '#F8F8F8', 
+            borderRadius: '8px',
+            fontFamily: "'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif",
+            fontSize: '14px',
+            color: 'var(--color-primary)',
+            textAlign: 'center',
+            cursor: 'pointer',
+            fontWeight: 500
+          }}
+          onClick={() => setIsExpanded(true)}
           >
-            + Add item
-          </button>
+            + Show {totalCount - (compact ? 3 : 5)} more items
+          </div>
         )}
       </div>
     </section>

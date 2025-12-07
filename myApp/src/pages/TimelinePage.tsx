@@ -7,7 +7,7 @@ import Calendar from '../components/Calendar';
 import ChatWidget from '../components/ChatWidget';
 import ChatButton from '../components/ChatButton';
 import styles from './timeline.module.css';
-import { getTrimesters, Trimester } from '../services/timelineService';
+import { getTrimesters, getPostpartum, Trimester } from '../services/timelineService';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { getFirestore, collection, getDocs, Timestamp } from 'firebase/firestore';
 import SidebarNav from '../components/SidebarNav';
@@ -48,7 +48,9 @@ const calculateCurrentWeek = (dueDateString: string | Date | undefined): { week:
 
 const TimelinePage: React.FC = () => {
   const [data, setData] = React.useState<Trimester[]>([]);
+  const [postpartumData, setPostpartumData] = React.useState<Trimester | null>(null);
   const [activeId, setActiveId] = React.useState<string | null>(null);
+  const [isShowingPostpartum, setIsShowingPostpartum] = React.useState<boolean>(false);
   const [currentTrimesterId, setCurrentTrimesterId] = React.useState<string | null>(null);
   const [currentTrimesterIndex, setCurrentTrimesterIndex] = React.useState<number | null>(null);
   const [currentWeek, setCurrentWeek] = React.useState<number>(15);
@@ -64,6 +66,7 @@ const TimelinePage: React.FC = () => {
   React.useEffect(() => {
     document.title = 'Pregnancy Timeline — MelaninRX';
     getTrimesters().then(setData);
+    getPostpartum().then(setPostpartumData);
   }, []);
 
   React.useEffect(() => {
@@ -177,7 +180,7 @@ const TimelinePage: React.FC = () => {
     );
   }
 
-  const active = data.find(t => t.id === activeId) ?? null;
+  const active = isShowingPostpartum ? postpartumData : (data.find(t => t.id === activeId) ?? null);
   const totalWeeks = 40;
   // For postpartum, set progress to exactly 1.0 (100%) to reach the baby icon
   // For pregnancy, calculate based on current week
@@ -186,6 +189,18 @@ const TimelinePage: React.FC = () => {
       ? 1.0 // Exactly 100% to stop at baby icon
       : Math.min(1, Math.max(0, currentWeek / totalWeeks))
     : 0;
+  
+  const handleBabyClick = () => {
+    if (isPostpartum && postpartumData) {
+      setIsShowingPostpartum(true);
+      setActiveId(null); // Clear any trimester selection
+    }
+  };
+  
+  const handleBack = () => {
+    setIsShowingPostpartum(false);
+    setActiveId(null);
+  };
 
   return (
     <IonPage>
@@ -198,7 +213,7 @@ const TimelinePage: React.FC = () => {
 
             <h1 className={styles.h1}>Your Pregnancy Timeline</h1>
             <p className={styles.timelineSubtitle}>Track your journey and prepare for each milestone.</p>
-            {active && <button className={styles.backBtn} onClick={() => setActiveId(null)}>Back</button>}
+            {(active || isShowingPostpartum) && <button className={styles.backBtn} onClick={handleBack}>Back</button>}
           </div>
 
           <React.Suspense fallback={<div>Loading timeline…</div>}>
@@ -210,23 +225,48 @@ const TimelinePage: React.FC = () => {
               nodes={data.map(t => ({
                 key: t.id,
                 label: `T ${t.index}`,
-                onClick: () => setActiveId(t.id),
+                onClick: () => {
+                  setActiveId(t.id);
+                  setIsShowingPostpartum(false);
+                },
                 isCurrent: !isPostpartum && (currentTrimesterId === t.id || currentTrimesterIndex === t.index)
               }))}
               isPostpartum={isPostpartum}
+              onBabyClick={handleBabyClick}
             />
 
-              {!active ? (
+              {!active && !isShowingPostpartum ? (
               <section className={styles.grid}>
                   {data.map(t => (
-                    <TrimesterCard key={t.id} data={t} onOpen={setActiveId} />
+                    <TrimesterCard key={t.id} data={t} onOpen={(id) => {
+                      setActiveId(id);
+                      setIsShowingPostpartum(false);
+                    }} />
                   ))}
+                  {isPostpartum && postpartumData && (
+                    <TrimesterCard 
+                      key={postpartumData.id} 
+                      data={postpartumData} 
+                      fullWidth={true}
+                      onOpen={() => {
+                        setIsShowingPostpartum(true);
+                        setActiveId(null);
+                      }} 
+                    />
+                  )}
                 </section>
-              ) : (
+              ) : (active || (isShowingPostpartum && postpartumData)) ? (
                   <section className={styles.expandedWrap}>
-                <TrimesterExpanded data={active} onBack={() => setActiveId(null)} />
+                <TrimesterExpanded 
+                  data={isShowingPostpartum && postpartumData ? postpartumData : active!} 
+                  onBack={handleBack}
+                  onQuestionClick={(question) => {
+                    setSelectedQuestion(question);
+                    setIsChatOpen(true);
+                  }}
+                />
                   </section>
-            )}
+            ) : null}
 
             <div className={styles.bottomGrid}>
               <div className={styles.appointmentsCard}>
@@ -295,7 +335,7 @@ const TimelinePage: React.FC = () => {
 
               <Calendar appointments={soonAppointments} />
               
-              {isPostpartum ? (
+              {(isPostpartum || isShowingPostpartum) ? (
                 <SelfCareFocus weeksPostpartum={currentWeek - 40} />
               ) : (
                 <FetalDevelopment currentWeek={currentWeek} isPostpartum={false} />
@@ -312,7 +352,10 @@ const TimelinePage: React.FC = () => {
         
         <ChatWidget
           isOpen={isChatOpen}
-          onClose={() => setIsChatOpen(false)}
+          onClose={() => {
+            setIsChatOpen(false);
+            setSelectedQuestion(''); // Clear the selected question when widget closes
+          }}
           initialQuestion={selectedQuestion}
         />
       </IonContent>

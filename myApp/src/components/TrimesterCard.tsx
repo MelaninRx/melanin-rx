@@ -10,9 +10,28 @@ const getPreview = (summary: string): string => {
   return summary.substring(0, 120).trim() + '...';
 };
 
-export default function TrimesterCard({ data, onOpen }: { data: Trimester; onOpen: (id: string) => void }) {
+export default function TrimesterCard({ data, onOpen, fullWidth }: { data: Trimester; onOpen: (id: string) => void; fullWidth?: boolean }) {
   const preview = getPreview(data.summary);
-  const keyHighlights = data.checklist.slice(0, 3);
+  const keyHighlights = data.checklist.slice(0, fullWidth ? 6 : 3);
+  
+  if (fullWidth) {
+    return (
+      <article className={`${styles.card} ${styles.cardFullWidth}`} onClick={() => onOpen(data.id)}>
+        <div className={styles.cardTitle}>{data.title}</div>
+        <div className={styles.cardSub}>{data.weeksRange}</div>
+        <div className={styles.cardDivider} />
+        <p className={styles.cardBodyFullWidth}>{data.summary}</p>
+        <div className={styles.cardHighlights}>
+          <div className={styles.highlightsLabel}>Key Focus Areas:</div>
+          <ul className={styles.highlightsListFullWidth}>
+            {keyHighlights.map((item, i) => (
+              <li key={i}>{item.replace(/^[•\-\d.]+\s*/, '')}</li>
+            ))}
+          </ul>
+        </div>
+      </article>
+    );
+  }
   
   return (
     <article className={styles.card} onClick={() => onOpen(data.id)}>
