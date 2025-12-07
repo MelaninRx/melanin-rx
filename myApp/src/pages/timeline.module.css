@@ -261,6 +261,54 @@ ion-button::part(native):active {
   width: 405px;
 }
 
+.cardFullWidth {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 1263px;
+  padding: 32px 50px;
+  min-height: auto;
+}
+
+.cardBodyFullWidth {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-gray);
+  margin: 0 0 32px 0;
+  line-height: 1.6;
+  max-width: 100%;
+}
+
+.highlightsListFullWidth {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px 40px;
+  margin-top: 8px;
+}
+
+.highlightsListFullWidth li {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-gray);
+  margin: 0;
+  padding-left: 0;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 16px;
+}
+
+.highlightsListFullWidth li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
 .card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 16px rgba(0,0,0,0.08);
@@ -309,6 +357,10 @@ ion-button::part(native):active {
 
 .cardHighlights {
   margin-top: auto;
+}
+
+.cardFullWidth .cardHighlights {
+  margin-top: 24px;
 }
 
 .highlightsLabel {

@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore, collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, getDoc, orderBy, query, where } from 'firebase/firestore';
 
 function getDb() {
   if (!getApps().length) {
@@ -16,7 +16,7 @@ function getDb() {
 // schema for trimester
 export type Trimester = {
   id: string;
-  index: 1 | 2 | 3;
+  index: 1 | 2 | 3 | 4;
   title: string;
   weeksRange: string;
   summary: string;
@@ -87,8 +87,57 @@ export async function getTrimesters(): Promise<Trimester[]> {
     const snap = await getDocs(q);
     if (snap.empty) return FALLBACK;
     const rows = snap.docs.map(d => ({ id: d.id, ...d.data() })) as Trimester[];
-    return rows.sort((a, b) => a.index - b.index);
+    return rows.sort((a, b) => a.index - b.index).filter(t => t.index <= 3); // Only return trimesters 1-3
   } catch {
     return FALLBACK;
+  }
+}
+
+export async function getPostpartum(): Promise<Trimester | null> {
+  try {
+    const db = getDb();
+    
+    // First, try to get the document by ID
+    try {
+      const postpartumDoc = await getDoc(doc(db, 'trimesters', 'postpartum'));
+      if (postpartumDoc.exists()) {
+        return { id: postpartumDoc.id, ...postpartumDoc.data() } as Trimester;
+      }
+    } catch (e) {
+      // Document might not exist with that ID, continue to query
+    }
+    
+    // Try to find postpartum by querying for index 4
+    const q = query(collection(db, 'trimesters'), where('index', '==', 4));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const doc = snapshot.docs[0];
+      return { id: doc.id, ...doc.data() } as Trimester;
+    }
+    
+    // Fallback postpartum data
+    return {
+      id: 'postpartum',
+      index: 4,
+      title: 'Fourth Trimester (Postpartum)',
+      weeksRange: 'Weeks 0–12+ After Birth',
+      summary: 'The fourth trimester is a transformative period of healing, adjustment, and bonding with your new baby. Your body is recovering from childbirth while you\'re learning to care for a newborn. This time can be both beautiful and challenging. Many new mothers experience physical recovery, emotional changes, sleep deprivation, and significant lifestyle adjustments. It\'s crucial to prioritize self-care, monitor your mental health, and build a strong support network. Remember that postpartum depression and anxiety are common and treatable - seeking help is a sign of strength. Your health and well-being matter just as much as your baby\'s.',
+      checklist: [
+        'Schedule your 6-week postpartum checkup with your OB/GYN or midwife',
+        'Schedule your baby\'s first pediatrician appointment (typically within first week)',
+        'Set up a postpartum support system (family, friends, or postpartum doula)',
+        'Monitor your physical recovery (bleeding, healing, pain levels)',
+        'Track your mental health and emotional well-being daily'
+      ],
+      doctorTips: [
+        'What should I expect at my 6-week postpartum checkup?',
+        'How can I tell the difference between baby blues and postpartum depression?',
+        'What are the warning signs of postpartum depression and anxiety?',
+        'I\'m having trouble breastfeeding - what support and resources can help me?'
+      ]
+    };
+  } catch (error) {
+    console.error('Error fetching postpartum data:', error);
+    return null;
   }
 }

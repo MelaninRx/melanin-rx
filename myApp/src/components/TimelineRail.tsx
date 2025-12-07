@@ -13,16 +13,18 @@ export default function TimelineRail({
   progress = 0,
   appendBaby = true,
   isPostpartum = false,
+  onBabyClick,
 }: {
   nodes: RailNode[];
   progress?: number;
   appendBaby?: boolean;
   isPostpartum?: boolean;
+  onBabyClick?: () => void;
 }) {
   const nodesWithBaby = React.useMemo(() => {
     if (!appendBaby) return nodes;
-    return [...nodes, { key: 'baby', label: '👶', onClick: () => {} }];
-  }, [nodes, appendBaby]);
+    return [...nodes, { key: 'baby', label: '👶', onClick: onBabyClick || (() => {}) }];
+  }, [nodes, appendBaby, onBabyClick]);
 
   const [anim, setAnim] = React.useState(0);
   React.useEffect(() => {
