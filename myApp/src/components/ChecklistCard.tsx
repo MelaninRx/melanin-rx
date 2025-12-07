@@ -78,6 +78,7 @@ export default function ChecklistCard({
   const [newItemText, setNewItemText] = React.useState('');
   const [isAddingItem, setIsAddingItem] = React.useState(false);
   const [deletedItems, setDeletedItems] = React.useState<DeletedItem[]>([]);
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   // Update originalItems when items prop changes (e.g., switching trimesters)
   React.useEffect(() => {
@@ -213,10 +214,36 @@ export default function ChecklistCard({
   const hasCustomItems = checklistData.items.length !== originalItems.current.length ||
     checklistData.items.some((item, i) => item !== originalItems.current[i]);
 
+  const completedCount = checklistData.done.filter(Boolean).length;
+  const totalCount = checklistData.items.length;
+  const progressText = `${completedCount} of ${totalCount} completed`;
+
   return (
     <section className={styles.checklistCard}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-        <div className={styles.cardTitle}>{title}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+          <div className={styles.cardTitle}>{title}</div>
+          <button
+            className={styles.checklistToggle}
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-label={isExpanded ? 'Collapse checklist' : 'Expand checklist'}
+          >
+            <span className={styles.checklistProgress}>{progressText}</span>
+            <svg 
+              width="20" 
+              height="20" 
+              viewBox="0 0 20 20" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ 
+                transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.3s ease'
+              }}
+            >
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
         {hasCustomItems && (
           <button
             className={styles.restoreButton}
@@ -227,8 +254,23 @@ export default function ChecklistCard({
           </button>
         )}
       </div>
-      <div style={{ marginTop: 8 }}>
-        {checklistData.items.map((text, i) => {
+      {!isExpanded && (
+        <div style={{ 
+          marginTop: '12px', 
+          padding: '12px', 
+          background: '#F8F8F8', 
+          borderRadius: '8px',
+          fontFamily: "'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif",
+          fontSize: '14px',
+          color: 'var(--color-text-gray)',
+          textAlign: 'center'
+        }}>
+          Click to expand and view {totalCount} checklist items
+        </div>
+      )}
+      {isExpanded && (
+        <div style={{ marginTop: 8 }}>
+          {checklistData.items.map((text, i) => {
           const checked = !!checklistData.done[i];
           return (
             <div key={i} className={styles.checkItem}>
@@ -295,7 +337,8 @@ export default function ChecklistCard({
             + Add item
           </button>
         )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
