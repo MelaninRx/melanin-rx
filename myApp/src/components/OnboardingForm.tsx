@@ -56,6 +56,7 @@ const OnboardingForm: React.FC = () => {
   // Calculate trimester from due date
   // Due date is typically 40 weeks from LMP (last menstrual period)
   // Current week = 40 - (weeks until due date)
+  // Returns "postpartum" if due date has passed
   const calculateTrimester = (dueDateString: string): string => {
     if (!dueDateString) return "";
     
@@ -65,8 +66,14 @@ const OnboardingForm: React.FC = () => {
     today.setHours(0, 0, 0, 0);
     dueDate.setHours(0, 0, 0, 0);
     
-    // Calculate weeks until due date
+    // Calculate weeks until due date (negative if past due)
     const daysUntilDue = Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    
+    // If due date has passed, user is postpartum
+    if (daysUntilDue < 0) {
+      return "postpartum";
+    }
+    
     const weeksUntilDue = Math.floor(daysUntilDue / 7);
     
     // Current week of pregnancy (assuming 40 week pregnancy)
@@ -125,7 +132,8 @@ const OnboardingForm: React.FC = () => {
     setIsPolling(true);
     console.log('[OnboardingForm] Starting polling for onboardingComplete');
     const userDocRef = doc(db, "users", uid);
-    for (let i = 0; i < 20; i++) {
+    // Increased timeout to 30 seconds (30 attempts) to allow for slower API responses
+    for (let i = 0; i < 30; i++) {
       const userDoc = await getDoc(userDocRef);
       console.log(`[OnboardingForm] Poll attempt ${i + 1}:`, userDoc.exists() ? userDoc.data().onboardingComplete : 'no user doc');
       if (userDoc.exists() && userDoc.data().onboardingComplete === true) {
@@ -133,16 +141,20 @@ const OnboardingForm: React.FC = () => {
         setWaitingForOnboard(false);
         setIsPolling(false);
         setLoading(false);
+        setSubmitted(false);
+        sessionStorage.removeItem("onboardingSubmitted");
         history.push("/home", { refresh: true });
         return;
       }
       await new Promise(res => setTimeout(res, 1000));
     }
     console.log('[OnboardingForm] Polling timed out, onboardingComplete not true');
-    setError("Onboarding did not complete. Please refresh or contact support.");
+    setError("Onboarding did not complete. The account may have been created but the dashboard is still loading. Please refresh the page.");
     setWaitingForOnboard(false);
     setIsPolling(false);
     setLoading(false);
+    setSubmitted(false);
+    sessionStorage.removeItem("onboardingSubmitted");
   };
 
   const handleSubmit = async () => {
@@ -199,16 +211,22 @@ const OnboardingForm: React.FC = () => {
         return;
       }
 
-      const trimesterLabel = { "1": "first", "2": "second", "3": "third" }[
-        trimester
-      ];
-      const resourceQuery = query(
-        collection(db, "resources"),
-        where("trimester", "array-contains", trimesterLabel),
-        where("location", "in", [location, "national"])
-      );
-      const querySnapshot = await getDocs(resourceQuery);
-      const resources = querySnapshot.docs.map((doc) => doc.data());
+      // For postpartum, use third trimester resources as fallback
+      // You may want to add specific postpartum resources later
+      const trimesterLabel = trimester === "postpartum" 
+        ? "third" // Use third trimester resources for postpartum
+        : { "1": "first", "2": "second", "3": "third" }[trimester];
+      
+      let resources: any[] = [];
+      if (trimesterLabel) {
+        const resourceQuery = query(
+          collection(db, "resources"),
+          where("trimester", "array-contains", trimesterLabel),
+          where("location", "in", [location, "national"])
+        );
+        const querySnapshot = await getDocs(resourceQuery);
+        resources = querySnapshot.docs.map((doc) => doc.data());
+      }
 
       const formattedResources = resources.map((r) => ({
         title: r.title?.trim() || "Untitled",
@@ -216,46 +234,68 @@ const OnboardingForm: React.FC = () => {
         category: r.category || "General",
       }));
 
-      const readableResources = formattedResources
-        .map((r, i) => `${i + 1}. **${r.title}**\n${r.description}`)
-        .join("\n\n");
+      const readableResources = formattedResources.length > 0
+        ? formattedResources
+            .map((r, i) => `${i + 1}. **${r.title}**\n${r.description}`)
+            .join("\n\n")
+        : "";
 
+      // Allow onboarding to continue even if resources are minimal (especially for postpartum)
       if (!readableResources || readableResources.length < 10) {
-        throw new Error("Resources are empty or improperly formatted.");
+        console.warn("Limited resources found, using default message");
+        // Don't throw error - allow onboarding to continue with default dashboard
       }
 
       const fullPrompt = `Location: ${location}
-Trimester: ${trimester}
+Status: ${trimester === "postpartum" ? "Postpartum (post-delivery)" : `Trimester ${trimester}`}
 Resources:
-${readableResources}`;
+${readableResources || "Postpartum care resources and support for new mothers."}`;
 
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_OPEN_AI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4-turbo",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a culturally-aware health assistant helping pregnant Black women understand their pregnancy journey. Create personalized dashboards using ONLY the exact information provided.",
-            },
-            { role: "user", content: fullPrompt },
-          ],
-          temperature: 0.1,
-        }),
-      });
+      // Add timeout to prevent hanging (15 seconds)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-      const result = await response.json();
-      if (!response.ok)
-        throw new Error(`OpenAI API error: ${result.error?.message || "Unknown error"}`);
+      let dashboardText = "";
+      try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_OPEN_AI_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4-turbo",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are a culturally-aware health assistant helping pregnant Black women understand their pregnancy journey. Create personalized dashboards using ONLY the exact information provided.",
+              },
+              { role: "user", content: fullPrompt },
+            ],
+            temperature: 0.1,
+          }),
+          signal: controller.signal,
+        });
 
-      const dashboardText = result.choices?.[0]?.message?.content;
-      if (!dashboardText)
-        throw new Error("No dashboard text returned from OpenAI.");
+        clearTimeout(timeoutId);
+
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(`OpenAI API error: ${result.error?.message || "Unknown error"}`);
+        }
+
+        dashboardText = result.choices?.[0]?.message?.content;
+        if (!dashboardText) {
+          throw new Error("No dashboard text returned from OpenAI.");
+        }
+      } catch (error: any) {
+        clearTimeout(timeoutId);
+        // If API call fails or times out, continue with empty dashboard
+        // User can still complete onboarding and we'll use a default message
+        console.warn("Dashboard generation failed, continuing with default:", error);
+        dashboardText = "Welcome to your personalized dashboard. We're here to support you through your pregnancy journey.";
+      }
 
       await setDoc(doc(db, "users", user.uid), {
         name,
@@ -278,8 +318,13 @@ ${readableResources}`;
     } catch (error: any) {
       console.error("Error during onboarding:", error);
       setError(error.message || "There was an error creating your account.");
-    } finally {
-      // Do not setLoading(false) here
+      // Reset states on error so user can try again
+      setLoading(false);
+      setSubmitted(false);
+      setWaitingForOnboard(false);
+      setIsPolling(false);
+      sessionStorage.removeItem("onboardingSubmitted");
+      sessionStorage.removeItem("googleSignupInProgress");
     }
   };
 
@@ -325,6 +370,11 @@ ${readableResources}`;
         <IonSpinner name="dots" />
         <h2>✨ Creating your personalized dashboard...</h2>
         <p>Please hang tight. We're tailoring your journey.</p>
+        {error && (
+          <div style={{ marginTop: '20px', color: 'red', fontSize: '14px' }}>
+            {error}
+          </div>
+        )}
       </div>
     );
   }
@@ -335,6 +385,11 @@ ${readableResources}`;
         <IonSpinner name="dots" />
         <h2>✨ Creating your personalized dashboard...</h2>
         <p>Please hang tight. We're tailoring your journey.</p>
+        {error && (
+          <div style={{ marginTop: '20px', color: 'red', fontSize: '14px' }}>
+            {error}
+          </div>
+        )}
       </div>
     );
   }
@@ -498,8 +553,12 @@ ${readableResources}`;
                 }}>
                   {(() => {
                     const trimester = calculateTrimester(formData.dueDate);
+                    if (!trimester) return "";
+                    if (trimester === "postpartum") {
+                      return "Postpartum - Congratulations! Your baby is here! 🎉";
+                    }
                     const trimesterLabels = { "1": "1st Trimester", "2": "2nd Trimester", "3": "3rd Trimester" };
-                    return trimester ? `Currently in ${trimesterLabels[trimester as "1" | "2" | "3"]}` : "";
+                    return `Currently in ${trimesterLabels[trimester as "1" | "2" | "3"]}`;
                   })()}
                 </div>
               )}

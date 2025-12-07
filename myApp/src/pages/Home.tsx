@@ -10,28 +10,38 @@ import { useEffect, useState } from 'react';
 import { getFirestore, collection, getDocs, Timestamp } from 'firebase/firestore';
 import TimelineRail from '../components/TimelineRail';
 import FetalDevelopment from '../components/FetalDevelopment';
+import SelfCareFocus from '../components/SelfCareFocus';
 import QuestionsCard from '../components/QuestionsCard';
 import { getTrimesters, Trimester } from '../services/timelineService';
 import SidebarNav from '../components/SidebarNav';
 import MobileMenuButton from '../components/MobileMenuButton';
 
 // Calculate current week from due date
-const calculateCurrentWeek = (dueDateString: string | Date | undefined): number | null => {
-  if (!dueDateString) return null;
+// Calculate current week and detect postpartum (matching TimelinePage logic)
+const calculateCurrentWeek = (dueDateString: string | Date | undefined): { week: number | null; isPostpartum: boolean } => {
+  if (!dueDateString) return { week: null, isPostpartum: false };
   
   try {
     const dueDate = typeof dueDateString === 'string' ? new Date(dueDateString) : dueDateString;
-    if (isNaN(dueDate.getTime())) return null;
+    if (isNaN(dueDate.getTime())) return { week: null, isPostpartum: false };
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     dueDate.setHours(0, 0, 0, 0);
     
     const daysUntilDue = Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    return Math.max(0, Math.min(40, 40 - Math.floor(daysUntilDue / 7)));
+    
+    // If due date has passed, user is postpartum
+    if (daysUntilDue < 0) {
+      const weeksPostpartum = Math.abs(Math.floor(daysUntilDue / 7));
+      return { week: 40 + weeksPostpartum, isPostpartum: true };
+    }
+    
+    const weeksUntilDue = Math.floor(daysUntilDue / 7);
+    return { week: Math.max(0, Math.min(40, 40 - weeksUntilDue)), isPostpartum: false };
   } catch (e) {
     console.error('Error calculating current week:', e);
-    return null;
+    return { week: null, isPostpartum: false };
   }
 };
 
@@ -77,6 +87,7 @@ const Home: React.FC = () => {
   const [trimesters, setTrimesters] = useState<Trimester[]>([]);
   const [currentTrimester, setCurrentTrimester] = useState<Trimester | null>(null);
   const [currentWeek, setCurrentWeek] = useState<number>(0);
+  const [isPostpartum, setIsPostpartum] = useState<boolean>(false);
   const [daysInWeek, setDaysInWeek] = useState<number>(0);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const user = useCurrentUser();
@@ -91,22 +102,27 @@ const Home: React.FC = () => {
       
       // Calculate current week and trimester
       if (user.dueDate) {
-        const week = calculateCurrentWeek(user.dueDate);
+        const { week, isPostpartum: postpartum } = calculateCurrentWeek(user.dueDate);
         if (week !== null) {
           setCurrentWeek(week);
+          setIsPostpartum(postpartum);
           setDaysInWeek(calculateDaysInWeek(user.dueDate, week));
           
-          let trimesterNum: number;
-          if (week < 14) {
-            trimesterNum = 1;
-          } else if (week < 28) {
-            trimesterNum = 2;
+          if (postpartum) {
+            setCurrentTrimester(null); // No trimester for postpartum
           } else {
-            trimesterNum = 3;
+            let trimesterNum: number;
+            if (week < 14) {
+              trimesterNum = 1;
+            } else if (week < 28) {
+              trimesterNum = 2;
+            } else {
+              trimesterNum = 3;
+            }
+            
+            const current = trimesterData.find(t => t.index === trimesterNum);
+            setCurrentTrimester(current || null);
           }
-          
-          const current = trimesterData.find(t => t.index === trimesterNum);
-          setCurrentTrimester(current || null);
         }
       }
       
@@ -158,6 +174,62 @@ const Home: React.FC = () => {
     return 'there';
   };
 
+  const getSubtitle = () => {
+    // Postpartum message
+    if (isPostpartum) {
+      return "Congratulations on your beautiful baby! Take care of yourself during this special time. Remember, self-care is essential for both you and your little one.";
+    }
+    
+    // Week-by-week dynamic messages (prioritized)
+    if (currentWeek === 0) {
+      return "Welcome to your pregnancy journey! We're here to support you every step of the way.";
+    }
+    
+    // First trimester (weeks 1-13)
+    if (currentWeek >= 1 && currentWeek < 5) {
+      return "Your baby is just beginning to develop! Focus on taking your prenatal vitamins and getting plenty of rest during these early weeks.";
+    }
+    if (currentWeek >= 5 && currentWeek < 9) {
+      return "Baby's major organs are forming. Stay hydrated, eat small frequent meals to manage nausea, and prioritize your first prenatal appointment.";
+    }
+    if (currentWeek >= 9 && currentWeek < 14) {
+      return "You're nearing the end of your first trimester! The placenta is taking over, and morning sickness may start to ease. Take care of yourself.";
+    }
+    
+    // Second trimester (weeks 14-27)
+    if (currentWeek >= 14 && currentWeek < 18) {
+      return "Welcome to your second trimester! This is often when energy returns. You might start to feel those first gentle movements soon.";
+    }
+    if (currentWeek >= 18 && currentWeek < 22) {
+      return "You're in the 'honeymoon period' of pregnancy! You may start feeling your baby move. This is a great time to schedule your anatomy scan.";
+    }
+    if (currentWeek >= 22 && currentWeek < 28) {
+      return "Your baby is growing quickly! Movements are becoming more noticeable. Consider starting pelvic floor exercises and exploring childbirth education.";
+    }
+    
+    // Third trimester (weeks 28-40)
+    if (currentWeek >= 28 && currentWeek < 32) {
+      return "You're in the final stretch! Baby is gaining weight rapidly. Start thinking about your birth plan and preparing for your baby's arrival.";
+    }
+    if (currentWeek >= 32 && currentWeek < 36) {
+      return "Almost there! You'll have more frequent checkups now. Focus on rest, hydration, and watching for any warning signs. Your body is doing amazing work.";
+    }
+    if (currentWeek >= 36 && currentWeek < 40) {
+      return "You're in the home stretch! Your baby could arrive any time. Make sure your hospital bag is packed and your support team is ready.";
+    }
+    if (currentWeek >= 40) {
+      return "You've reached your due date! Your baby will arrive when they're ready. Continue to monitor movements and stay in touch with your healthcare provider.";
+    }
+    
+    // Fallback to trimester summary if week-based messages don't cover it
+    if (currentTrimester?.summary) {
+      return currentTrimester.summary;
+    }
+    
+    // Final default fallback
+    return "Continue staying hydrated and nourishing your body. Each small step supports both you and your baby's health.";
+  };
+
   return (
     <IonPage className="home-dashboard-page">
       <IonContent fullscreen className="home-dashboard-content">
@@ -168,9 +240,9 @@ const Home: React.FC = () => {
           <section className="dashboard-hero">
             <h1 className="dashboard-greeting">
               {getGreeting()} {getUserName()}!
-            </h1>
+              </h1>
             <p className="dashboard-subtitle">
-              This week, you may expect more energy and a growing bump. Continue staying hydrated and nourishing your body, each small step supports both you and your baby's health.
+              {getSubtitle()}
             </p>
           </section>
 
@@ -181,7 +253,7 @@ const Home: React.FC = () => {
                 <div className="timeline-track"></div>
                 <div 
                   className="timeline-progress" 
-                  style={{ width: `${Math.min(100, (currentWeek / 40) * 100)}%` }}
+                  style={{ width: `${isPostpartum ? 100 : Math.min(100, (currentWeek / 40) * 100)}%` }}
                 ></div>
                 
                 <div 
@@ -191,7 +263,7 @@ const Home: React.FC = () => {
                 >
                   <span className="node-label">T 1</span>
                 </div>
-                
+
                 <div 
                   className={`timeline-node ${currentWeek >= 14 && currentWeek < 28 ? 'active' : ''} ${currentWeek >= 28 ? 'completed' : ''}`}
                   style={{ left: '33.33%' }}
@@ -209,7 +281,7 @@ const Home: React.FC = () => {
                 </div>
                 
                 <div 
-                  className="timeline-node baby-node"
+                  className={`timeline-node baby-node ${isPostpartum ? 'active' : ''}`}
                   style={{ left: '100%' }}
                 >
                   <svg width="81" height="81" viewBox="0 0 81 81" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -237,12 +309,22 @@ const Home: React.FC = () => {
 
               <div className="timeline-info">
                 <div className="timeline-info-left">
-                  <span className="trimester-label">Trimester {currentTrimester?.index || 2}</span>
-                  <span className="timeline-separator">: </span>
-                  <span className="timeline-detail">{currentWeek} weeks{daysInWeek > 0 ? `, ${daysInWeek} days` : ''}</span>
+                  {isPostpartum ? (
+                    <>
+                      <span className="trimester-label">Postpartum</span>
+                      <span className="timeline-separator">: </span>
+                      <span className="timeline-detail">{Math.floor((currentWeek - 40) / 7)} weeks postpartum</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="trimester-label">Trimester {currentTrimester?.index || 2}</span>
+                      <span className="timeline-separator">: </span>
+                      <span className="timeline-detail">{currentWeek} weeks{daysInWeek > 0 ? `, ${daysInWeek} days` : ''}</span>
+                    </>
+                  )}
                 </div>
                 <div className="timeline-info-right">
-                  <span className="trimester-label">EDD</span>
+                  <span className="trimester-label">{isPostpartum ? 'Birth Date' : 'EDD'}</span>
                   <span className="timeline-separator">: </span>
                   <span className="timeline-detail">{formatDueDate(user?.dueDate)}</span>
                 </div>
@@ -278,7 +360,7 @@ const Home: React.FC = () => {
                 </div>
                 <h3 className="action-title">Communities</h3>
                 <p className="action-description">Connect with other expectant mothers in your area/ same trimester</p>
-              </IonRouterLink>
+            </IonRouterLink>
 
               <IonRouterLink routerLink="/appointments" className="action-card">
                 <div className="action-card-header">
@@ -302,10 +384,14 @@ const Home: React.FC = () => {
 
           {/* Bottom Cards Section */}
           <section className="bottom-cards-section">
-            {/* Fetal Development */}
+            {/* Baby/Fetal Development or Self-Care Focus */}
             {currentWeek > 0 && (
               <div className="bottom-card">
-                <FetalDevelopment currentWeek={currentWeek} />
+                {isPostpartum ? (
+                  <SelfCareFocus weeksPostpartum={currentWeek - 40} compact={true} />
+                ) : (
+                  <FetalDevelopment currentWeek={currentWeek} isPostpartum={false} />
+                )}
               </div>
             )}
 
@@ -316,7 +402,7 @@ const Home: React.FC = () => {
                 
                 <IonRouterLink routerLink="/appointments" className="add-appointment-btn">
                   Add Appointment
-                </IonRouterLink>
+            </IonRouterLink>
 
                 <div className="appointments-list">
                   {soonAppointments.length === 0 ? (

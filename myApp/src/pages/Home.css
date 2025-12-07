@@ -360,22 +360,28 @@
   padding: 18px;
 }
 
+.bottom-card > div[class*="fetalCard"]:has(div[class*="fetalContent"]) {
+  overflow-y: auto;
+}
+
 .bottom-card div[class*="fetalTitle"] {
   font-size: 20px;
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
 }
 
 .bottom-card div[class*="fetalContent"] {
-  gap: 10px;
+  gap: 8px;
 }
 
+/* Self-Care Focus card specific adjustments */
+
 .bottom-card div[class*="fetalSizeLabel"] {
-  font-size: 16px;
+  font-size: 14px;
   margin: 0;
 }
 
 .bottom-card div[class*="fetalSize"] {
-  font-size: 28px;
+  font-size: 24px;
   margin: 0;
 }
 
@@ -390,6 +396,47 @@
 
 .bottom-card div[class*="fetalStat"] {
   font-size: 13px;
+}
+
+/* Self-Care Focus card specific adjustments for home page */
+.bottom-card > div[data-component="self-care-focus"] {
+  padding: 16px !important;
+  overflow-y: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 399px;
+}
+
+.bottom-card > div[data-component="self-care-focus"] div[class*="fetalTitle"] {
+  margin: 0 0 8px 0 !important;
+}
+
+.bottom-card > div[data-component="self-care-focus"] svg {
+  width: 60px !important;
+  height: 60px !important;
+}
+
+.bottom-card > div[data-component="self-care-focus"] > div[class*="fetalContent"] > div:first-child {
+  width: 70px !important;
+  height: 70px !important;
+  margin-bottom: 0 !important;
+}
+
+.bottom-card > div[data-component="self-care-focus"] div[class*="fetalSizeLabel"] {
+  margin-top: 2px !important;
+  margin-bottom: 6px !important;
+}
+
+.bottom-card > div[data-component="self-care-focus"] div[class*="fetalContent"] {
+  gap: 6px !important;
+}
+
+.bottom-card > div[data-component="self-care-focus"] div[style*="marginTop: '12px'"] {
+  margin-top: 8px !important;
+}
+
+.bottom-card > div[data-component="self-care-focus"] div[style*="marginTop: '16px'"] {
+  margin-top: 10px !important;
 }
 
 /* ===== APPOINTMENTS CARD ===== */

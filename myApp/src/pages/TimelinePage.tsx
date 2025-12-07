@@ -2,6 +2,7 @@ import React from 'react';
 import { IonPage, IonContent, IonButton, IonRouterLink, IonSpinner } from '@ionic/react';
 import StatusCard from '../components/StatusCard';
 import FetalDevelopment from '../components/FetalDevelopment';
+import SelfCareFocus from '../components/SelfCareFocus';
 import Calendar from '../components/Calendar';
 import ChatWidget from '../components/ChatWidget';
 import ChatButton from '../components/ChatButton';
@@ -16,24 +17,32 @@ const TimelineRail = React.lazy(() => import('../components/TimelineRail'));
 const TrimesterCard = React.lazy(() => import('../components/TrimesterCard'));
 const TrimesterExpanded = React.lazy(() => import('../components/TrimesterExpanded'));
 
-const calculateCurrentWeek = (dueDateString: string | Date | undefined): number | null => {
-  if (!dueDateString) return null;
+// Calculate current week and detect postpartum
+const calculateCurrentWeek = (dueDateString: string | Date | undefined): { week: number | null; isPostpartum: boolean } => {
+  if (!dueDateString) return { week: null, isPostpartum: false };
   
   try {
     const dueDate = typeof dueDateString === 'string' ? new Date(dueDateString) : dueDateString;
-    if (isNaN(dueDate.getTime())) return null;
+    if (isNaN(dueDate.getTime())) return { week: null, isPostpartum: false };
     
-    const today = new Date();
+  const today = new Date();
     today.setHours(0, 0, 0, 0);
     dueDate.setHours(0, 0, 0, 0);
     
     const daysUntilDue = Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    const weeksUntilDue = Math.floor(daysUntilDue / 7);
     
-    return Math.max(0, Math.min(40, 40 - weeksUntilDue));
+    // If due date has passed, user is postpartum
+    if (daysUntilDue < 0) {
+      // Calculate weeks postpartum (can go beyond 40)
+      const weeksPostpartum = Math.abs(Math.floor(daysUntilDue / 7));
+      return { week: 40 + weeksPostpartum, isPostpartum: true };
+    }
+    
+    const weeksUntilDue = Math.floor(daysUntilDue / 7);
+    return { week: Math.max(0, Math.min(40, 40 - weeksUntilDue)), isPostpartum: false };
   } catch (e) {
     console.error('Error calculating current week:', e);
-    return null;
+    return { week: null, isPostpartum: false };
   }
 };
 
@@ -44,6 +53,7 @@ const TimelinePage: React.FC = () => {
   const [currentTrimesterIndex, setCurrentTrimesterIndex] = React.useState<number | null>(null);
   const [currentWeek, setCurrentWeek] = React.useState<number>(15);
   const [dueDate, setDueDate] = React.useState<Date>(new Date());
+  const [isPostpartum, setIsPostpartum] = React.useState<boolean>(false);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   const [selectedQuestion, setSelectedQuestion] = React.useState<string>('');
   const [soonAppointments, setSoonAppointments] = React.useState<any[]>([]);
@@ -58,36 +68,47 @@ const TimelinePage: React.FC = () => {
   React.useEffect(() => {
     if (user?.dueDate) {
       try {
-        const calculatedWeek = calculateCurrentWeek(user.dueDate);
+        const { week, isPostpartum: postpartum } = calculateCurrentWeek(user.dueDate);
         const parsedDueDate = typeof user.dueDate === 'string' 
           ? new Date(user.dueDate) 
           : (user.dueDate instanceof Date ? user.dueDate : new Date(user.dueDate));
         
-        if (calculatedWeek !== null && !isNaN(parsedDueDate.getTime())) {
-          setCurrentWeek(calculatedWeek);
+        if (week !== null && !isNaN(parsedDueDate.getTime())) {
+          setCurrentWeek(week);
           setDueDate(parsedDueDate);
+          setIsPostpartum(postpartum);
           
-          let trimesterNum: number;
-          if (calculatedWeek < 14) {
-            trimesterNum = 1;
-          } else if (calculatedWeek < 28) {
-            trimesterNum = 2;
+          if (postpartum) {
+            // Postpartum - don't set trimester index/id
+            setCurrentTrimesterIndex(null);
+            setCurrentTrimesterId(null);
           } else {
-            trimesterNum = 3;
+            let trimesterNum: number;
+            if (week < 14) {
+              trimesterNum = 1;
+            } else if (week < 28) {
+              trimesterNum = 2;
+            } else {
+              trimesterNum = 3;
+            }
+            
+            setCurrentTrimesterIndex(trimesterNum);
+            setCurrentTrimesterId(`trimester-${trimesterNum}`);
           }
-          
-          setCurrentTrimesterIndex(trimesterNum);
-          setCurrentTrimesterId(`trimester-${trimesterNum}`);
         }
       } catch (e) {
         console.error('Error processing due date:', e);
       }
-    } else if (user?.trimester) {
+    } else if (user?.trimester && user.trimester !== 'postpartum') {
       const trimesterNum = parseInt(user.trimester, 10);
       if (trimesterNum >= 1 && trimesterNum <= 3) {
         setCurrentTrimesterIndex(trimesterNum);
         setCurrentTrimesterId(`trimester-${trimesterNum}`);
       }
+    } else if (user?.trimester === 'postpartum') {
+      setIsPostpartum(true);
+      setCurrentTrimesterIndex(null);
+      setCurrentTrimesterId(null);
     }
   }, [user]);
 
@@ -157,8 +178,12 @@ const TimelinePage: React.FC = () => {
 
   const active = data.find(t => t.id === activeId) ?? null;
   const totalWeeks = 40;
+  // For postpartum, set progress to exactly 1.0 (100%) to reach the baby icon
+  // For pregnancy, calculate based on current week
   const progressToNodeCenter = currentWeek > 0 
-    ? Math.min(1, Math.max(0, currentWeek / totalWeeks))
+    ? isPostpartum 
+      ? 1.0 // Exactly 100% to stop at baby icon
+      : Math.min(1, Math.max(0, currentWeek / totalWeeks))
     : 0;
 
   return (
@@ -176,7 +201,7 @@ const TimelinePage: React.FC = () => {
           </div>
 
           <React.Suspense fallback={<div>Loading timeline…</div>}>
-            <StatusCard currentWeek={currentWeek} dueDate={dueDate} />
+            <StatusCard currentWeek={currentWeek} dueDate={dueDate} isPostpartum={isPostpartum} />
             
             <TimelineRail
               appendBaby
@@ -185,20 +210,21 @@ const TimelinePage: React.FC = () => {
                 key: t.id,
                 label: `T ${t.index}`,
                 onClick: () => setActiveId(t.id),
-                isCurrent: currentTrimesterId === t.id || currentTrimesterIndex === t.index
+                isCurrent: !isPostpartum && (currentTrimesterId === t.id || currentTrimesterIndex === t.index)
               }))}
+              isPostpartum={isPostpartum}
             />
 
-            {!active ? (
+              {!active ? (
               <section className={styles.grid}>
-                {data.map(t => (
-                  <TrimesterCard key={t.id} data={t} onOpen={setActiveId} />
-                ))}
-              </section>
-            ) : (
-              <section className={styles.expandedWrap}>
+                  {data.map(t => (
+                    <TrimesterCard key={t.id} data={t} onOpen={setActiveId} />
+                  ))}
+                </section>
+              ) : (
+                  <section className={styles.expandedWrap}>
                 <TrimesterExpanded data={active} onBack={() => setActiveId(null)} />
-              </section>
+                  </section>
             )}
 
             <div className={styles.bottomGrid}>
@@ -212,12 +238,12 @@ const TimelinePage: React.FC = () => {
                   >
                     Add Appointment
                   </IonButton>
-                </div>
-                {soonAppointments.length === 0 ? (
+            </div>
+                  {soonAppointments.length === 0 ? (
                   <div style={{ textAlign: 'center', color: 'var(--color-text-gray)', fontSize: '14px', margin: '16px 0' }}>
-                    No upcoming appointments.
-                  </div>
-                ) : (
+                      No upcoming appointments.
+                    </div>
+                  ) : (
                   soonAppointments.map((appt, index) => (
                     <React.Fragment key={appt.id}>
                       <div style={{ position: 'relative' }}>
@@ -234,16 +260,16 @@ const TimelinePage: React.FC = () => {
                               <div className={styles.appointmentSub}>
                                 {appt.dateTime instanceof Timestamp
                                   ? appt.dateTime.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })
-                                  : appt.dateTime?.toDate?.()
+                              : appt.dateTime?.toDate?.()
                                     ? appt.dateTime.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })
-                                    : typeof appt.dateTime === 'string'
+                                : typeof appt.dateTime === 'string'
                                       ? new Date(appt.dateTime).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })
                                       : ''}
                                 {appt.location ? ` (${appt.location})` : ''}
                               </div>
                               <div className={styles.appointmentType}>{appt.type || appt.reason}</div>
                             </IonRouterLink>
-                            {appt.notes && appt.notes.length > 0 && (
+                          {appt.notes && appt.notes.length > 0 && (
                               <>
                                 <div className={styles.appointmentNotes}>
                                   <div className={styles.notesLabel}>Notes/ Questions:</div>
@@ -252,9 +278,9 @@ const TimelinePage: React.FC = () => {
                                       <div key={idx}>Notes {idx + 1}</div>
                                     ))}
                                   </div>
-                                </div>
+                            </div>
                               </>
-                            )}
+                          )}
                           </div>
                         </div>
                       </div>
@@ -268,7 +294,11 @@ const TimelinePage: React.FC = () => {
 
               <Calendar appointments={soonAppointments} />
               
-              <FetalDevelopment currentWeek={currentWeek} />
+              {isPostpartum ? (
+                <SelfCareFocus weeksPostpartum={currentWeek - 40} />
+              ) : (
+                <FetalDevelopment currentWeek={currentWeek} isPostpartum={false} />
+              )}
             </div>
           </React.Suspense>
         </main>

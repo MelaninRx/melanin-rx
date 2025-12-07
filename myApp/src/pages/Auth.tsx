@@ -39,12 +39,15 @@ const AuthPage: React.FC = () => {
     return () => unsubscribe();
   }, [history]);
 
-  // ✅ Check if Firestore doc exists
+  // ✅ Check if Firestore doc exists AND onboarding is complete
   const checkUserDocument = async (uid: string): Promise<boolean> => {
     try {
       const userDocRef = doc(db, "users", uid);
       const userDoc = await getDoc(userDocRef);
-      return userDoc.exists();
+      if (!userDoc.exists()) return false;
+      // Also check if onboarding is complete
+      const data = userDoc.data();
+      return data?.onboardingComplete === true;
     } catch (error) {
       console.error("Error checking user document:", error);
       return false;
@@ -100,10 +103,8 @@ const handleGoogleLogin = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    const userDocRef = doc(db, "users", user.uid);
-    const userDoc = await getDoc(userDocRef);
-
-    if (userDoc.exists()) {
+    const hasCompleteOnboarding = await checkUserDocument(user.uid);
+    if (hasCompleteOnboarding) {
       history.push("/home");
     } else {
       history.push("/onboarding");

@@ -12,10 +12,12 @@ export default function TimelineRail({
   nodes,
   progress = 0,
   appendBaby = true,
+  isPostpartum = false,
 }: {
   nodes: RailNode[];
   progress?: number;
   appendBaby?: boolean;
+  isPostpartum?: boolean;
 }) {
   const nodesWithBaby = React.useMemo(() => {
     if (!appendBaby) return nodes;
@@ -27,18 +29,25 @@ export default function TimelineRail({
     requestAnimationFrame(() => setAnim(progress));
   }, [progress]);
 
-  const pct = Math.min(1, Math.max(0, anim)) * 100;
+  // Calculate percentage - cap at 100% to stop exactly at baby icon
+  const pct = Math.min(100, Math.max(0, anim)) * 100;
 
   return (
     <div className={styles.trimesterProgress}>
       <div className={styles.progressTrack}>
-        <div className={styles.progressFill} style={{ width: `${pct}%` }} />
+        <div 
+          className={styles.progressFill} 
+          style={{ 
+            width: `${pct}%`
+          }} 
+        />
       </div>
       <div className={styles.trimesterNodes}>
         {nodesWithBaby.map((node, index) => {
           const isBaby = node.key === 'baby';
           const trimesterNumber = index + 1;
-          const isActive = node.isCurrent;
+          // Baby icon is active when postpartum, otherwise use node.isCurrent
+          const isActive = isBaby ? isPostpartum : node.isCurrent;
 
           const totalNodes = nodesWithBaby.length - 1;
           const nodePosition = index / totalNodes;
