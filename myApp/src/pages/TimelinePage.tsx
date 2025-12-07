@@ -58,6 +58,7 @@ const TimelinePage: React.FC = () => {
   const [selectedQuestion, setSelectedQuestion] = React.useState<string>('');
   const [soonAppointments, setSoonAppointments] = React.useState<any[]>([]);
   const [error, setError] = React.useState<string | null>(null);
+  const [sidebarExpanded, setSidebarExpanded] = React.useState(false);
   const user = useCurrentUser();
 
   React.useEffect(() => {
@@ -188,11 +189,11 @@ const TimelinePage: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent fullscreen className="timeline-content" style={{ paddingLeft: '80px' }}>
+      <IonContent fullscreen>
         <MobileMenuButton />
-        <SidebarNav />
+        <SidebarNav onToggle={setSidebarExpanded} />
 
-        <main className={styles.timelinePage}>
+        <main className={`${styles.timelinePage} ${sidebarExpanded ? styles['sidebar-expanded'] : ''}`}>
           <div className={styles.timelineHeader} style={{ position: 'relative' }}>
 
             <h1 className={styles.h1}>Your Pregnancy Timeline</h1>

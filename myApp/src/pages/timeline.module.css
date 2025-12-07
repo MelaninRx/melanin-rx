@@ -30,6 +30,16 @@ ion-button::part(native):active {
   font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
 }
 
+.timelinePage.sidebar-expanded {
+  margin-left: 200px;
+  width: calc(100% - 200px);
+  max-width: none;
+  box-sizing: border-box;
+  transition: margin-left 0.3s ease, width 0.3s ease, padding-left 0.3s ease;
+  padding-left: 20px; /* 139px + 200px sidebar */
+  padding-right: 0;
+}
+
 .timelineHeader {
   margin-bottom: 24px;
 }
@@ -243,7 +253,7 @@ ion-button::part(native):active {
 .grid {
   margin: 24px 0;
   display: grid;
-  grid-template-columns: repeat(3, 405px);
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   justify-content: start;
 }
@@ -252,13 +262,13 @@ ion-button::part(native):active {
   border: 1px solid var(--color-border);
   background: #FFF;
   border-radius: 10px;
-  padding: 22px 31px;
+  padding: 22px 18px;
   transition: transform .22s, box-shadow .22s;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   min-height: 313px;
-  width: 405px;
+  width: 300px;
 }
 
 .card:hover {
@@ -687,7 +697,7 @@ ion-button::part(native):active {
 
 .bottomGrid {
   display: grid;
-  grid-template-columns: repeat(3, 405px);
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   margin-top: 24px;
   justify-content: start;
@@ -1054,5 +1064,12 @@ ion-button::part(native):active {
   
   .trimesterLabel {
     font-size: 18px;
+  }
+
+  .timelinePage.sidebar-expanded {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: 0;
   }
 }
