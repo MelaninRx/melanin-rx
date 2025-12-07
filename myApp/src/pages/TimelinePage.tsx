@@ -1,5 +1,6 @@
 import React from 'react';
 import { IonPage, IonContent, IonButton, IonRouterLink, IonSpinner } from '@ionic/react';
+import { useLocation } from 'react-router-dom';
 import StatusCard from '../components/StatusCard';
 import FetalDevelopment from '../components/FetalDevelopment';
 import SelfCareFocus from '../components/SelfCareFocus';
@@ -47,6 +48,7 @@ const calculateCurrentWeek = (dueDateString: string | Date | undefined): { week:
 };
 
 const TimelinePage: React.FC = () => {
+  const location = useLocation();
   const [data, setData] = React.useState<Trimester[]>([]);
   const [postpartumData, setPostpartumData] = React.useState<Trimester | null>(null);
   const [activeId, setActiveId] = React.useState<string | null>(null);
@@ -67,6 +69,15 @@ const TimelinePage: React.FC = () => {
     getTrimesters().then(setData);
     getPostpartum().then(setPostpartumData);
   }, []);
+
+  // Check for postpartum query parameter when location changes
+  React.useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('postpartum') === 'true' && isPostpartum && postpartumData) {
+      setIsShowingPostpartum(true);
+      setActiveId(null);
+    }
+  }, [location.search, isPostpartum, postpartumData]);
 
   React.useEffect(() => {
     if (user?.dueDate) {

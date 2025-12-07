@@ -1,4 +1,5 @@
 import { IonContent, IonPage, IonRouterLink } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 import './Home.css';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import ChatIcon from "../icons/Frame 110.svg";
@@ -84,6 +85,7 @@ const formatDueDate = (dueDateString: string | Date | undefined): string => {
 };
 
 const Home: React.FC = () => {
+  const history = useHistory();
   const [soonAppointments, setSoonAppointments] = useState<any[]>([]);
   const [trimesters, setTrimesters] = useState<Trimester[]>([]);
   const [currentTrimester, setCurrentTrimester] = useState<Trimester | null>(null);
@@ -288,7 +290,8 @@ const Home: React.FC = () => {
                 
                 <div 
                   className={`timeline-node baby-node ${isPostpartum ? 'active' : ''}`}
-                  style={{ left: '100%' }}
+                  style={{ left: '100%', cursor: isPostpartum ? 'pointer' : 'default' }}
+                  onClick={isPostpartum ? () => window.location.href = '/timeline?postpartum=true' : undefined}
                 >
                   <svg width="81" height="81" viewBox="0 0 81 81" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g filter="url(#filter0_d_3368_894)">
