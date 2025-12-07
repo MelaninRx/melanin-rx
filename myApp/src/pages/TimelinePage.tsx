@@ -318,7 +318,10 @@ const TimelinePage: React.FC = () => {
         
         <ChatWidget
           isOpen={isChatOpen}
-          onClose={() => setIsChatOpen(false)}
+          onClose={() => {
+            setIsChatOpen(false);
+            setSelectedQuestion(''); // Clear the selected question when widget closes
+          }}
           initialQuestion={selectedQuestion}
         />
       </IonContent>

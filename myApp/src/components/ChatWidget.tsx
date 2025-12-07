@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { sendMessageToChatbot, ChatMessage } from '../services/chatbotService';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { sendMessageToChatbot } from '../services/chatbotService';
+import { useChat } from '../context/ChatContext';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 import './ChatWidget.css';
 
 interface ChatWidgetProps {
@@ -10,66 +12,152 @@ interface ChatWidgetProps {
 
 const ChatWidget: React.FC<ChatWidgetProps> = ({ isOpen, onClose, initialQuestion }) => {
   const [message, setMessage] = useState('');
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const processedInitialQuestionRef = useRef<string | null>(null);
+  
+  // Use ChatContext for persistent conversations
+  const {
+    chatHistory,
+    setChatHistory,
+    currentConversationId,
+    saveOrUpdateConversation,
+    handleNewChat,
+  } = useChat();
+  
+  const user = useCurrentUser();
+  
+  // Local ref to track if we're starting a fresh conversation
+  const isNewConversationRef = useRef(false);
 
-  // Auto-send initial question when widget opens
-  useEffect(() => {
-    if (isOpen && initialQuestion && chatHistory.length === 0) {
-      handleSendWithText(initialQuestion);
+  const handleSendWithText = useCallback(async (text: string) => {
+    if (!text.trim()) return;
+
+    // Prevent duplicate messages (unless it's a new conversation)
+    if (!isNewConversationRef.current) {
+      const lastMessage = chatHistory[chatHistory.length - 1];
+      if (lastMessage?.sender === 'user' && lastMessage?.text === text) {
+        return;
+      }
     }
-  }, [isOpen, initialQuestion]);
+
+    const newUserMsg = { 
+      sender: 'user', 
+      text,
+    };
+    // If starting a new conversation, start fresh; otherwise append
+    const updatedHistory = isNewConversationRef.current ? [newUserMsg] : [...chatHistory, newUserMsg];
+    isNewConversationRef.current = false; // Reset flag after using it
+    setChatHistory(updatedHistory);
+    setLoading(true);
+
+    try {
+      // Get user info for chatbot service
+      const userName = user?.displayName || user?.name || user?.email?.split('@')[0] || 'Guest';
+      const userId = user?.uid || 'anon';
+      
+      const botReply = await sendMessageToChatbot({ 
+        message: text,
+        userName,
+        userId,
+        includeHistory: true,
+      });
+      
+      const botMsg = { 
+        sender: 'bot', 
+        text: botReply,
+      };
+      
+      const finalHistory = [...updatedHistory, botMsg];
+      setChatHistory(finalHistory);
+      
+      // Save conversation to Firestore
+      await saveOrUpdateConversation(finalHistory);
+    } catch (error) {
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "Error connecting to chatbot.";
+      const errorMsg = { 
+        sender: 'bot', 
+        text: `Error: ${errorMessage}`,
+      };
+      const errorHistory = [...updatedHistory, errorMsg];
+      setChatHistory(errorHistory);
+      
+      // Save error state too (so user can see the error later)
+      await saveOrUpdateConversation(errorHistory);
+    }
+
+    setMessage('');
+    setLoading(false);
+  }, [chatHistory, setChatHistory, saveOrUpdateConversation, user]);
+
+  // Auto-send initial question when widget opens with a new question
+  useEffect(() => {
+    if (!isOpen) {
+      processedInitialQuestionRef.current = null;
+      return;
+    }
+    
+    // Start a new conversation when initialQuestion is provided and it's different from what we've processed
+    if (initialQuestion && processedInitialQuestionRef.current !== initialQuestion) {
+      processedInitialQuestionRef.current = initialQuestion;
+      isNewConversationRef.current = true;
+      
+      // Reset conversation first (clears history and resets ID)
+      handleNewChat();
+      
+      // Then immediately set the user message so it's visible
+      const userMsg = { sender: 'user', text: initialQuestion };
+      setChatHistory([userMsg]);
+      setLoading(true);
+      
+      // Get bot response
+      (async () => {
+        try {
+          const userName = user?.displayName || user?.name || user?.email?.split('@')[0] || 'Guest';
+          const userId = user?.uid || 'anon';
+          
+          const botReply = await sendMessageToChatbot({ 
+            message: initialQuestion,
+            userName,
+            userId,
+            includeHistory: false, // New conversation, no history
+          });
+          
+          const botMsg = { sender: 'bot', text: botReply };
+          const finalHistory = [userMsg, botMsg];
+          setChatHistory(finalHistory);
+          await saveOrUpdateConversation(finalHistory);
+        } catch (error) {
+          const errorMsg = { 
+            sender: 'bot', 
+            text: error instanceof Error ? error.message : "Error connecting to chatbot.",
+          };
+          const errorHistory = [userMsg, errorMsg];
+          setChatHistory(errorHistory);
+          await saveOrUpdateConversation(errorHistory);
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+  }, [isOpen, initialQuestion, handleNewChat, setChatHistory, saveOrUpdateConversation, user]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory]);
 
-  // Reset when closed
+  // Reset UI state when closed (but keep conversation saved)
   useEffect(() => {
     if (!isOpen) {
-      setChatHistory([]);
       setMessage('');
       setIsMinimized(false);
+      processedInitialQuestionRef.current = null;
     }
   }, [isOpen]);
-
-  const handleSendWithText = async (text: string) => {
-    if (!text.trim()) return;
-
-    const newUserMsg: ChatMessage = { 
-      sender: 'user', 
-      text,
-      timestamp: new Date()
-    };
-    setChatHistory((prev) => [...prev, newUserMsg]);
-    setLoading(true);
-
-    try {
-      const botReply = await sendMessageToChatbot({ message: text });
-      const botMsg: ChatMessage = { 
-        sender: 'bot', 
-        text: botReply,
-        timestamp: new Date()
-      };
-      setChatHistory((prev) => [...prev, botMsg]);
-    } catch (error) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : "Error connecting to chatbot.";
-      const errorMsg: ChatMessage = { 
-        sender: 'bot', 
-        text: `Error: ${errorMessage}`,
-        timestamp: new Date()
-      };
-      setChatHistory((prev) => [...prev, errorMsg]);
-    }
-
-    setMessage('');
-    setLoading(false);
-  };
 
   const handleSend = () => {
     handleSendWithText(message);

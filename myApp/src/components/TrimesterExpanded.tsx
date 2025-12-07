@@ -34,7 +34,7 @@ export default function TrimesterExpanded({
         title="Checklist"
       />
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '32px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '32px', marginBottom: '16px' }}>
         <h3 className={styles.sectionTitle} style={{ margin: 0 }}>Doctor Discussion Prompts</h3>
         {totalQuestions > 5 && (
           <button
