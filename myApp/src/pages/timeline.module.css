@@ -65,6 +65,7 @@ ion-button::part(native):active {
   justify-content: space-between;
   align-items: center;
   position: relative;
+  width: 1263px;
 }
 
 .statusContent {
@@ -132,6 +133,7 @@ ion-button::part(native):active {
   padding: 0;
   margin: 24px 0;
   height: 71px;
+  width: 1263px;
 }
 
 .progressTrack {
@@ -241,8 +243,9 @@ ion-button::part(native):active {
 .grid {
   margin: 24px 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 405px);
   gap: 24px;
+  justify-content: start;
 }
 
 .card {
@@ -684,9 +687,10 @@ ion-button::part(native):active {
 
 .bottomGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 405px);
   gap: 24px;
   margin-top: 24px;
+  justify-content: start;
 }
 
 .backBtn {
@@ -707,6 +711,7 @@ ion-button::part(native):active {
 
 .expandedWrap {
   margin: 24px 0;
+  width: 1263px;
 }
 
 .expanded {
@@ -714,6 +719,7 @@ ion-button::part(native):active {
   border-radius: 10px;
   border: 1px solid var(--color-border);
   padding: 32px 40px;
+  width: 100%;
 }
 
 .expandedHeader {
@@ -985,8 +991,16 @@ ion-button::part(native):active {
     padding: 61px 60px 100px;
   }
   
+  .statusHeader,
+  .trimesterProgress {
+    width: 100%;
+    max-width: 1263px;
+  }
+  
+  .grid,
   .bottomGrid {
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    justify-content: start;
   }
 }
 
@@ -1011,6 +1025,11 @@ ion-button::part(native):active {
     flex-direction: column;
     gap: 16px;
     padding: 20px;
+    width: 100% !important;
+  }
+  
+  .trimesterProgress {
+    width: 100% !important;
   }
   
   .statusInfo {

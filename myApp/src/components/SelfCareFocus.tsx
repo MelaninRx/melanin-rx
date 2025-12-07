@@ -177,29 +177,30 @@ function getDailyReminder(): string {
 
 interface SelfCareFocusProps {
   weeksPostpartum: number;
+  compact?: boolean;
 }
 
-export default function SelfCareFocus({ weeksPostpartum }: SelfCareFocusProps) {
+export default function SelfCareFocus({ weeksPostpartum, compact = false }: SelfCareFocusProps) {
   // Use week-based data for first 12 weeks, then switch to daily reminders
   const useDailyReminder = weeksPostpartum > 12;
   const selfCare = useDailyReminder ? null : getSelfCareData(weeksPostpartum);
   const dailyReminder = useDailyReminder ? getDailyReminder() : null;
   
   return (
-    <div className={styles.fetalCard}>
-      <div className={styles.fetalTitle}>Self-Care Focus</div>
+    <div className={styles.fetalCard} data-component="self-care-focus" data-compact={compact}>
+      <div className={styles.fetalTitle} style={{ marginBottom: compact ? '8px' : undefined }}>Self-Care Focus</div>
       
-      <div className={styles.fetalContent}>
+      <div className={styles.fetalContent} style={{ gap: compact ? '6px' : undefined }}>
         {/* Heart icon for self-care */}
         <div style={{ 
-          width: '100px', 
-          height: '100px', 
+          width: compact ? '60px' : '100px', 
+          height: compact ? '60px' : '100px', 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
-          marginBottom: '8px'
+          marginBottom: compact ? '0' : '8px'
         }}>
-          <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width={compact ? '50' : '80'} height={compact ? '50' : '80'} viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="heartGradient" x1="40" y1="0" x2="40" y2="80" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#642D56"/>
@@ -219,8 +220,8 @@ export default function SelfCareFocus({ weeksPostpartum }: SelfCareFocusProps) {
           <>
             <div className={styles.fetalSizeLabel}>Today's reminder</div>
             <div style={{
-              marginTop: '16px',
-              padding: '16px 20px',
+              marginTop: compact ? '10px' : '16px',
+              padding: compact ? '12px 16px' : '16px 20px',
               background: 'linear-gradient(135deg, #F8F0F5 0%, #F5E8ED 100%)',
               borderRadius: '8px',
               border: '1px solid rgba(100, 45, 86, 0.1)',
@@ -229,7 +230,7 @@ export default function SelfCareFocus({ weeksPostpartum }: SelfCareFocusProps) {
             }}>
               <div style={{
                 fontFamily: "'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif",
-                fontSize: '15px',
+                fontSize: compact ? '13px' : '15px',
                 fontWeight: 500,
                 color: 'var(--color-text-dark)',
                 textAlign: 'center',
@@ -247,10 +248,10 @@ export default function SelfCareFocus({ weeksPostpartum }: SelfCareFocusProps) {
             
             <div style={{ 
               width: '100%', 
-              marginTop: '12px',
+              marginTop: compact ? '8px' : '12px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '12px',
+              gap: compact ? '8px' : '12px',
               textAlign: 'left'
             }}>
               {selfCare?.tips.slice(0, 3).map((tip, index) => (
@@ -271,8 +272,8 @@ export default function SelfCareFocus({ weeksPostpartum }: SelfCareFocusProps) {
             </div>
 
             <div style={{
-              marginTop: '16px',
-              padding: '12px 16px',
+              marginTop: compact ? '10px' : '16px',
+              padding: compact ? '10px 14px' : '12px 16px',
               background: 'linear-gradient(135deg, #F8F0F5 0%, #F5E8ED 100%)',
               borderRadius: '8px',
               border: '1px solid rgba(100, 45, 86, 0.1)',
@@ -281,7 +282,7 @@ export default function SelfCareFocus({ weeksPostpartum }: SelfCareFocusProps) {
             }}>
               <div style={{
                 fontFamily: "'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif",
-                fontSize: '13px',
+                fontSize: compact ? '12px' : '13px',
                 fontWeight: 600,
                 color: 'var(--color-primary)',
                 fontStyle: 'italic',

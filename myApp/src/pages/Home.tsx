@@ -388,7 +388,7 @@ const Home: React.FC = () => {
             {currentWeek > 0 && (
               <div className="bottom-card">
                 {isPostpartum ? (
-                  <SelfCareFocus weeksPostpartum={currentWeek - 40} />
+                  <SelfCareFocus weeksPostpartum={currentWeek - 40} compact={true} />
                 ) : (
                   <FetalDevelopment currentWeek={currentWeek} isPostpartum={false} />
                 )}
