@@ -17,6 +17,7 @@ const AppointmentDetail: React.FC = () => {
   const [appointment, setAppointment] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState<string[]>([]);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -104,7 +105,7 @@ const AppointmentDetail: React.FC = () => {
   return (
     <IonPage className="appointment-detail-page">
       <IonContent fullscreen>
-        <SidebarNav />
+        <SidebarNav onToggle={setSidebarExpanded}/>
 
         <div className="appointment-detail-container">
           <button className="back-arrow" onClick={() => history.goBack()} aria-label="Go back">
