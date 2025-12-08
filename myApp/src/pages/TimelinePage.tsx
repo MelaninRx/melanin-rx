@@ -74,11 +74,11 @@ const TimelinePage: React.FC = () => {
   // Check for postpartum query parameter when location changes
   React.useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    if (searchParams.get('postpartum') === 'true' && isPostpartum && postpartumData) {
+    if (searchParams.get('postpartum') === 'true' && postpartumData) {
       setIsShowingPostpartum(true);
       setActiveId(null);
     }
-  }, [location.search, isPostpartum, postpartumData]);
+  }, [location.search, postpartumData]);
 
   React.useEffect(() => {
     if (user?.dueDate) {
@@ -202,7 +202,7 @@ const TimelinePage: React.FC = () => {
     : 0;
   
   const handleBabyClick = () => {
-    if (isPostpartum && postpartumData) {
+    if (postpartumData) {
       setIsShowingPostpartum(true);
       setActiveId(null); // Clear any trimester selection
     }
