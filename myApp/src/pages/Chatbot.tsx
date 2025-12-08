@@ -146,18 +146,18 @@ const ChatbotPage: React.FC = () => {
   // Fun facts about Black maternal health
     const maternalHealthFacts = [
       // Disparity awareness (with sources)
-      "💜 Black women are 3-4 times more likely to die from pregnancy-related causes than white women (CDC).",
-      "📊 In 2023, the maternal mortality rate for Black women was 50.3 per 100,000 live births—compared to 14.5 for white women (American Hospital Association).",
-      "🎓 Black women face higher maternal mortality risks across ALL income and education levels (Johns Hopkins Bloomberg School of Public Health).",
-      "🩺 Hypertensive disorders like preeclampsia account for over 60% of maternal deaths among Black women between 2018-2022 (JAMA Network).",
-      "🏥 U.S.-born Black women are more likely to develop preeclampsia than foreign-born Black women (Johns Hopkins Medicine).",
+      "Black women are 3-4 times more likely to die from pregnancy-related causes than white women (CDC).",
+      "In 2023, the maternal mortality rate for Black women was 50.3 per 100,000 live births—compared to 14.5 for white women (American Hospital Association).",
+      "Black women face higher maternal mortality risks across ALL income and education levels (Johns Hopkins Bloomberg School of Public Health).",
+      "Hypertensive disorders like preeclampsia account for over 60% of maternal deaths among Black women between 2018-2022 (JAMA Network).",
+      "U.S.-born Black women are more likely to develop preeclampsia than foreign-born Black women (Johns Hopkins Medicine).",
       
       // Supportive & empowering facts
-      "🌟 Your body is doing amazing work growing a new life—honor it with rest, nutrition, and self-care.",
-      "💪 Having a birth support person (like a doula) can improve your birth experience and outcomes.",
-      "🗣️ Speaking up about your symptoms and concerns is not being difficult—it's protecting your health and your baby's.",
-      "❤️ Community and connection matter: reaching out to other expectant mothers can provide valuable support.",
-      "✨ Every pregnancy journey is unique—trust yourself and your instincts about what your body needs.",
+      "Your body is doing amazing work growing a new life—honor it with rest, nutrition, and self-care.",
+      "Having a birth support person (like a doula) can improve your birth experience and outcomes.",
+      "Speaking up about your symptoms and concerns is not being difficult—it's protecting your health and your baby's.",
+      "Community and connection matter: reaching out to other expectant mothers can provide valuable support.",
+      "Every pregnancy journey is unique—trust yourself and your instincts about what your body needs.",
     ];
 
     const getRandomFact = () => {

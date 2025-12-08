@@ -70,7 +70,7 @@ body, html, #root, ion-app, ion-page, ion-content {
   font-size: 24px;
   font-weight: 400;
   line-height: normal;
-  margin: 0 0 60px 0;
+  margin: 0 0 30px 0;
 }
 
 .suggestion-cards {
@@ -80,7 +80,8 @@ body, html, #root, ion-app, ion-page, ion-content {
   gap: 18px;
   width: 100%;
   max-width: 1015px;
-  margin-top: 32px;
+  margin-top: 20px;
+  transform: scale(0.9);
 }
 
 .suggestion-card {
@@ -91,11 +92,11 @@ body, html, #root, ion-app, ion-page, ion-content {
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  border: 1px solid #CBCBCB;
+  border: 1px solid #cbcbcb5d;
   background: rgba(255, 255, 255, 0.67);
   color: #5D5D5D;
   font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
   line-height: 116.7%;
   letter-spacing: -1.5px;
@@ -143,7 +144,7 @@ body, html, #root, ion-app, ion-page, ion-content {
   color: #2a1d31;
   align-self: flex-start;
   border-bottom-left-radius: 4px;
-  border: 1px solid #CBCBCB;
+  border: 1px solid #cbcbcb5d;
 }
 
 .thinking-text {
@@ -155,19 +156,19 @@ body, html, #root, ion-app, ion-page, ion-content {
 
 .chat-input-container {
   display: flex;
-  width: 100%;
+  width: 90%;
   max-width: 1015px;
-  height: 96px;
+  height: 65px;
   padding: 14px 14px 14px 24px;
   align-items: center;
   gap: 12px;
-  border-radius: 23px;
-  border: 1px solid #CBCBCB;
+  border-radius: 15px;
+  border: 1px solid #cbcbcb5d;
   background: white;
   position: fixed;
   bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 62%;
+  transform: translateX(-62%);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   z-index: 100;
 }
@@ -179,7 +180,7 @@ body, html, #root, ion-app, ion-page, ion-content {
   background: transparent;
   color: #5D5D5D;
   font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 116.7%;
   letter-spacing: -1px;
@@ -189,7 +190,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 .chat-input-field::placeholder {
   color: #5D5D5D;
   font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 116.7%;
   letter-spacing: -1px;
@@ -389,7 +390,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 
 .chat-bubble.bot hr {
   border: none;
-  border-top: 1px solid #CBCBCB;
+  border-top: 1px solid #cbcbcb5d;
   margin: 16px 0;
 }
 
@@ -408,16 +409,16 @@ body, html, #root, ion-app, ion-page, ion-content {
 .disclaimer-box {
   width: 100%;
   max-width: 1015px;
-  margin: 24px 0;
+  margin: 12px 0;
   padding: 16px 20px;
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #CBCBCB;
+  border: 1px solid #cbcbcb5d;
   border-radius: 12px;
 }
 
 .disclaimer-text {
   color: #5D5D5D;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   margin: 0;
   text-align: center;
@@ -432,10 +433,11 @@ body, html, #root, ion-app, ion-page, ion-content {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-top: 0px;
+  margin-bottom: 8px;
   padding: 12px 20px;
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #CBCBCB;
+  border: 1px solid #cbcbcb5d;
   border-radius: 12px;
   width: 100%;
   max-width: 1015px;
@@ -450,7 +452,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 
 .style-dropdown {
   padding: 8px 16px;
-  border: 1px solid #CBCBCB;
+  border: 1px solid #cbcbcb5d;
   border-radius: 8px;
   background: white;
   color: #5D5D5D;
@@ -525,15 +527,16 @@ body, html, #root, ion-app, ion-page, ion-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 5px;
   padding: 40px 20px;
   margin: 20px 0;
+  margin-top: -100px;
   /* Removed background and border-radius for clean look */
 }
 
 .loading-animation {
-  width: 80px;  /* Back to original size */
-  height: 80px;
+  width: 250px;  /* Back to original size */
+  height: 250px;
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 8px;
@@ -563,7 +566,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 .loading-text {
   color: #642D56;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 18px;
+  font-size: 25px !important;
   font-weight: 600;
   margin: 0;
 }
@@ -571,7 +574,7 @@ body, html, #root, ion-app, ion-page, ion-content {
 .loading-fact {
   color: #5D5D5D;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
   text-align: center;

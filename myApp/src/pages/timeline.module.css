@@ -28,11 +28,15 @@ ion-button::part(native):active {
   background: var(--gradient-bg);
   padding: 61px 139px 100px;
   font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  transform: scale(0.95);
+  transform-origin: top center;
+  width: 105.11%;
+  margin-left: -2.56%;
 }
 
 .timelinePage.sidebar-expanded {
   margin-left: 200px;
-  width: calc(100% - 200px);
+  width: calc(105.11% - 200px / 0.95);;
   max-width: none;
   box-sizing: border-box;
   transition: margin-left 0.3s ease, width 0.3s ease, padding-left 0.3s ease;
