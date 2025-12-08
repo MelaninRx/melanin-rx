@@ -95,11 +95,15 @@ body, html, *, *:before, *:after {
 
 .auth-left-slogan {
   font-size: 50px;
+  font-family: 'Source Serif Pro', serif !important;
   font-weight: 800 !important;
-  color: var(--text-primary);
-  margin-bottom: 24px;
+  background: linear-gradient(90deg, #642D56 0%, #CA5BAE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 14px;
   margin-left: 25px;
-  line-height: 0.8;
+  line-height: 1;
 }
 
 .auth-right {
