@@ -1,0 +1,136 @@
+[debug] [2025-12-04T18:22:02.284Z] ----------------------------------------------------------------------
+[debug] [2025-12-04T18:22:02.289Z] Command:       /opt/homebrew/Cellar/node/23.11.0/bin/node /opt/homebrew/bin/firebase emulators:start
+[debug] [2025-12-04T18:22:02.289Z] CLI Version:   14.25.0
+[debug] [2025-12-04T18:22:02.289Z] Platform:      darwin
+[debug] [2025-12-04T18:22:02.289Z] Node Version:  v23.11.0
+[debug] [2025-12-04T18:22:02.289Z] Time:          Thu Dec 04 2025 13:22:02 GMT-0500 (Eastern Standard Time)
+[debug] [2025-12-04T18:22:02.289Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-12-04T18:22:02.362Z] Object "" in "firebase.json" has unknown property: {"additionalProperty":"version"}
+[debug] [2025-12-04T18:22:02.366Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-12-04T18:22:02.366Z] > authorizing via signed-in user (karringtonriley@gmail.com)
+[info] i  emulators: Starting emulators: functions, hosting, extensions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions, hosting, extensions"}}
+[debug] [2025-12-04T18:22:02.367Z] Checked if tokens are valid: true, expires at: 1764875916127
+[debug] [2025-12-04T18:22:02.367Z] Checked if tokens are valid: true, expires at: 1764875916127
+[debug] [2025-12-04T18:22:02.368Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c [none]
+[debug] [2025-12-04T18:22:02.664Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c 200
+[debug] [2025-12-04T18:22:02.664Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/melaninrx-4842c {"projectNumber":"239901067581","projectId":"melaninrx-4842c","lifecycleState":"ACTIVE","name":"MelaninRx","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-09-29T20:01:28.568583Z"}
+[debug] [2025-12-04T18:22:03.024Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[warn] ⚠  hosting: Hosting Emulator unable to start on port 5000, starting on 5002 instead. {"metadata":{"emulator":{"name":"hosting"},"message":"Hosting Emulator unable to start on port 5000, starting on 5002 instead."}}
+[debug] [2025-12-04T18:22:03.025Z] [hosting] Hosting Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-04T18:22:03.025Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"hosting":[{"address":"127.0.0.1","family":"IPv4","port":5002}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2025-12-04T18:22:03.026Z] Emulator locator file path: /var/folders/xf/fn7y05vn63g5_dl9523yjtnw0000gn/T/hub-melaninrx-4842c.json
+[debug] [2025-12-04T18:22:03.026Z] [hub] writing locator at /var/folders/xf/fn7y05vn63g5_dl9523yjtnw0000gn/T/hub-melaninrx-4842c.json
+[debug] [2025-12-04T18:22:03.027Z] [Extensions] Started Extensions emulator, this is a noop.
+[debug] [2025-12-04T18:22:03.239Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-04T18:22:03.239Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-04T18:22:03.239Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-04T18:22:03.239Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"hosting":[{"address":"127.0.0.1","family":"IPv4","port":5002}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, auth, firestore, database, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mapphosting, auth, firestore, database, pubsub, storage, dataconnect\u001b[22m"}}
+[debug] [2025-12-04T18:22:03.273Z] defaultcredentials: writing to file /Users/karringtonriley/.config/firebase/karringtonriley_gmail_com_application_default_credentials.json
+[debug] [2025-12-04T18:22:03.274Z] Setting GAC to /Users/karringtonriley/.config/firebase/karringtonriley_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /Users/karringtonriley/.config/firebase/karringtonriley_gmail_com_application_default_credentials.json"}}
+[debug] [2025-12-04T18:22:03.274Z] Checked if tokens are valid: true, expires at: 1764875916127
+[debug] [2025-12-04T18:22:03.274Z] Checked if tokens are valid: true, expires at: 1764875916127
+[debug] [2025-12-04T18:22:03.274Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c/adminSdkConfig [none]
+[debug] [2025-12-04T18:22:04.251Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c/adminSdkConfig 200
+[debug] [2025-12-04T18:22:04.251Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c/adminSdkConfig {"projectId":"melaninrx-4842c","storageBucket":"melaninrx-4842c.firebasestorage.app"}
+[debug] [2025-12-04T18:22:04.260Z] Checked if tokens are valid: true, expires at: 1764875916127
+[debug] [2025-12-04T18:22:04.260Z] Checked if tokens are valid: true, expires at: 1764875916127
+[debug] [2025-12-04T18:22:04.260Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/melaninrx-4842c/sites 
+[debug] [2025-12-04T18:22:04.779Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/melaninrx-4842c/sites 200
+[debug] [2025-12-04T18:22:04.779Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/melaninrx-4842c/sites {"sites":[{"name":"projects/melaninrx-4842c/sites/melaninrx-4842c","defaultUrl":"https://melaninrx-4842c.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2025-12-04T18:22:04.780Z] Checked if tokens are valid: true, expires at: 1764875916127
+[debug] [2025-12-04T18:22:04.780Z] Checked if tokens are valid: true, expires at: 1764875916127
+[debug] [2025-12-04T18:22:04.780Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c/webApps/-/config [none]
+[debug] [2025-12-04T18:22:05.127Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c/webApps/-/config 200
+[debug] [2025-12-04T18:22:05.128Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c/webApps/-/config {"projectId":"melaninrx-4842c","appId":"1:239901067581:web:ef231edcb0d07ba8b85d54","storageBucket":"melaninrx-4842c.firebasestorage.app","apiKey":"AIzaSyDzThX-ChjUapnPQ4JejEpd2smZgGnKW9k","authDomain":"melaninrx-4842c.firebaseapp.com","messagingSenderId":"239901067581","measurementId":"G-SVWCGPHGTL","projectNumber":"239901067581","version":"2"}
+[debug] [2025-12-04T18:22:05.138Z] Checked if tokens are valid: true, expires at: 1764875916127
+[debug] [2025-12-04T18:22:05.138Z] Checked if tokens are valid: true, expires at: 1764875916127
+[debug] [2025-12-04T18:22:05.138Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c [none]
+[debug] [2025-12-04T18:22:05.311Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c 200
+[debug] [2025-12-04T18:22:05.311Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/melaninrx-4842c {"projectId":"melaninrx-4842c","projectNumber":"239901067581","displayName":"MelaninRx","name":"projects/melaninrx-4842c","resources":{"hostingSite":"melaninrx-4842c"},"state":"ACTIVE","etag":"1_f6be8cdf-ee1f-4782-a95f-857812ac4a55"}
+[info] i  hosting[melaninrx-4842c]: Serving hosting files from: dist {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mdist\u001b[22m"}}
+[info] ✔  hosting[melaninrx-4842c]: Local server: http://127.0.0.1:5002 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://127.0.0.1:5002\u001b[22m\u001b[24m"}}
+[debug] [2025-12-04T18:22:05.385Z] [Extensions] Connecting Extensions emulator, this is a noop.
+[info] i  functions: Watching "/Users/karringtonriley/Documents/MelaninRx/melanin-rx/myApp/functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/Users/karringtonriley/Documents/MelaninRx/melanin-rx/myApp/functions\" for Cloud Functions..."}}
+[debug] [2025-12-04T18:22:05.387Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2025-12-04T18:22:05.795Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^6.5.0",
+    "react-markdown": "^10.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.9.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.32.0",
+    "firebase-functions-test": "^3.1.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.45.0"
+  },
+  "private": true
+}
+[debug] [2025-12-04T18:22:05.795Z] Building nodejs source
+[debug] [2025-12-04T18:22:05.796Z] Failed to find version of module node: reached end of search path /Users/karringtonriley/Documents/MelaninRx/melanin-rx/myApp/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "22" doesn't match your global version "23". Using node@23 from host. 
+[debug] [2025-12-04T18:22:05.797Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-12-04T18:22:05.800Z] Found firebase-functions binary at '/Users/karringtonriley/Documents/MelaninRx/melanin-rx/myApp/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8938
+
+[debug] [2025-12-04T18:22:06.035Z] Got response from /__/functions.yaml {"endpoints":{"chatWithLangFlow":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":10,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","secretEnvironmentVariables":[{"key":"LANGFLOW_API_KEY"}],"labels":{},"httpsTrigger":{},"entryPoint":"chatWithLangFlow"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[debug] [2025-12-04T18:22:10.055Z] defaultcredentials: writing to file /Users/karringtonriley/.config/firebase/karringtonriley_gmail_com_application_default_credentials.json
+[debug] [2025-12-04T18:22:10.056Z] Setting GAC to /Users/karringtonriley/.config/firebase/karringtonriley_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /Users/karringtonriley/.config/firebase/karringtonriley_gmail_com_application_default_credentials.json"}}
+[info] ✔  functions: Loaded functions definitions from source: chatWithLangFlow. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: chatWithLangFlow."}}
+[info] ✔  functions[us-central1-chatWithLangFlow]: http function initialized (http://127.0.0.1:5001/melaninrx-4842c/us-central1/chatWithLangFlow). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://127.0.0.1:5001/melaninrx-4842c/us-central1/chatWithLangFlow)."}}
+[debug] [2025-12-04T18:22:10.063Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────┬────────────────┬──────────────────────────────────┐
+│ Emulator   │ Host:Port      │ View in Emulator UI              │
+├────────────┼────────────────┼──────────────────────────────────┤
+│ Functions  │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions  │
+├────────────┼────────────────┼──────────────────────────────────┤
+│ Hosting    │ 127.0.0.1:5002 │ n/a                              │
+├────────────┼────────────────┼──────────────────────────────────┤
+│ Extensions │ 127.0.0.1:5001 │ http://127.0.0.1:4000/extensions │
+└────────────┴────────────────┴──────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500
+┌─────────────────────────┬───────────────┬─────────────────────┐
+│ Extension Instance Name │ Extension Ref │ View in Emulator UI │
+└─────────────────────────┴───────────────┴─────────────────────┘
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:37 +0000] "GET / HTTP/1.1" 200 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:37 +0000] \"GET / HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:37 +0000] "GET /assets/index-BKchJVHG.css HTTP/1.1" 200 - "http://127.0.0.1:5002/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:37 +0000] \"GET /assets/index-BKchJVHG.css HTTP/1.1\" 200 - \"http://127.0.0.1:5002/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:37 +0000] "GET /assets/index-hgPXavk_.js HTTP/1.1" 200 - "http://127.0.0.1:5002/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:37 +0000] \"GET /assets/index-hgPXavk_.js HTTP/1.1\" 200 - \"http://127.0.0.1:5002/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] "GET /assets/source-serif-pro-latin-400-BwqNxjOs.woff2 HTTP/1.1" 200 19368 "http://127.0.0.1:5002/assets/index-BKchJVHG.css" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] \"GET /assets/source-serif-pro-latin-400-BwqNxjOs.woff2 HTTP/1.1\" 200 19368 \"http://127.0.0.1:5002/assets/index-BKchJVHG.css\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] "GET /favicon.png HTTP/1.1" 200 930 "http://127.0.0.1:5002/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] \"GET /favicon.png HTTP/1.1\" 200 930 \"http://127.0.0.1:5002/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] "GET /manifest.json HTTP/1.1" 200 438 "http://127.0.0.1:5002/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] \"GET /manifest.json HTTP/1.1\" 200 438 \"http://127.0.0.1:5002/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] "GET /assets/focus-visible-supuXXMI.js HTTP/1.1" 200 994 "http://127.0.0.1:5002/assets/index-hgPXavk_.js" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] \"GET /assets/focus-visible-supuXXMI.js HTTP/1.1\" 200 994 \"http://127.0.0.1:5002/assets/index-hgPXavk_.js\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] "GET /assets/index7-BPgcA-Bn.js HTTP/1.1" 200 - "http://127.0.0.1:5002/assets/index-hgPXavk_.js" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] \"GET /assets/index7-BPgcA-Bn.js HTTP/1.1\" 200 - \"http://127.0.0.1:5002/assets/index-hgPXavk_.js\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] "GET /assets/swipe-back-FkygFga1.js HTTP/1.1" 200 682 "http://127.0.0.1:5002/assets/index-hgPXavk_.js" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] \"GET /assets/swipe-back-FkygFga1.js HTTP/1.1\" 200 682 \"http://127.0.0.1:5002/assets/index-hgPXavk_.js\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] "GET /assets/source-serif-pro-latin-700-CA5cYFg7.woff2 HTTP/1.1" 200 20072 "http://127.0.0.1:5002/assets/index-BKchJVHG.css" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] \"GET /assets/source-serif-pro-latin-700-CA5cYFg7.woff2 HTTP/1.1\" 200 20072 \"http://127.0.0.1:5002/assets/index-BKchJVHG.css\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] "GET /assets/logo.png HTTP/1.1" 200 - "http://127.0.0.1:5002/landing" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] \"GET /assets/logo.png HTTP/1.1\" 200 - \"http://127.0.0.1:5002/landing\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] "GET /assets/hero-image.png HTTP/1.1" 200 - "http://127.0.0.1:5002/landing" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [04/Dec/2025:18:22:38 +0000] \"GET /assets/hero-image.png HTTP/1.1\" 200 - \"http://127.0.0.1:5002/landing\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""}}

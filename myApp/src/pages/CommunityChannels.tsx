@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import {
   IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonButton,
-  IonButtons,
 } from '@ionic/react';
 import './CommunityChannels.css';
+import SidebarNav from "../components/SidebarNav";
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { db } from '../firebaseConfig';
-import { doc, getDoc, collection, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, doc } from 'firebase/firestore';
+import MobileMenuButton from '../components/MobileMenuButton';
+import { useHistory } from 'react-router-dom';
 
 type UserProfile = {
   name?: string;
   email?: string;
   location?: string;
-  trimester?: string; // '1' | '2' | '3'
+  trimester?: string;
 };
 
 function useUserProfile(user: any) {
@@ -28,12 +23,10 @@ function useUserProfile(user: any) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // While auth is initializing, keep loading true
     if (user === undefined) {
       setLoading(true);
       return;
     }
-    // Explicitly signed out (let App routes handle redirect). Keep loading so we don't flash prompts.
     if (user === null) {
       setLoading(true);
       return;
@@ -64,17 +57,9 @@ type Channel = {
   description?: string;
   category?: string;
   location?: string;
-  trimester?: string; // '1' | '2' | '3' | undefined => all
+  trimester?: string;
   tags?: string[];
 };
-
-function getTrimesterLabelFromProfile(p: UserProfile): 'first' | 'second' | 'third' | null {
-  if (!p?.trimester) return null;
-  if (p.trimester === '1') return 'first';
-  if (p.trimester === '2') return 'second';
-  if (p.trimester === '3') return 'third';
-  return null;
-}
 
 function useCommunityChannels() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -93,7 +78,7 @@ function useCommunityChannels() {
             description: data.description,
             category: data.category,
             location: data.location,
-            trimester: data.trimester, // expected to be '1' | '2' | '3' or undefined
+            trimester: data.trimester,
             tags: Array.isArray(data.tags) ? data.tags : undefined,
           };
         });
@@ -110,19 +95,20 @@ function useCommunityChannels() {
 
 const CommunityChannels: React.FC = () => {
   const user = useCurrentUser();
+  const history = useHistory();
   const { profile, loading } = useUserProfile(user);
   const { channels, loading: loadingChannels } = useCommunityChannels();
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
+
+  const handleChannelClick = (channelId: string) => {
+    history.push(`/community/${channelId}`);
+  };
 
   if (loading || loadingChannels) {
     return (
       <IonPage className="community-page">
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Community Channels</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <p>Loading your channels...</p>
+        <IonContent className="communities-content">
+          <p className="loading-text">Loading your channels...</p>
         </IonContent>
       </IonPage>
     );
@@ -131,68 +117,62 @@ const CommunityChannels: React.FC = () => {
   if (!profile) {
     return (
       <IonPage className="community-page">
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Community Channels</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <p>We couldn't find your onboarding information. Please complete onboarding.</p>
-          <IonButton routerLink="/onboarding">Go to Onboarding</IonButton>
+        <IonContent className="communities-content">
+          <div className="error-container">
+            <p>We couldn't find your onboarding information. Please complete onboarding.</p>
+            <button className="onboarding-button" onClick={() => history.push('/onboarding')}>
+              Go to Onboarding
+            </button>
+          </div>
         </IonContent>
       </IonPage>
     );
   }
 
   const availableChannels = channels.filter((c) => {
-    // If a channel document has no trimester field, show it to everyone
     if (!c.trimester) return true;
-    return c.trimester === profile.trimester;
+    const userTrimester = profile.trimester;
+    if (userTrimester === 'postpartum') {
+      return c.trimester === '4';
+    }
+    return c.trimester === userTrimester;
   });
 
   return (
     <IonPage className="community-page">
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Community Channels</IonTitle>
-          <IonButtons slot="end">
-            <IonButton routerLink="/home" routerDirection="root" color="medium">Home</IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
+      <IonContent fullscreen className="communities-content">
+        <MobileMenuButton />
+        <SidebarNav onToggle={setSidebarExpanded} />
 
-      <IonContent fullscreen className="community-content">
-        <section className="community-hero">
-          <h2 className="community-welcome">
-            {user?.email ? `Welcome, ${user.email}` : 'Welcome to MelaninRX Community'}
-          </h2>
-          <p className="community-sub">
-            Join conversations, ask questions, and share resources with others who understand your journey.
-          </p>
-        </section>
-
-        <main>
-          <IonList>
-            {availableChannels.map((c) => (
-              <IonItem key={c.id} className="channel-item">
-                <IonLabel>
-                  <h3>{c.name}</h3>
-                  <p className="channel-desc">{c.description || 'Open discussion and peer support'}</p>
-                </IonLabel>
-                <IonButton routerLink={`/community/${c.id}`} size="small" fill="outline">
-                  View
-                </IonButton>
-              </IonItem>
-            ))}
-          </IonList>
-
-          <div className="community-footer">
-            <p>
-              Can’t find a channel you need? Use the chatbot or resources page to get one-on-one guidance.
+        <div className={`communities-container${sidebarExpanded ? ' sidebar-expanded' : ''}`}>
+          <header className="communities-header">
+            <h1 className="communities-title">Communities</h1>
+            <p className="communities-subtitle">
+              Join conversations, ask questions, and share resources with others who understand your journey.
             </p>
-            <IonButton routerLink="/chatbot" className="btn-outline">Ask the Chatbot</IonButton>
+          </header>
+
+          <div className="channel-grid">
+            {availableChannels.map((channel) => (
+              <div 
+                key={channel.id} 
+                className="channel-card"
+                onClick={() => handleChannelClick(channel.id)}
+              >
+                <h2 className="channel-title">{channel.name}</h2>
+                <p className="channel-description">
+                  {channel.description || 'Open discussion and peer support'}
+                </p>
+                <div className="channel-link-container">
+                  <span className="channel-link-text">View Channel</span>
+                  <svg className="channel-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="#642D56" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            ))}
           </div>
-        </main>
+        </div>
       </IonContent>
     </IonPage>
   );

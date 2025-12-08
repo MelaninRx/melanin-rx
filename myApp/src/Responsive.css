@@ -1,0 +1,957 @@
+/* ================================================================
+   RESPONSIVE.CSS - Complete Global Responsive Styles for MelaninRX
+   Replace your entire Responsive.css with this file
+   ================================================================ */
+
+/* ===== ROOT VARIABLES - Responsive Sizes ===== */
+:root {
+  /* Sidebar widths */
+  --side-panel-width: 60px;
+  --side-panel-expanded-width: 200px;
+  
+  /* Spacing scale */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  
+  /* Container max-widths */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+}
+
+/* ===== BASE RESPONSIVE UTILITIES ===== */
+
+/* Fluid typography - scales with viewport */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+}
+
+/* ===== CRITICAL: Prevent horizontal scroll & overflow ===== */
+@media (max-width: 768px) {
+  body,
+  html,
+  #root,
+  ion-app,
+  ion-page,
+  ion-content {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+  
+  * {
+    box-sizing: border-box !important;
+  }
+}
+
+/* ===== CRITICAL: Remove fixed padding that breaks mobile ===== */
+@media (max-width: 768px) {
+  /* Remove all fixed left padding on mobile */
+  ion-content,
+  .home-content,
+  .timeline-content,
+  .appointments-content,
+  .chatbot-container,
+  .community-hero,
+  .resources-wrapper {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+  }
+  
+  /* Ensure content doesn't get cut off */
+  .hero,
+  .panels,
+  main,
+  section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* ===== SIDEBAR NAVIGATION - RESPONSIVE ===== */
+
+/* Mobile: Hide sidebar by default, show on toggle */
+@media (max-width: 768px) {
+  .side-panel {
+    width: 200px !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s ease, width 0.3s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background: #fff;
+    z-index: 1002;
+  }
+  
+  .side-panel.mobile-open {
+    transform: translateX(0) !important;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Always show menu text on mobile */
+  .side-panel .menu-text {
+    display: inline !important;
+    opacity: 1 !important;
+  }
+  
+  /* Backdrop overlay */
+  .side-panel.mobile-open::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 200px;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+  
+  /* Remove left padding when sidebar is hidden */
+  .appointments-content,
+  .home-content,
+  .timeline-content {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+  }
+  
+  /* Adjust main content when sidebar is hidden */
+  .chatbot-container,
+  .appointments-wrapper,
+  .settings-wrapper,
+  .resources-wrapper {
+    margin-left: 0 !important;
+  }
+}
+
+/* Tablet: Collapsed sidebar always visible */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .side-panel {
+    width: 60px !important;
+  }
+  
+  .side-panel:hover {
+    width: 180px !important;
+  }
+  
+  .appointments-content,
+  .home-content,
+  ion-content {
+    padding-left: 70px !important;
+  }
+}
+
+/* ===== MOBILE MENU TOGGLE BUTTON ===== */
+@media (min-width: 769px) {
+  .mobile-menu-toggle {
+    display: none;
+  }
+}
+
+/* ===== HOME PAGE - RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .hero {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  
+  .hero-title {
+    font-size: clamp(24px, 5vw, 40px) !important;
+  }
+  
+  .hero-subtitle {
+    font-size: clamp(14px, 2.5vw, 18px) !important;
+  }
+  
+  .panels {
+    flex-direction: column;
+    gap: 16px;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .panel-card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-page .hero {
+    padding: 80px 16px 32px 16px !important;
+    width: 100% !important;
+  }
+  
+  .hero-text {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .hero-buttons ion-button {
+    margin: 0 !important;
+    width: 100%;
+  }
+  
+  .panels {
+    width: 100% !important;
+    margin-left: 0 !important;
+    padding: 0 16px !important;
+  }
+  
+  .panel-card {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* ===== TIMELINE PAGE - RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .timelinePage {
+    padding: 16px !important;
+    width: 100% !important;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  
+  .rail {
+    --rail-pad: 20px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .timelineHeader {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+    padding: 16px !important;
+  }
+  
+  .h1 {
+    font-size: 24px !important;
+  }
+  
+  .statusCard {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px !important;
+  }
+  
+  .rail {
+    padding: 20px 16px 80px !important;
+  }
+  
+  .railStage {
+    left: 10px !important;
+    right: 10px !important;
+  }
+  
+  .nodeLabel {
+    font-size: 10px !important;
+    max-width: 50px !important;
+  }
+  
+  /* Stack the three info cards vertically */
+  .timelinePage > div:last-child {
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding: 16px !important;
+  }
+  
+  .timelinePage > div:last-child > div {
+    flex: 1 1 auto !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+  }
+}
+
+/* ===== CHATBOT PAGE - RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .chatbot-wrapper {
+    flex-direction: column;
+  }
+  
+  .history-panel {
+    flex: 0 0 auto;
+    min-width: 100%;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid #d3baba;
+  }
+  
+  .chat-panel {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  ion-content.chatbot-content {
+    --padding-start: 0 !important;
+    padding-left: 0 !important;
+  }
+  
+  .chatbot-wrapper {
+    padding-left: 0 !important;
+  }
+  
+  .history-panel {
+    flex: 0 0 auto !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    max-height: 200px !important;
+    border-right: none !important;
+    border-bottom: 1px solid #d3baba !important;
+  }
+  
+  .chat-panel {
+    width: 100% !important;
+  }
+  
+  .chat-greeting {
+    font-size: 28px !important;
+  }
+  
+  .chat-subtitle {
+    font-size: 18px !important;
+  }
+  
+  .suggested-questions-row {
+    flex-direction: column;
+    gap: 12px;
+    width: 100% !important;
+    padding: 0 16px !important;
+  }
+  
+  .question-box {
+    min-width: 100%;
+    max-width: 100%;
+  }
+  
+  .chat-input-area {
+    width: calc(100% - 32px) !important;
+    left: 16px !important;
+    transform: none !important;
+    bottom: 10px;
+  }
+  
+  .chat-messages {
+    padding: 16px !important;
+    padding-bottom: 100px !important;
+  }
+}
+
+/* ===== APPOINTMENTS PAGE - RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .appointments-content {
+    padding: 16px !important;
+    margin-left: 0 !important;
+  }
+  
+  .appointments-flex-row,
+  .appointments-flex-bottom {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  
+  .add-appointment-section,
+  .calendar-section,
+  .quick-actions-section {
+    flex: 1 1 auto !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .appointments-main-layout {
+    flex-direction: column;
+    overflow-x: hidden !important;
+  }
+  
+  .appointments-header {
+    padding: 0 !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .appointments-header h1 {
+    font-size: 24px !important;
+    margin-left: 0 !important;
+  }
+  
+  .subtitle {
+    margin-left: 0 !important;
+  }
+  
+  .appointments-flex-row,
+  .appointments-flex-bottom {
+    width: 100% !important;
+  }
+  
+  .upcoming-appointments-section,
+  .add-appointment-section,
+  .calendar-section,
+  .quick-actions-section {
+    min-width: 100% !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+  
+  .card {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0 !important;
+  }
+  
+  .appointment-card {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start !important;
+  }
+  
+  .appointment-date {
+    align-self: flex-start;
+    margin-bottom: 8px;
+  }
+  
+  .calendar-table {
+    font-size: 12px;
+  }
+  
+  .calendar-table th,
+  .calendar-table td {
+    padding: 8px 2px !important;
+  }
+}
+
+/* ===== RESOURCES PAGE - RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .resources-wrapper {
+    padding: 16px !important;
+    width: 100% !important;
+  }
+  
+  .resources-title {
+    font-size: 24px !important;
+  }
+  
+  .resources-tabs {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px !important;
+  }
+  
+  .tab {
+    width: 100%;
+  }
+  
+  .resources-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+  
+  .resource-card {
+    width: 100% !important;
+  }
+}
+
+/* ===== COMMUNITY CHANNELS - RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .community-hero {
+    padding: 24px 16px !important;
+  }
+  
+  .community-welcome {
+    font-size: 24px !important;
+  }
+  
+  .community-sub {
+    font-size: 14px !important;
+  }
+  
+  main {
+    padding: 16px !important;
+  }
+  
+  main > div {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .channel-card {
+    width: 100% !important;
+  }
+  
+  .community-footer {
+    padding: 16px !important;
+  }
+  
+  .faq-row {
+    flex-direction: column;
+    gap: 32px;
+  }
+  
+  .faq-message-box,
+  .faq-toggle-list {
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ===== SETTINGS PAGE - RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .settings-wrapper {
+    flex-direction: column;
+    padding: 16px !important;
+  }
+  
+  .settings-card {
+    padding: 24px 20px;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  
+  .form-row {
+    flex-direction: column;
+  }
+  
+  .form-item {
+    width: 100% !important;
+  }
+}
+
+/* ===== LANDING PAGE - RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .hero-section {
+    flex-direction: column;
+    padding: 60px 24px;
+    gap: 32px;
+  }
+  
+  .hero-left {
+    padding-left: 0;
+    max-width: 100%;
+  }
+  
+  .hero-text h1 {
+    font-size: 2.5rem !important;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .hero-buttons ion-button:first-child {
+    margin-right: 0 !important;
+  }
+  
+  .cta-btn,
+  .cta-btn-outline {
+    width: 100%;
+  }
+  
+  .hero-right {
+    order: -1;
+  }
+  
+  .hero-img {
+    max-height: 60vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 40px 16px !important;
+    gap: 24px !important;
+  }
+  
+  .hero-left {
+    width: 100% !important;
+    text-align: center !important;
+    align-items: center !important;
+  }
+  
+  .hero-text {
+    text-align: center !important;
+  }
+  
+  .hero-text h1 {
+    font-size: clamp(28px, 8vw, 36px) !important;
+  }
+  
+  .hero-text p {
+    text-align: center !important;
+  }
+  
+  .hero-buttons ion-button {
+    width: 100% !important;
+  }
+  
+  .hero-img {
+    max-height: 50vh !important;
+  }
+  
+  .landing-toolbar {
+    padding: 0 12px;
+  }
+  
+  .nav-links {
+    display: none;
+  }
+  
+  .feature-row {
+    flex-direction: column;
+  }
+  
+  .feature-card {
+    max-width: 100%;
+  }
+  
+  .faq-section {
+    padding: 40px 16px !important;
+  }
+  
+  .faq-row {
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+}
+
+/* ===== ONBOARDING PAGE - RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .onboarding-container {
+    padding: 20px 12px 60px 12px !important;
+  }
+  
+  .onboarding-card {
+    padding: 28px 20px !important;
+    width: 100% !important;
+  }
+  
+  .onboarding-title {
+    font-size: 22px !important;
+  }
+  
+  .onboarding-subtitle {
+    font-size: 14px !important;
+  }
+}
+
+/* ===== AUTH PAGE - RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .auth-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  .auth-left {
+    display: none;
+  }
+  
+  .auth-right {
+    padding: 32px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-right {
+    padding: 24px 16px !important;
+    width: 100% !important;
+  }
+  
+  .auth-form-wrapper {
+    padding: 16px !important;
+    width: 100% !important;
+  }
+  
+  .auth-heading h1 {
+    font-size: 24px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-form-wrapper {
+    padding: 16px;
+  }
+  
+  .auth-heading h1 {
+    font-size: 24px;
+  }
+}
+
+/* ===== CHAT WIDGET - RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .chat-widget {
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+  }
+  
+  .chat-widget-messages {
+    height: 50vh !important;
+    max-height: 50vh !important;
+  }
+  
+  .chat-button {
+    bottom: 16px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+  }
+}
+
+/* ===== APPOINTMENT DETAIL PAGE - RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .appointment-detail-wrapper {
+    padding: 16px !important;
+    width: 100% !important;
+  }
+  
+  .detail-card {
+    padding: 24px 20px !important;
+    width: 100% !important;
+  }
+}
+
+/* ===== CHANNEL DETAIL PAGE - RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .channel-detail-page section {
+    padding: 16px !important;
+    width: 100% !important;
+  }
+}
+
+/* ===== BOTTOM NAV BAR (Mobile) ===== */
+@media (max-width: 768px) {
+  .bottom-nav {
+    display: flex !important;
+  }
+  
+  /* Add padding to content to avoid overlap with bottom nav */
+  ion-content {
+    --padding-bottom: 70px !important;
+    padding-bottom: 70px !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .bottom-nav {
+    display: none !important;
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Hide on mobile */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Hide on desktop */
+@media (min-width: 769px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* Responsive padding */
+.container-responsive {
+  padding-left: clamp(16px, 4vw, 48px);
+  padding-right: clamp(16px, 4vw, 48px);
+}
+
+/* Responsive grid */
+.grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(16px, 3vw, 24px);
+}
+
+/* ===== IONIC COMPONENT OVERRIDES ===== */
+
+/* Make Ionic components more touch-friendly on mobile */
+@media (max-width: 768px) {
+  ion-button {
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    min-height: 44px;
+  }
+  
+  ion-input,
+  ion-textarea {
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    min-height: 44px;
+  }
+  
+  ion-item {
+    --min-height: 48px;
+  }
+  
+  /* Ensure all interactive elements are at least 44x44px */
+  button,
+  a,
+  .menu-button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* ===== CUSTOM SCROLLBAR FOR MOBILE ===== */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(127, 93, 140, 0.3);
+    border-radius: 2px;
+  }
+}
+
+/* ===== SAFE AREA INSETS (for iPhone notch, etc.) ===== */
+@media (max-width: 768px) {
+  ion-content {
+    --padding-top: env(safe-area-inset-top) !important;
+    --padding-bottom: calc(env(safe-area-inset-bottom) + 70px) !important;
+  }
+  
+  .side-panel {
+    padding-top: env(safe-area-inset-top) !important;
+  }
+  
+  .bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    height: calc(60px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* ===== LANDSCAPE MODE FIXES ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+  .chat-widget-messages {
+    height: 40vh !important;
+  }
+  
+  .hero {
+    padding-top: 40px !important;
+  }
+  
+  .suggested-questions-row {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .question-box {
+    flex: 1 1 calc(50% - 12px) !important;
+    min-width: calc(50% - 12px) !important;
+  }
+}
+
+/* ===== TABLET SPECIFIC (769-1024px) ===== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .panels {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .panel-card {
+    flex: 1 1 calc(50% - 16px);
+    min-width: 280px;
+    max-width: 400px;
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .side-panel,
+  .bottom-nav,
+  .chat-button,
+  .chat-widget,
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+  
+  * {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* ===== TOUCH DEVICE OPTIMIZATIONS ===== */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger tap targets */
+  button,
+  a,
+  .menu-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Remove hover effects */
+  .panel-card:hover,
+  .channel-card:hover,
+  .question-box:hover {
+    transform: none;
+  }
+}
+
+/* ===== TIMELINE THREE-CARD FIX ===== */
+@media (max-width: 768px) {
+  /* Fix the three-card layout stacking */
+  .timelinePage > div[style*="display: flex"][style*="gap: 24px"] {
+    flex-direction: column !important;
+    padding: 0 16px 100px 16px !important;
+  }
+  
+  .timelinePage > div[style*="display: flex"] > div {
+    flex: 1 1 auto !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  /* Chat button above bottom nav */
+  .chat-button {
+    bottom: 80px !important;
+    z-index: 1001 !important;
+  }
+  
+  .bottom-nav {
+    z-index: 1000 !important;
+  }
+}

@@ -38,6 +38,11 @@ jobs:
           } > .env
           echo "Created .env file:"
           cat .env | sed 's/=.*/=***/'
+          echo ""
+          echo "=== Variable lengths from .env file ==="
+          while IFS='=' read -r key value; do
+            echo "${key} length: ${#value}"
+          done < .env
 
       # 4️⃣ Install and build Vite web app
       - name: Install and build web app
@@ -48,7 +53,7 @@ jobs:
 
       # 5️⃣ Create .env for Cloud Functions
       - name: Create .env for Cloud Functions
-        working-directory: functions
+        working-directory: myApp/functions
         run: |
           echo "Creating .env for Cloud Functions..."
           {
@@ -57,6 +62,11 @@ jobs:
           } > .env
           echo "Functions .env created:"
           cat .env | sed 's/=.*/=***/'
+          echo ""
+          echo "=== Variable lengths from .env file ==="
+          while IFS='=' read -r key value; do
+            echo "${key} length: ${#value}"
+          done < .env
 
       # 6️⃣ Install and build Cloud Functions
       - name: Install and build Cloud Functions

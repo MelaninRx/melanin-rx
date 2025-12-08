@@ -30,6 +30,10 @@
     ],
     "rewrites": [
       {
+        "source": "/api/chat",
+        "function": "chatWithLangFlow"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

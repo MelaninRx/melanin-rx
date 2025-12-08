@@ -1,76 +1,1213 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+ion-button::part(native) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+ion-button::part(native):hover,
+ion-button::part(native):focus,
+ion-button::part(native):active {
+  background: transparent !important;
+  background-color: transparent !important;
+}
 :root {
-  --color-primary: #73587e;
-  --color-secondary: #d8cbe1;
-  --color-accent: #a98bb3;
-  --color-light: #f7f5f8;
-  --color-mid: #e2d9e8;
-  --text-primary: #2a1d31;
-  --text-secondary: #55405e;
-  --text-light: #ffffff;
-  --text-muted: #7d6c87;
-  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
-  --gradient-panel: linear-gradient(180deg, #faf8fc, #ece5f2);
-  --gradient-button: linear-gradient(135deg, #7f5d8c, #a98bb3);
+  --color-primary: #642D56;
+  --color-secondary: #863E73;
+  --color-tertiary: #AC477A;
+  --color-light-purple: #953F6F;
+  --color-border: #CBCBCB;
+  --color-text-dark: #222;
+  --color-text-gray: #787878;
+  --color-text-muted: #5F5F5F;
+  --gradient-purple: linear-gradient(90deg, #642D56 0%, #863E73 100%);
+  --gradient-bg: linear-gradient(180deg, #FFF 0%, #F2E7F4 100%);
 }
 
 .timelinePage {
   min-height: 100vh;
   background: var(--gradient-bg);
-  color: var(--text-primary);
-  padding: 24px clamp(16px, 4vw, 56px);
+  padding: 61px 139px 100px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  transform: scale(0.95);
+  transform-origin: top center;
+  width: 105.11%;
+  margin-left: -2.56%;
+}
+
+.timelinePage.sidebar-expanded {
+  margin-left: 200px;
+  width: calc(105.11% - 200px / 0.95);;
+  max-width: none;
   box-sizing: border-box;
+  transition: margin-left 0.3s ease, width 0.3s ease, padding-left 0.3s ease;
+  padding-left: 20px; /* 139px + 200px sidebar */
+  padding-right: 0;
 }
 
-.timelineHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 24px; }
-.h1 { font-size: clamp(22px, 3.2vw, 36px); font-weight: 800; }
-
-.backBtn {
-  border: none; padding: 10px 16px; border-radius: 999px;
-  background: var(--gradient-button); color: var(--text-light); font-weight: 700; cursor: pointer;
+.timelineHeader {
+  margin-bottom: 24px;
 }
 
-.rail {
-  position: relative; display: grid; grid-template-columns: repeat(3, 1fr);
-  align-items: center; gap: 16px; padding: 20px; border-radius: 20px;
-  background: var(--gradient-panel); border: 1px solid var(--color-mid);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+.h1 {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.48px;
+  background: linear-gradient(90deg, #642D56 0%, #AC477A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 0 0;
 }
-.railLine {
-  position: absolute; left: 40px; right: 40px; top: 50%; height: 4px;
-  background: linear-gradient(to right, var(--color-accent), var(--color-secondary));
-  transform: translateY(-50%); border-radius: 999px; opacity: 0.6;
-}
-.node { position: relative; z-index: 1; display: grid; place-items: center; gap: 6px; background: transparent; border: 0; cursor: pointer; }
-.dot { width: 24px; height: 24px; border-radius: 50%; background: var(--color-primary); box-shadow: 0 6px 16px rgba(115,88,126,0.35); transition: transform .2s, box-shadow .2s; }
-.node:hover .dot { transform: scale(1.08); }
-.nodeLabel { font-size: 14px; color: var(--text-secondary); user-select: none; }
 
-.grid { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.timelineSubtitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--color-text-dark);
+  margin: 0 0 24px 0;
+  line-height: normal;
+}
+
+.statusHeader {
+  border-radius: 10px;
+  background: var(--gradient-purple);
+  padding: 29px 50px;
+  margin: 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width: 1263px;
+}
+
+.statusContent {
+  flex: 1;
+}
+
+.statusWeek {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: #FFF;
+  margin: 0 0 12px 0;
+  line-height: normal;
+}
+
+.statusBabySize {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: #FFF;
+  margin: 0 0 16px 0;
+  line-height: normal;
+}
+
+.statusInfo {
+  display: flex;
+  gap: 60px;
+}
+
+.statusInfoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statusInfoLabel {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: #FFF;
+  line-height: normal;
+}
+
+.statusInfoValue {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #FFF;
+  line-height: normal;
+}
+
+.statusIcon {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.40);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.trimesterProgress {
+  position: relative;
+  padding: 0;
+  margin: 24px 0;
+  height: 71px;
+  width: 1263px;
+}
+
+.progressTrack {
+  position: absolute;
+  left: 4px;
+  top: 15px;
+  width: calc(100% - 8px);
+  height: 38px;
+  border-radius: 30px;
+  border: 1px solid var(--color-border);
+  background: #FFF;
+}
+
+.progressFill {
+  position: absolute;
+  left: 21px;
+  top: 12px;
+  height: 14px;
+  border-radius: 30px;
+  background: linear-gradient(90deg, #642D56 0%, #AC477A 100%);
+  transition: width 600ms cubic-bezier(.22,.74,.3,1);
+  max-width: calc(100% - 42px);
+}
+
+.trimesterNodes {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  height: 65px;
+}
+
+.trimesterNode {
+  display: flex;
+  width: 65px;
+  height: 65px;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 50%;
+  border: 1px solid #ADADAD;
+  background: #FFF;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  pointer-events: all;
+  position: relative;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+.trimesterNode:hover {
+  transform: scale(1.05);
+}
+
+.trimesterNode[data-has-passed="true"][data-index="0"] {
+  background: #642D56;
+}
+
+.trimesterNode[data-has-passed="true"][data-index="1"] {
+  background: #953F6F;
+}
+
+.trimesterNode[data-has-passed="true"][data-index="2"] {
+  background: #AC477A;
+}
+
+.trimesterNode[data-has-passed="false"] {
+  background: #FFF;
+}
+
+.trimesterNode[data-has-passed="false"] .trimesterLabel {
+  color: #000;
+}
+
+.trimesterNode[data-has-passed="true"] .trimesterLabel {
+  color: #FFF;
+}
+
+.trimesterNodeBaby {
+  background: #FFF !important;
+  padding: 0;
+  width: 65px;
+  height: 65px;
+  top: 0 !important;
+}
+
+.trimesterNodeBaby svg {
+  width: 65px;
+  height: 65px;
+}
+
+.trimesterLabel {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  color: #FFF;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 116.7%;
+  letter-spacing: -1px;
+}
+
+.grid {
+  margin: 24px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 405px);
+  gap: 24px;
+  justify-content: start;
+}
 
 .card {
-  border: 1px solid var(--color-mid); background: var(--color-light); border-radius: 20px;
-  padding: 18px; transition: transform .22s, box-shadow .22s, border-color .22s; cursor: pointer;
+  border: 1px solid var(--color-border);
+  background: #FFF;
+  border-radius: 10px;
+  padding: 22px 31px;
+  transition: transform .22s, box-shadow .22s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  min-height: 313px;
+  width: 405px;
 }
-.card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: var(--color-secondary); }
-.cardTitle { font-size: 18px; font-weight: 800; }
-.cardSub { font-size: 14px; color: var(--text-muted); }
-.cardBody { margin-top: 10px; font-size: 15px; }
 
-.expandedWrap { margin-top: 24px; }
+.cardFullWidth {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 1263px;
+  padding: 32px 50px;
+  min-height: auto;
+}
+
+.cardBodyFullWidth {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-gray);
+  margin: 0 0 32px 0;
+  line-height: 1.6;
+  max-width: 100%;
+}
+
+.highlightsListFullWidth {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px 40px;
+  margin-top: 8px;
+}
+
+.highlightsListFullWidth li {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-gray);
+  margin: 0;
+  padding-left: 0;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 16px;
+}
+
+.highlightsListFullWidth li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+}
+
+.cardTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0 0 4px 0;
+  line-height: normal;
+}
+
+.cardSub {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-primary);
+  margin: 0 0 12px 0;
+  line-height: normal;
+}
+
+.cardDivider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-border);
+  margin: 12px 0;
+}
+
+.cardBody {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-gray);
+  margin: 0 0 12px 0;
+  line-height: normal;
+}
+
+.expanded .cardBody {
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+  color: var(--color-text-gray);
+}
+
+.cardHighlights {
+  margin-top: auto;
+}
+
+.cardFullWidth .cardHighlights {
+  margin-top: 24px;
+}
+
+.highlightsLabel {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0 0 8px 0;
+  line-height: normal;
+}
+
+.highlightsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.highlightsList li {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-gray);
+  margin: 4px 0;
+  padding-left: 0;
+  line-height: normal;
+}
+
+.appointmentsCard {
+  background: #FFF;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 26px 24px 24px 24px;
+  width: 405px;
+  min-height: 399px;
+  height: auto;
+}
+
+.appointmentsTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 16px 0;
+  line-height: normal;
+}
+
+.appointmentsBtnGroup {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 27px;
+}
+
+.addAppointmentBtn {
+  display: flex;
+  width: 339px;
+  height: 34px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  background: #642D56;
+  color: #FFF;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addAppointmentBtn:hover {
+  background: var(--color-secondary);
+}
+
+.appointmentItem {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 0;
+  text-decoration: none;
+}
+
+.appointmentAccent {
+  width: 6px;
+  background: #642D56;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.appointmentDetails {
+  flex: 1;
+}
+
+.appointmentTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 4px 0;
+  line-height: normal;
+}
+
+.appointmentSub {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 0 4px 0;
+  line-height: normal;
+}
+
+.appointmentType {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #642D56;
+  margin: 0;
+  line-height: normal;
+}
+
+.appointmentNotes {
+  margin-top: 0;
+}
+
+.notesLabel {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 4px 0;
+  line-height: normal;
+}
+
+.notesList {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.appointmentDivider {
+  width: 321px;
+  height: 1px;
+  background: var(--color-border);
+  margin: 6px 0 14px 20px;
+}
+
+.calendarWidget {
+  background: #FFF;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 4px;
+  width: 405px;
+  min-height: 398px;
+}
+
+.calendarHeader {
+  display: flex;
+  padding: 16px 32px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.calendarNavBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendarMonth {
+  flex: 1;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  color: #000;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.calendarDivider {
+  width: 355px;
+  height: 1px;
+  background: #BDBDBD;
+  margin: 0 auto;
+}
+
+.calendarDaysHeader {
+  display: flex;
+  padding: 8px 32px;
+  justify-content: center;
+  align-items: center;
+  gap: 11px;
+}
+
+.calendarDay {
+  display: flex;
+  padding: 2px 8px;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 0;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  color: #000;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 0.36px;
+  text-transform: uppercase;
+}
+
+.calendarGrid {
+  padding: 8px 32px;
+}
+
+.calendarDates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.calendarDate {
+  display: flex;
+  min-height: 42px;
+  height: auto;
+  padding: 4px 10px 10px 10px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  color: #000;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 22px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.calendarDate:hover:not(.calendarDateEmpty) {
+  background: #F2E7F4;
+  border-radius: 8px;
+}
+
+.calendarDateEmpty {
+  cursor: default;
+}
+
+.calendarDateNumber {
+  line-height: 1;
+  display: block;
+}
+
+.calendarDateDot {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #642D56;
+}
+
+.fetalCard {
+  background: #FFF;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 24px;
+  width: 405px;
+  min-height: 399px;
+}
+
+.fetalTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 24px 0;
+  line-height: normal;
+}
+
+.fetalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.fetalCircle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: transparent;
+  border: 25px solid;
+  border-image: linear-gradient(180deg, #642D56 0%, #B369A0 100%) 1;
+  border-image-slice: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.25));
+}
+
+.fetalCircle::before {
+  content: '';
+  position: absolute;
+  inset: -25px;
+  border-radius: 50%;
+  padding: 25px;
+  background: linear-gradient(180deg, #642D56 0%, #B369A0 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.fetalWeek {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  z-index: 1;
+}
+
+.fetalSizeLabel {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: center;
+  margin: 0;
+  line-height: normal;
+}
+
+.fetalSize {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  text-align: center;
+  margin: 0;
+  line-height: normal;
+  text-transform: capitalize;
+}
+
+.fetalDescription {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-align: center;
+  margin: 0;
+  line-height: normal;
+}
+
+.fetalStats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.fetalStat {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 15px;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.fetalStat:first-child {
+  text-align: left;
+}
+
+.fetalStat:last-child {
+  text-align: right;
+}
+
+.fetalStatLabel {
+  font-weight: 700;
+}
+
+.fetalStatValue {
+  font-weight: 400;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 405px);
+  gap: 24px;
+  margin-top: 24px;
+  justify-content: start;
+}
+
+.backBtn {
+  border: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--gradient-purple);
+  color: #FFF;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(100, 45, 86, 0.3);
+}
+
+.expandedWrap {
+  margin: 24px 0;
+  width: 1263px;
+}
 
 .expanded {
-  border: 1px solid var(--color-mid); background: var(--gradient-panel); border-radius: 24px;
-  padding: clamp(18px, 2.6vw, 28px); box-shadow: 0 16px 38px rgba(0,0,0,0.10); animation: zoomIn .22s ease;
+  background: #FFF;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 32px 40px;
+  width: 100%;
 }
-@keyframes zoomIn { from { transform: scale(.98); opacity: 0 } to { transform: scale(1); opacity: 1 } }
 
-.expandedHeader { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.expandedTitle { margin: 0; }
+.expandedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 24px;
+}
+
+.expandedTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0 0 8px 0;
+  line-height: normal;
+}
 
 .badge {
-  display: inline-block; font-size: 12px; font-weight: 700; padding: 6px 10px;
-  border-radius: 999px; color: var(--text-light); background: var(--color-primary); margin-top: 6px;
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: var(--gradient-purple);
+  color: #FFF;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
 }
 
-.sectionTitle { margin-top: 14px; font-weight: 800; }
-.list { margin: 10px 0 0; padding-left: 18px; }
+.sectionTitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 32px 0 16px 0;
+  line-height: normal;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.list li {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-gray);
+  margin: 12px 0;
+  padding-left: 24px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.listItemClickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+  margin-left: -12px;
+  padding-left: 36px;
+}
+
+.listItemClickable:hover {
+  color: var(--color-primary);
+  background-color: #F8F5F9;
+  border-left-color: var(--color-primary);
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(100, 45, 86, 0.15);
+  font-weight: 500;
+  padding-right: 40px;
+}
+
+.listItemClickable::after {
+  content: '💬';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 16px;
+}
+
+.listItemClickable:hover::after {
+  opacity: 1;
+}
+
+.checklistCard {
+  background: #FFF;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 24px;
+  margin: 24px 0;
+}
+
+.checklistToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.checklistToggle:hover {
+  background-color: #F5F5F5;
+}
+
+.checklistProgress {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-gray);
+}
+
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #F0F0F0;
+  transition: background-color 0.2s ease;
+}
+
+.checkItem:hover {
+  background-color: #FAFAFA;
+}
+
+.checkItem:last-child {
+  border-bottom: none;
+}
+
+.checkBox {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-primary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  color: #FFF;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.checkBox:hover {
+  border-color: var(--color-secondary);
+  transform: scale(1.05);
+}
+
+.checkBoxChecked {
+  background: var(--gradient-purple);
+  border-color: var(--color-primary);
+}
+
+.checkText {
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-dark);
+  cursor: pointer;
+  line-height: 1.5;
+  user-select: none;
+}
+
+.checkTextDone {
+  text-decoration: line-through;
+  color: var(--color-text-gray);
+  opacity: 0.7;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: var(--color-text-gray);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  line-height: 1;
+  opacity: 0;
+}
+
+.checkItem:hover .removeButton {
+  opacity: 1;
+}
+
+.removeButton:hover {
+  background-color: #FFE5E5;
+  color: #D32F2F;
+}
+
+.addItemTrigger {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: none;
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+  color: var(--color-primary);
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addItemTrigger:hover {
+  border-color: var(--color-primary);
+  background-color: #FAFAFA;
+}
+
+.addItemContainer {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #FAFAFA;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.addItemInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.addItemInput:focus {
+  border-color: var(--color-primary);
+}
+
+.addItemActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.addItemButton {
+  padding: 8px 16px;
+  background: var(--gradient-purple);
+  color: #FFF;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addItemButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(100, 45, 86, 0.3);
+}
+
+.addItemButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  padding: 8px 16px;
+  background: #FFF;
+  color: var(--color-text-dark);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+  background-color: #F5F5F5;
+}
+
+.restoreButton {
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-gray);
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.restoreButton:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: #FAFAFA;
+}
+
+
+
+@media (max-width: 1440px) {
+  .timelinePage {
+    padding: 61px 60px 100px;
+  }
+  
+  .statusHeader,
+  .trimesterProgress {
+    width: 100%;
+    max-width: 1263px;
+  }
+  
+  .grid,
+  .bottomGrid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    justify-content: start;
+  }
+}
+
+@media (max-width: 1024px) {
+  .timelinePage {
+    padding: 32px 24px 100px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .expanded {
+    width: 100%;
+  }
+
+  .statusHeader {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    width: 100% !important;
+  }
+  
+  .trimesterProgress {
+    width: 100% !important;
+  }
+  
+  .statusInfo {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .h1 {
+    font-size: 32px;
+  }
+  
+  .timelineSubtitle {
+    font-size: 18px;
+  }
+  
+  .trimesterNode {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .trimesterLabel {
+    font-size: 18px;
+  }
+
+  .timelinePage.sidebar-expanded {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: 0;
+  }
+}

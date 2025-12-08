@@ -48,7 +48,7 @@ exports.chatWithLangFlow = functions.https.onRequest(
     }
     
     try {
-      const { message } = req.body;
+      const { message,stylePreference  } = req.body;
       const apiKey = process.env.LANGFLOW_API_KEY;
   
       // Debug logging
@@ -57,6 +57,7 @@ exports.chatWithLangFlow = functions.https.onRequest(
   
       const langflowUrl = "https://langflow.sail.codes/api/v1/run/6d64c638-920e-4156-a6de-54b5a7b69c93";
       console.log("Full URL:", `${langflowUrl}?api_key=${apiKey}`);
+      console.log("Style Preference:", stylePreference);
 
     const response = await fetch(langflowUrl, {
       method: "POST",
@@ -67,8 +68,13 @@ exports.chatWithLangFlow = functions.https.onRequest(
       body: JSON.stringify({
         input_value: message,
         output_type: "chat",
-        input_type: "chat"
-      }),
+        input_type: "chat",
+        tweaks: {
+          "TextInput-g8vVr": {
+            "input_value": stylePreference || "standard"
+          }
+        }
+      })
     });
 
       const data = await response.json();

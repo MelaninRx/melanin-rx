@@ -1,5 +1,4 @@
 # Deploy to Firebase Hosting + Cloud Functions on merge
-
 name: Deploy to Firebase Hosting and Functions on merge
 
 on:
@@ -14,26 +13,70 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Build your Ionic app
+      # Create .env for Vite app
+      - name: Create .env for Vite app
+        working-directory: myApp
+        run: |
+          echo "Creating .env for Vite build..."
+          {
+            echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}"
+            echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}"
+            echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}"
+            echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}"
+            echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}"
+            echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}"
+            echo "VITE_OPEN_AI_API_KEY=${{ secrets.VITE_OPEN_AI_API_KEY }}"
+          } > .env
+          echo ".env for Vite created:"
+          cat .env | sed 's/=.*/=***/'
+          echo ""
+          echo "=== Variable lengths from .env file ==="
+          while IFS='=' read -r key value; do
+            echo "${key} length: ${#value}"
+          done < .env
+
+      - name: Clean old build output
+        working-directory: myApp
+        run: |
+          echo "Cleaning old Vite build output..."
+          rm -rf dist
+
+      # Build Vite/Ionic app
       - name: Install dependencies and build app
         working-directory: myApp
         run: |
           npm ci
           npm run build
 
+      # Create .env for Cloud Functions (Langflow)
+      - name: Create .env for Cloud Functions
+        working-directory: myApp/functions
+        run: |
+          echo "Creating .env for Cloud Functions..."
+          {
+            echo "LANGFLOW_URL=${{ secrets.LANGFLOW_URL }}"
+            echo "LANGFLOW_API_KEY=${{ secrets.LANGFLOW_API_KEY }}"
+          } > .env
+          echo ".env for Functions created:"
+          cat .env | sed 's/=.*/=***/'
+          echo ""
+          echo "=== Variable lengths from .env file ==="
+          while IFS='=' read -r key value; do
+            echo "${key} length: ${#value}"
+          done < .env
+
       # Install dependencies for Cloud Functions
       - name: Install dependencies for Cloud Functions
         working-directory: myApp/functions
-        run: |
-          npm ci
+        run: npm ci
 
-      # Build TypeScript functions (optional, safe even if JS)
-      - name: Build Cloud Functions (if using TypeScript)
+      # Build Cloud Functions (if using TypeScript)
+      - name: Build Cloud Functions
         working-directory: myApp/functions
         run: |
-          npm run build
+          npm run build || echo "No TS build needed."
 
-      # Deploy everything
+      # Deploy to Firebase Hosting + Functions
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:

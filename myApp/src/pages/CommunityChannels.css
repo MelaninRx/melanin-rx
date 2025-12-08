@@ -1,8 +1,209 @@
-.community-page { --background: var(--ion-color-light); }
-.community-hero { padding: 16px; }
-.community-welcome { margin: 0 0 8px 0; font-size: 1.25rem; }
-.community-sub { color: var(--ion-color-medium); margin: 0 0 12px 0; }
-.channel-item { display: flex; align-items: center; justify-content: space-between; }
-.channel-desc { margin: 0; color: var(--ion-color-medium); font-size: 0.9rem; }
-.community-footer { padding: 16px; text-align: center; }
-.btn-outline { --background: transparent; }
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap');
+
+.community-page {
+  --background: #fff;
+  background: #fff;
+}
+
+.communities-content {
+  --background: #fff;
+  background: #fff;
+}
+
+.communities-container {
+  max-width: 1329px;
+  margin: 0 auto;
+  padding: 68px 110px;
+}
+
+.communities-container.sidebar-expanded {
+  margin-left: 200px;
+  width: calc(100% - 200px);
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.communities-header {
+  margin-bottom: 48px;
+}
+
+.communities-title {
+  margin: 0 0 14px 0;
+  background: linear-gradient(90deg, #642D56 0%, #863E73 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.48px;
+}
+
+.communities-subtitle {
+  margin: 0;
+  color: #000;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.channel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 350px);
+  gap: 27px 21px;
+}
+
+.channel-card {
+  display: flex;
+  width: 350px;
+  height: 211px;
+  padding: 20px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  border-radius: 10px;
+  border: 1px solid #CBCBCB;
+  background: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.channel-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(100, 45, 86, 0.1);
+}
+
+.channel-title {
+  align-self: stretch;
+  margin: 0;
+  color: #222;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.channel-description {
+  align-self: stretch;
+  margin: 0;
+  color: #222;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.channel-link-container {
+  display: flex;
+  height: 42px;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.channel-link-text {
+  color: #642D56;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.channel-arrow {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.loading-text {
+  padding: 32px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  color: #222;
+}
+
+.error-container {
+  padding: 32px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.error-container p {
+  font-size: 16px;
+  color: #222;
+  margin-bottom: 16px;
+}
+
+.onboarding-button {
+  padding: 12px 24px;
+  background: #642D56;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.onboarding-button:hover {
+  background: #7a3766;
+}
+
+@media (max-width: 1440px) {
+  .communities-container {
+    padding: 68px 60px;
+  }
+  
+  .channel-grid {
+    grid-template-columns: repeat(auto-fill, 350px);
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1200px) {
+  .channel-grid {
+    grid-template-columns: repeat(2, 350px);
+  }
+}
+
+@media (max-width: 850px) {
+  .communities-container {
+    padding: 40px 24px;
+  }
+  
+  .communities-title {
+    font-size: 36px;
+    letter-spacing: -0.36px;
+  }
+  
+  .channel-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .channel-card {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .communities-title {
+    font-size: 32px;
+    letter-spacing: -0.32px;
+  }
+  
+  .communities-subtitle {
+    font-size: 14px;
+  }
+
+  .communities-container.sidebar-expanded {
+    margin-left: 0;
+    width: 100%;
+  }
+}

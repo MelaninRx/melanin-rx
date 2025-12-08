@@ -1,129 +1,152 @@
 import {
   IonContent,
-  IonHeader,
   IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonButton,
   IonSpinner,
-  useIonViewWillEnter,
 } from "@ionic/react";
 import { useState, useEffect, useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import { useCurrentUser } from "../hooks/useCurrentUser";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import "./Resources.css";
+import SidebarNav from "../components/SidebarNav";
+import MobileMenuButton from '../components/MobileMenuButton';
 
 interface Resource {
   title: string;
   description: string;
   category: string;
+  url?: string;
+  image?: string;
 }
 
 const Resources: React.FC = () => {
-  const user = useCurrentUser();
-  const location = useLocation<{ refresh?: boolean }>();
-  const [userData, setUserData] = useState<any>(null);
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("");
 
-  const fetchDashboard = async () => {
-    if (!user) return;
-
-    setLoading(true);
+  const fetchResources = async () => {
+    console.log("🔹 Starting resource fetch...");
     try {
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (userDoc.exists()) {
-        const data = userDoc.data();
-        setUserData(data);
-        setResources((data as any).resources || []);
-      }
-    } catch (error) {
-      console.error("Error loading dashboard:", error);
-    } finally {
+      const resourcesSnapshot = await getDocs(collection(db, "resources"));
+      const resourcesList = resourcesSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...(doc.data() as Resource)
+      }));
+      setResources(resourcesList);
       setLoading(false);
+    } catch (error) {
+      console.error("🔥 Error fetching resources:", error);
+      setLoading(false);
+    } finally {
+      console.log("ℹ️ Stopping loading spinner");
     }
   };
 
-  useIonViewWillEnter(() => {
-    fetchDashboard();
-  });
-
   useEffect(() => {
-    if ((location.state as any)?.refresh) fetchDashboard();
-  }, [location.state]);
+    fetchResources();
+  }, []);
 
-  useEffect(() => {
-    fetchDashboard();
-  }, [user]);
-
-  // Group resources by category
-  const groupedResources = useMemo(() => {
-    const groups: Record<string, Resource[]> = {};
-    for (const resource of resources) {
-      const category = resource.category || "Other";
-      if (!groups[category]) groups[category] = [];
-      groups[category].push(resource);
-    }
-    return groups;
+  const categories = useMemo(() => {
+    const unique = [...new Set(resources.map((r) => r.category))];
+    return unique.sort();
   }, [resources]);
 
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton routerLink="/home" routerDirection="root" color="medium">Home</IonButton>
-          </IonButtons>
-          <IonTitle>Resources</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+  useEffect(() => {
+    if (resources.length > 0 && !activeTab) {
+      setActiveTab(resources[0].category);
+    }
+  }, [resources, activeTab]);
 
-      <IonContent className="resources-content">
+  const filteredResources = useMemo(() => {
+    if (!activeTab) return [];
+    return resources.filter(
+      (r) => r && r.category && typeof r.category === 'string' && r.category.toLowerCase() === activeTab.toLowerCase()
+    );
+  }, [resources, activeTab]);
+
+  return (
+    <IonPage className="resources-page">
+      <IonContent fullscreen>
+        <MobileMenuButton />
+        <SidebarNav onToggle={setSidebarExpanded}/>
+
         {loading ? (
-          <div style={{ textAlign: "center", marginTop: "2rem" }}>
+          <div className="loading-container">
             <IonSpinner name="crescent" />
-            <p>Loading your personalized dashboard...</p>
+            <p>Loading your recommended resources...</p>
           </div>
         ) : (
-          <>
-            <div className="resources-container">
-              <section className="resource-section">
-                <h3 className="section-heading">Your Pregnancy Journey</h3>
-                <div className="card-grid">
-                  <div className="resource-card">
-                    <h3>Overview</h3>
-                    <p>
-                      <strong>Location:</strong> {userData?.location}
-                      <br />
-                      <strong>Trimester:</strong> {userData?.trimester}
-                    </p>
-                  </div>
-                </div>
-              </section>
+          <div className={`resources-wrapper ${sidebarExpanded ? 'sidebar-expanded' : ''}`}>
+            <h1 className="page-title">Resources</h1>
 
-              {Object.keys(groupedResources).length > 0 ? (
-                Object.entries(groupedResources).map(([category, items]) => (
-                  <section key={category} className="resource-section">
-                    <h3 className="section-heading">{category}</h3>
-                    <div className="card-grid">
-                      {items.map((r, i) => (
-                        <div key={i} className="resource-card">
-                          <h3>{r.title}</h3>
-                          <p>{r.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                ))
-              ) : (
-                <p>No resources found.</p>
-              )}
+            <div className="category-description-container">
+              {categories.map((cat) => (
+                activeTab === cat && (
+                  <div key={cat} className="category-description">
+                    {cat === 'Community and peer support' && 'Connect with support groups and local services for expectant parents.'}
+                    {cat === 'Doulas and midwives' && 'Find resources and organizations supporting Black doulas and midwives.'}
+                    {cat === 'Educational resources' && 'Learn more about pregnancy, birth, and postpartum care.'}
+                    {cat === 'Mental health support' && 'Access resources for emotional well-being during pregnancy.'}
+                    {cat === 'National and community organizations' && 'Explore organizations working to improve Black maternal health and support families.'}
+                  </div>
+                )
+              ))}
             </div>
-          </>
+
+            {resources.length === 0 ? (
+              <p className="no-resources">No resources found for your profile.</p>
+            ) : (
+              <>
+                <div className="tab-buttons">
+                  {categories.filter(cat => cat && cat.trim() !== '').map((cat) => (
+                    <button
+                      key={cat}
+                      className={`tab-button ${activeTab === cat ? "active" : ""}`}
+                      onClick={() => setActiveTab(cat)}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="resources-grid">
+                  {filteredResources.length > 0 ? (
+                    filteredResources.map((r, i) => (
+                      <div key={i} className="resource-card">
+                        {r.image && typeof r.image === 'string' && r.image.trim() !== '' ? (
+                          <img
+                            src={r.image}
+                            alt={r.title}
+                            className="resource-image"
+                          />
+                        ) : (
+                          <div className="resource-image-placeholder"></div>
+                        )}
+                        {(() => {console.log('Resource image:', r.image, 'Resource url:', r.url); return null;})()}
+                        <h3 className="resource-title">{r.title}</h3>
+                        <p className="resource-description">{r.description}</p>
+                        {r.url && (
+                          <a
+                            href={r.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="visit-button"
+                          >
+                            Visit Website
+                          </a>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="no-resources">No resources available in this category.</p>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         )}
+        
+        <div className="footer"></div>
       </IonContent>
     </IonPage>
   );

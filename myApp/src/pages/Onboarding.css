@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+
+:root {
+  /* Brand palette */
+  --color-primary: #7f5d8c;     /* Rich reddish-purple - main brand color */
+  --color-secondary: #d8cbe1;
+  --color-accent: #a98bb3;
+  --color-light: #ffffff;
+  --color-mid: #e2d9e8;
+
+  /* Text */
+  --text-primary: #2a1d31;
+  --text-secondary: #55405e;
+  --text-light: #ffffff;
+  --text-muted: #7d6c87;
+
+  /* Gradients */
+  --gradient-bg: linear-gradient(to bottom right, #f8f6fa, #d8cbe1);
+}
+
+/* --------- GLOBAL PAGE BACKGROUND --------- */
+html,
+body,
+#root,
+ion-app,
+ion-page {
+  background: var(--gradient-bg);
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body, html, *, *:before, *:after {
+  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif !important;
+}
+
+/* Remove Ionic default white overlay that causes lavender tint */
+ion-content {
+  --background: transparent !important;
+  background: transparent !important;
+}
+
+/* --------- HEADER --------- */
+.onboarding-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #ececec;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  height: 72px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-left img {
+  height: 40px;
+  object-fit: contain;
+}
+
+/* --- HEADER + LOGO FIX --- */
+ion-header.onboarding-header {
+  --background: #ffffff !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #ececec;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  height: 72px;
+  z-index: 10;
+}
+
+ion-toolbar {
+  --background: #ffffff !important;
+  background: #ffffff !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* left-align logo */
+  min-height: 72px !important;
+  padding: 0 32px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* logo wrapper */
+.header-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 72px;
+}
+
+/* logo sizing */
+.brand-logo,
+.header-left ion-icon {
+  width: 130px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Force custom SVG logo to display at a proper height */
+ion-icon.brand-logo {
+  width: 130px !important;
+  height: 44px !important; /* replaces Ionic’s 1em default */
+  contain: none !important; /* disables the restrictive contain */
+  flex-shrink: 0;
+  display: block;
+}
+
+/* Extra insurance: for nested shadow DOM and default Ionic rules */
+ion-icon.brand-logo::part(icon-inner),
+ion-icon.brand-logo svg {
+  height: 44px !important;
+  width: auto !important;
+}
+
+
+
+/* --------- MAIN CONTAINER --------- */
+.onboarding-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 20px 100px 20px; /* add bottom padding so footer text is visible */
+}
+
+/* --------- WHITE CARD --------- */
+.onboarding-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 800px; /* prevents skinny layout */
+  padding: 48px 40px;
+  overflow: visible;
+}
+
+.onboarding-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.onboarding-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+/* --------- INPUT STYLING --------- */
+.input-item {
+  background: #ffffff !important;
+  border: 1px solid rgba(115, 88, 126, 0.3);
+  border-radius: 10px;
+  margin-bottom: 14px;
+  --highlight-height: 0;
+}
+
+.label-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.label-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.input-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* --------- BUTTONS --------- */
+.onboarding-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.onboarding-btn {
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
+  border-radius: 12px;
+  height: 48px;
+  width: 100%;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(115, 88, 126, 0.25);
+  transition: all 0.2s ease-in-out;
+}
+
+.onboarding-btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* Google button */
+.onboarding-btn.google {
+  background: #ffffff;
+  color: var(--text-primary);
+  border: 1px solid rgba(115, 88, 126, 0.3);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.onboarding-btn.google:hover {
+  border-color: var(--color-primary);
+  background-color: #f8f6fa;
+}
+
+/* --------- FOOTER TEXT --------- */
+.auth-small-text {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-top: 28px;
+}
+
+.auth-small-text span {
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.auth-small-text span:hover {
+  text-decoration: underline;
+}
