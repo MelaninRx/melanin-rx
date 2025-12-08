@@ -253,7 +253,7 @@ ion-button::part(native):active {
 .grid {
   margin: 24px 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 405px);
   gap: 24px;
   justify-content: start;
 }
@@ -262,13 +262,13 @@ ion-button::part(native):active {
   border: 1px solid var(--color-border);
   background: #FFF;
   border-radius: 10px;
-  padding: 22px 18px;
+  padding: 22px 31px;
   transition: transform .22s, box-shadow .22s;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   min-height: 313px;
-  width: 300px;
+  width: 405px;
 }
 
 .cardFullWidth {
@@ -773,7 +773,7 @@ ion-button::part(native):active {
 
 .bottomGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 405px);
   gap: 24px;
   margin-top: 24px;
   justify-content: start;
