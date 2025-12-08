@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from '../pages/timeline.module.css';
+import { getBabySize } from '../services/fetalDevelopmentService';
 
 export default function StatusCard({
   currentWeek,
@@ -16,13 +17,11 @@ export default function StatusCard({
   const weeksPostpartum = isPostpartum ? Math.floor(daysPostpartum / 7) : 0;
   const niceDate = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-  const babylemonSize = currentWeek === 15 ? "apple" : 
-                       currentWeek < 10 ? "blueberry" :
-                       currentWeek < 15 ? "lemon" :
-                       currentWeek < 20 ? "avocado" :
-                       currentWeek < 25 ? "papaya" :
-                       currentWeek < 30 ? "cabbage" :
-                       currentWeek < 35 ? "pineapple" : "watermelon";
+  // Use the shared fetal development service to ensure consistency with FetalDevelopment component
+  const babySize = getBabySize(currentWeek);
+  
+  // Handle articles (a/an) for the size comparison
+  const article = babySize.match(/^[aeiou]/i) ? 'an' : 'a';
 
   return (
     <section className={styles.statusHeader}>
@@ -45,7 +44,7 @@ export default function StatusCard({
         ) : (
           <>
             <div className={styles.statusWeek}>Week {currentWeek}</div>
-            <div className={styles.statusBabySize}>Your baby is about the size of {babylemonSize === 'apple' ? 'an' : 'a'} {babylemonSize}!</div>
+            <div className={styles.statusBabySize}>Your baby is about the size of {article} {babySize}!</div>
             <div className={styles.statusInfo}>
               <div className={styles.statusInfoItem}>
                 <div className={styles.statusInfoLabel}>Estimated Due Date</div>
