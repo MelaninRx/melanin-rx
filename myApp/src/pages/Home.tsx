@@ -290,8 +290,8 @@ const Home: React.FC = () => {
                 
                 <div 
                   className={`timeline-node baby-node ${isPostpartum ? 'active' : ''}`}
-                  style={{ left: '100%', cursor: isPostpartum ? 'pointer' : 'default' }}
-                  onClick={isPostpartum ? () => window.location.href = '/timeline?postpartum=true' : undefined}
+                  style={{ left: '100%', cursor: 'pointer' }}
+                  onClick={() => window.location.href = '/timeline?postpartum=true'}
                 >
                   <svg width="81" height="81" viewBox="0 0 81 81" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g filter="url(#filter0_d_3368_894)">
