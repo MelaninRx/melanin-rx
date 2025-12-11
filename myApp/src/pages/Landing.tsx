@@ -35,9 +35,6 @@ const Landing: React.FC = () => {
             
             <div className="header-content">
               <div className="menu">
-                <button className="menu-item" onClick={scrollToAbout}>
-                  About us
-                </button>
                 <button className="menu-item" onClick={scrollToFeatures}>
                   Features
                 </button>
@@ -131,8 +128,6 @@ const Landing: React.FC = () => {
           <p className="mission-text">
             MelaninRX was created to close these gaps through clarity, knowledge, and consistent support rooted in research.
           </p>
-
-          <button className="btn-mission">Our Mission</button>
         </section>
 
         {/* Features Section */}
